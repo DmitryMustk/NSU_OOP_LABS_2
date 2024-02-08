@@ -15,13 +15,15 @@ public class PlayerGuessNumberGame extends BullAndCowsGame implements Game{
             ui.showMessage("Введите вашу догадку: ");
             String userGuess = ui.getUserInput();
 
-            if(!isValidGuess(userGuess)){
+            if(isNotValidGuess(userGuess)){
                 ui.showMessage("Неверный формат ответа. Введите 4-значное число с уникальными цифрами");
                 continue;
             }
 
             if(!userGuess.equals(wishedNumber)){
-                ui.showMessage("Пока не правильно:" + computeBullsAndCows(userGuess) + "Попробуйте еще раз!");
+                int[] bullsAndCows = computeBullsAndCows(userGuess);
+                ui.showMessage("Пока не правильно:\n-быков: " + bullsAndCows[0] +
+                        "\n-коров: " + bullsAndCows[1] + "\nПопробуйте еще раз!");
             }else{
                 ui.showMessage("Поздравляю, вы отгадали число за " + attemptCount + " попыток!");
                 break;

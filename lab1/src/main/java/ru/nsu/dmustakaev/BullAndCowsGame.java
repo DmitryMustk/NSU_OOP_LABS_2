@@ -2,11 +2,11 @@ package ru.nsu.dmustakaev;
 
 public class BullAndCowsGame {
     protected static int DIGITS = 4;
-
+    protected static int ALPHABET_SIZE = 10;
     protected UserInterface ui;
     protected String wishedNumber;
 
-    protected String computeBullsAndCows(String guess){
+    protected int[] computeBullsAndCows(String guess){
         int bulls = 0;
         int cows = 0;
         for(int i = 0; i < PlayerGuessNumberGame.DIGITS; ++i) {
@@ -16,10 +16,20 @@ public class BullAndCowsGame {
                 cows++;
             }
         }
-        return "\n-быков: " + bulls + "\n-коров: " + cows + "\n";
+        int[] bullsAndCows = new int[2];
+        bullsAndCows[0] = bulls;
+        bullsAndCows[1] = cows;
+        return bullsAndCows;
     }
 
-    protected boolean isValidGuess(String guess){
+    protected int get_Digits(){
+        return DIGITS;
+    }
+
+    protected int getAlphabetSize(){
+        return ALPHABET_SIZE;
+    }
+    protected boolean isNotValidGuess(String guess){
         return guess.matches("[0-9]{" + PlayerGuessNumberGame.DIGITS + "}")
                 && guess.chars().distinct().count() == 4;
     }

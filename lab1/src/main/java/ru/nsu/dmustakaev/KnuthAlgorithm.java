@@ -1,90 +1,84 @@
 package ru.nsu.dmustakaev;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class KnuthAlgorithm {
-    private final int DIGITS = 4;
-    private final int attemptsNumber = 0;
-    private final List<String> ALL_CODES;
-    private List<String> S;
-    private String guess;
+    private int alphabetSize;
+    private int numberOfDigits;
+    private int numberOfCodes;
+    private ArrayList<String> codes;
 
-    public KnuthAlgorithm(){
-        this.ALL_CODES = generateAllCodes();
-        this.S = new ArrayList<>(ALL_CODES);
-        this.guess = "1122";
+    private String lastGuess;
+
+    KnuthAlgorithm(ComputerGuessNumberGame computerGuessNumberGame) {
+        alphabetSize = computerGuessNumberGame.getAlphabetSize();
+        numberOfDigits = computerGuessNumberGame.get_Digits();
+        numberOfCodes = (int) Math.pow(alphabetSize, numberOfDigits);
+        codes = new ArrayList<String>();
+        fillCodes();
     }
 
-    private List<String> generateAllCodes() {
-        List<String> codes = new ArrayList<>();
-        for (int i = 0; i <= 9; i++) {
-            for (int j = 0; j <= 9; j++) {
-                for (int k = 0; k <= 9; k++) {
-                    for (int l = 0; l <= 9; l++) {
+    public String getFirstGuess(){
+        lastGuess = "1234";
+        return lastGuess;
+    }
+    public String getNextGuess(int[] bullsAndCows){
+        removeBadCodes(bullsAndCows);
+//        System.out.println(codes);
+
+        for(String code: codes){
+            if(code.chars().distinct().count() == 4){
+                lastGuess = code;
+                return code;
+            }
+        }
+
+        return codes.get(0);
+    }
+    private void fillCodes(){
+        for (int i = 0; i < alphabetSize; ++i){
+            for(int j = 0; j < alphabetSize; ++j){
+                for(int k = 0; k < alphabetSize; ++k){
+                    for(int l = 0; l < alphabetSize; ++l){
                         codes.add("" + i + j + k + l);
                     }
                 }
             }
         }
-        return codes;
     }
 
-    private int[] computeBullsAndCows(String code, String guess) {
-        int[] bullsAndCows = new int[2];
-        int bulls = 0;
-        int cows = 0;
-        for (int i = 0; i < DIGITS; i++) {
-            if (guess.charAt(i) == code.charAt(i)) {
-                bulls++;
-            } else if (code.contains(String.valueOf(guess.charAt(i)))) {
-                cows++;
-            }
-        }
-        bullsAndCows[0] = bulls;
-        bullsAndCows[1] = cows;
-        return bullsAndCows;
-    }
-
-    public String getNextGuess(int[] bullsAndCows) {
-        int bulls = bullsAndCows[0];
-        int cows = bullsAndCows[1];
-
-        List<String> codesToRemove = new ArrayList<>();
-        for(String code : S){
-            int[] bullsAndCowsToRemove = computeBullsAndCows(code, guess);
-            if(bullsAndCowsToRemove[0] != bulls || bullsAndCowsToRemove[1] != cows){
+    private void removeBadCodes(int[] bullsAndCows){
+        List<String> codesToRemove = new ArrayList<String>();
+        for(String code : codes){
+            if(isBadCode(code, lastGuess, bullsAndCows)){
                 codesToRemove.add(code);
             }
         }
-        S.removeAll(codesToRemove);
-        guess = minimaxChooseNextGuess();
-        return guess;
+        codes.removeAll(codesToRemove);
     }
 
-    private String minimaxChooseNextGuess(){
-        int minMaxScore = Integer.MAX_VALUE;
-        String nextGuess = "";
-        for (String code : ALL_CODES) {
-            int[] scores = new int[S.size() + 1];
-            Arrays.fill(scores, 0);
+    private boolean isBadCode(String code, String guess, int[] bullsAndCows){
+        return checkBulls(code, guess, bullsAndCows[0]) && checkCows(code, guess, bullsAndCows[1]);
+    }
 
-            for (String s : S) {
-                int[] bullsAndCows = computeBullsAndCows(code, s);
-                int bulls = bullsAndCows[0];
-                int cows = bullsAndCows[1];
-                int score = Math.max(cows, bulls);
-                scores[score]++;
-            }
-
-            int maxScore = Arrays.stream(scores).max().orElse(0);
-            if (maxScore < minMaxScore) {
-                minMaxScore = maxScore;
-                nextGuess = code;
+    private boolean checkCows(String code, String guess, int cows){
+        int codeCows = 0;
+        for(int i = 0; i < numberOfDigits; ++i){
+            if(code.charAt(i) != guess.charAt(i) && new String(guess).indexOf(code.charAt(i)) != -1){
+                codeCows++;
             }
         }
-        return nextGuess;
+        return  codeCows >= cows;
+    }
+    private boolean checkBulls(String code, String guess, int bulls){
+        int codeBulls = 0;
+        for(int i = 0; i < numberOfDigits; ++i){
+            if (code.charAt(i) == guess.charAt(i)){
+                codeBulls++;
+            }
+        }
+        return codeBulls == bulls;
+
     }
 }
