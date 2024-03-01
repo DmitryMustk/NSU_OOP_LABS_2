@@ -4,8 +4,8 @@ import java.io.InputStream;
 import java.util.*;
 
 public class InstrctionParser {
-    private InputStream inputStream;
-    private List<Instruction> instructions;
+    private final InputStream inputStream;
+    private final List<Instruction> instructions;
 
     InstrctionParser(InputStream inputStream){
         this.inputStream = inputStream;
