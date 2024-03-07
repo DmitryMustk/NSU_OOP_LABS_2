@@ -11,6 +11,9 @@ public class CLIParser {
         }
         arg = (argv.length == 1) ? argv[0] : null;
     }
+    public boolean hasArg() {
+        return arg != null;
+    }
 
     public String getArg() {
         return arg;

@@ -9,12 +9,14 @@ import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Context {
     Stack<Double> stack;
     Map<String, Double> vars;
 
-    Context() {
+    public Context() {
         stack = new Stack<>();
         vars = new HashMap<>();
     }
@@ -51,5 +53,11 @@ public class Context {
             throw new GetValueByMissingVariable();
         }
         return vars.get(var);
+    }
+
+    public boolean isCorrectVariableName(String name) {
+        Pattern namePattern = Pattern.compile("^[a-zA-Z]\\w*$");
+        Matcher matcher = namePattern.matcher(name);
+        return matcher.matches();
     }
 }
