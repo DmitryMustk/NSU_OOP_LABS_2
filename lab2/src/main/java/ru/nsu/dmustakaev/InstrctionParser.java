@@ -22,7 +22,7 @@ public class InstrctionParser {
             }
             List<String> tokens = new ArrayList<>(List.of(line.split(" ")));
             instructions.add(new Instruction(
-                    tokens.getFirst(), (tokens.size() > 1) ? tokens.subList(1, tokens.size() - 1) : null));
+                    tokens.getFirst(), (tokens.size() > 1) ? tokens.subList(1, tokens.size()) : null));
         }
     }
 

@@ -10,8 +10,8 @@ import java.util.List;
 
 public class StackCalculator {
 
-    private Context context;
-    private CommandFactory cmdFactory;
+    private final Context context;
+    private final CommandFactory cmdFactory;
 
     StackCalculator() throws IOException {
         context = new Context();

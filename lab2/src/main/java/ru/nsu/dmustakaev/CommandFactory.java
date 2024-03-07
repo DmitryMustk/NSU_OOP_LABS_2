@@ -12,9 +12,11 @@ public class CommandFactory {
 
     public CommandFactory() throws IOException {
         ClassLoader classLoader = CommandFactory.class.getClassLoader();
-        InputStream resourceStream = classLoader.getResourceAsStream(".resources/commands.properties");
-        properties = new Properties();
-        properties.load(resourceStream);
+        try (InputStream resourceIn = classLoader.getResourceAsStream("commands.properties")) {
+            properties = new Properties();
+            properties.load(resourceIn);
+        }catch ()
+
     }
 
     public Command create(String commandName) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
