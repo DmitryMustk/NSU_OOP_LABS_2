@@ -1,20 +1,36 @@
 package ru.nsu.dmustakaev.view;
 
+import javafx.animation.TranslateTransition;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import javafx.util.Duration;
 import ru.nsu.dmustakaev.model.BallModel;
 
+import java.util.Objects;
+
 public class BallView {
-    private BallModel model;
-    private Pane pane;
-    private Circle ball;
+    private final BallModel model;
+    private final Pane pane;
+    private final ImageView ball;
+
+    private final Image texture;
+    private final Image mirrorTexture;
+
+    private static final String TEXTURE_PATH = "/soccer_ball_texture.png";
+    private static final String MIRROR_TEXTURE_PATH = "/soccer_ball_texture_mirrored.png";
 
     public BallView(BallModel model) {
         this.model = model;
 
         pane = new Pane();
-        ball = new Circle(model.getBallX(), model.getBallY(), model.getBallRadius(), Color.RED);
+        texture = new Image(TEXTURE_PATH);
+        mirrorTexture = new Image(MIRROR_TEXTURE_PATH);
+
+        ball = new ImageView(texture);
+
+        ball.setFitWidth(model.getBallRadius() * 2);
+        ball.setFitHeight(model.getBallRadius() * 2);
         pane.getChildren().add(ball);
     }
 
@@ -22,9 +38,21 @@ public class BallView {
         return pane;
     }
 
+    public void animate() {
+        if(ball.getImage() == texture) {
+            ball.setImage(mirrorTexture);
+            return;
+        }
+        ball.setImage(texture);
+    }
+
     public void update() {
         model.update();
-        ball.setCenterX(model.getBallX());
-        ball.setCenterY(model.getBallY());
+        ball.setTranslateX(model.getCentreX());
+        ball.setTranslateY(model.getCentreY());
+        if (model.isMove()) {
+            animate();
+        }
     }
+
 }

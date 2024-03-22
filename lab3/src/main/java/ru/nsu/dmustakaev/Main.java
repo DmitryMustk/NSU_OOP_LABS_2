@@ -29,8 +29,9 @@ public class Main extends Application {
         Scene scene = new Scene(root, 1024, 768);
 
         scene.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.SPACE) {
-                ballController.hitBall();
+            KeyCode code = event.getCode();
+            if(code == KeyCode.LEFT || code == KeyCode.RIGHT) {
+                ballController.hitBall(event.getCode());
             }
         });
         primaryStage.setTitle("HeadBall");

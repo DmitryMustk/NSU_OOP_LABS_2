@@ -1,6 +1,7 @@
 package ru.nsu.dmustakaev.controller;
 
 import javafx.animation.AnimationTimer;
+import javafx.scene.input.KeyCode;
 import ru.nsu.dmustakaev.model.BallModel;
 import ru.nsu.dmustakaev.view.BallView;
 
@@ -22,7 +23,7 @@ public class BallController {
         timer.start();
     }
 
-    public void hitBall() {
-        model.kick();
+    public void hitBall(KeyCode keyCode) {
+        model.kick(keyCode);
     }
 }
