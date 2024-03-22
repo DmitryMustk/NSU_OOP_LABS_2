@@ -1,6 +1,7 @@
 package ru.nsu.dmustakaev.view;
 
 import javafx.animation.TranslateTransition;
+import javafx.geometry.Bounds;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -31,6 +32,8 @@ public class BallView {
 
         ball.setFitWidth(model.getBallRadius() * 2);
         ball.setFitHeight(model.getBallRadius() * 2);
+        ball.setTranslateX(model.getCentreX());
+        ball.setTranslateY(model.getCentreY());
         pane.getChildren().add(ball);
     }
 
@@ -53,6 +56,10 @@ public class BallView {
         if (model.isMove()) {
             animate();
         }
+    }
+
+    public Bounds getBounds() {
+        return ball.localToScene(ball.getBoundsInLocal());
     }
 
 }

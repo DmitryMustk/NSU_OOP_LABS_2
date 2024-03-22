@@ -1,85 +1,87 @@
 package ru.nsu.dmustakaev.model;
 
-import javafx.scene.input.KeyCode;
-
 public class BallModel implements UpdatableModel {
-    private double ballX = 100;
-    private double ballY = 100;
-    private double ballSpeedX = 0;
-    private double ballSpeedY = 0;
+    private double X = 100;
+    private double Y = 100;
+    private double SpeedX = 0;
+    private double SpeedY = 0;
 
-    private static final double BALL_RADIUS = 15;
+    private static final double RADIUS = 12;
     private static final double GRAVITY = 0.01;
     private static final double AIR_RESISTANCE = 0.0005;
+    private static final double SOLD_RESISTANCE = 0.02;
     private static final double BOUNCE_FACTOR = 0.8;
+
+    private static final double MAX_SPEED_X = 3;
+    private static final double MAX_SPEED_Y = 3;
 
     private static final int FLOOR = 400;
 
-    public double getBallX() {
-        return ballX;
+    public double getX() {
+        return X;
     }
 
-    public double getBallY() {
-        return ballY;
+    public double getY() {
+        return Y;
     }
 
     public double getBallRadius() {
-        return BALL_RADIUS;
+        return RADIUS;
     }
 
     public double getCentreX() {
-        return ballX - BALL_RADIUS;
+        return X - RADIUS;
     }
 
     public double getCentreY() {
-        return ballY - BALL_RADIUS;
+        return Y - RADIUS;
     }
 
     public boolean isMove() {
-        return Math.abs(ballSpeedX) + Math.abs(ballSpeedY) > 0.2;
+        return Math.abs(SpeedX) + Math.abs(SpeedY) > 0.2;
     }
 
-    public void kick(KeyCode keyCode) {
-        ballSpeedX += keyCode != KeyCode.LEFT ? 1 : -1;
-        ballSpeedY -= 1.5;
+    public void kick(Direction direction) {
+        SpeedX += direction == Direction.RIGHT ? 1: -1;
+        SpeedY -= 1.5;
     }
 
     private void checkBounds() {
-        if (ballY + BALL_RADIUS >= FLOOR) {
-            ballY = FLOOR - BALL_RADIUS;
-            ballSpeedY = -ballSpeedY * BOUNCE_FACTOR;
+        if (Y + RADIUS >= FLOOR) {
+            Y = FLOOR - RADIUS;
+            SpeedY = -SpeedY * BOUNCE_FACTOR;
         }
 
-        if (ballX - BALL_RADIUS <= 0) {
-            ballX = BALL_RADIUS;
-            ballSpeedX = -ballSpeedX * BOUNCE_FACTOR;
+        if (X - RADIUS <= 0) {
+            X = RADIUS;
+            SpeedX = -SpeedX * BOUNCE_FACTOR;
         }
 
-        if (ballX + BALL_RADIUS >= 1024) {
-            ballX = 1024 - BALL_RADIUS;
-            ballSpeedX = -ballSpeedX * BOUNCE_FACTOR;
+        if (X + RADIUS >= 1024) {
+            X = 1024 - RADIUS;
+            SpeedX = -SpeedX * BOUNCE_FACTOR;
         }
 
-        if (ballY - BALL_RADIUS <= 0) {
-            ballY = 0 + BALL_RADIUS;
-            ballSpeedY = -ballSpeedY * BOUNCE_FACTOR;
+        if (Y - RADIUS <= 0) {
+            Y = 0 + RADIUS;
+            SpeedY = -SpeedY * BOUNCE_FACTOR;
         }
     }
     private void calculateGravity() {
-        if (ballY + BALL_RADIUS < FLOOR) {
-            ballSpeedY += GRAVITY;
+        if (Y + RADIUS < FLOOR) {
+            SpeedY += GRAVITY;
         }
     }
 
     private void calculateAirResistance() {
-        if (ballSpeedX != 0) {
-            ballSpeedX = (ballSpeedX / Math.abs(ballSpeedX)) * (Math.abs(ballSpeedX) - AIR_RESISTANCE);
+        if (SpeedX != 0) {
+            SpeedX = (SpeedX / Math.abs(SpeedX)) * (Math.abs(SpeedX) - AIR_RESISTANCE);
         }
     }
 
     private void calculateFrictionForce() {
-        if (ballSpeedX != 0 && ballY + BALL_RADIUS > FLOOR - 3) {
-            ballSpeedX = (ballSpeedX / Math.abs(ballSpeedX)) * (Math.abs(ballSpeedX) - 0.02);
+        if (SpeedX != 0 && Y + RADIUS > FLOOR - 3) {
+            SpeedX = (SpeedX / Math.abs(SpeedX)) * (Math.abs(SpeedX) - SOLD_RESISTANCE);
         }
     }
     private void calculateTotalAcceleration() {
@@ -91,10 +93,14 @@ public class BallModel implements UpdatableModel {
     @Override
     public void update() {
         calculateTotalAcceleration();
-        System.out.println("x: " + ballX + " y: " + ballY);
+        System.out.println("x: " + X + " y: " + Y);
         checkBounds();
-        ballX += ballSpeedX;
-        ballY += ballSpeedY;
 
+        X += SpeedX;
+        Y += SpeedY;
+
+        SpeedX = Math.min(SpeedX, MAX_SPEED_X);
+        SpeedY = Math.min(SpeedY, MAX_SPEED_Y);
     }
+
 }
