@@ -4,15 +4,19 @@ public class PlayerModel implements UpdatableModel {
     private Vector2D cords;
     private Vector2D speed;
 
+    private boolean isMovingLeft;
+    private boolean isMovingRight;
 
-    private static final double RADIUS = 36;
+
+    private static final double RADIUS = 30 ;
     private static final double GRAVITY = 0.01;
-    private static final double AIR_RESISTANCE = 0.03;
+    private static final double AIR_RESISTANCE = 0.01;
     private static final double FRICTION = 0.05;
     private static final double BOUNCE_FACTOR = 0.1;
+    private static final double MOVEMENT_SPEED = 0.1;
     private static final double JUMP_SPEED = 15;
-    private static final double MAX_SPEED_X = 3;
-    private static final double MAX_SPEED_Y = 15;
+    private static final Vector2D MAX_SPEED = new Vector2D(2, 15);
+
 
     private static final int FLOOR_DELTA = 3;
     private static final int FLOOR = 400;
@@ -38,16 +42,39 @@ public class PlayerModel implements UpdatableModel {
         return cords.getY() + RADIUS >= FLOOR - FLOOR_DELTA;
     }
 
+    private Direction getDirectionOfMovement() {
+        if(speed.getX() > 0){
+            return Direction.RIGHT;
+        }
+        return Direction.LEFT;
+    }
+
     public void jump() {
-        if (isOnGround()) {
-            speed.setY(JUMP_SPEED);
+        if (!isOnGround()) {
+            return;
+        }
+
+        speed.addVector(0, JUMP_SPEED);
+    }
+
+    public void stop(Direction direction) {
+        if(direction == Direction.LEFT) {
+            isMovingLeft = false;
+        }
+        else if (direction == Direction.RIGHT) {
+            isMovingRight = false;
         }
     }
 
     public void move(Direction direction) {
-        double accelerationX = direction == Direction.RIGHT ? 1 : -1;
-        speed.addVector(accelerationX, 0);
-        speed.setX(Math.min(MAX_SPEED_X, Math.max(-MAX_SPEED_X, speed.getX())));
+        if(direction == Direction.LEFT) {
+            isMovingLeft = true;
+        }
+        else if (direction == Direction.RIGHT) {
+            isMovingRight = true;
+        }
+//        speed.addVector(accelerationX, 0);
+//        speed.setX(Math.min(MAX_SPEED.getX(), Math.max(-MAX_SPEED.getX(), speed.getX())));
     }
 
     private void checkBounds() {
@@ -73,7 +100,16 @@ public class PlayerModel implements UpdatableModel {
     }
 
 
-    private void calculateTotalAcceleration() {
+    private void calculateTotalSpeed() {
+        double accelerationX = 0;
+        if(isMovingLeft) {
+            accelerationX = -MOVEMENT_SPEED;
+        } else if (isMovingRight) {
+            accelerationX = MOVEMENT_SPEED;
+        }
+        speed.addVector(accelerationX, 0);
+        speed.setX(Math.min(MAX_SPEED.getX(), Math.max(-MAX_SPEED.getX(), speed.getX())));
+
         speed.addVector(0, GRAVITY);
         if (isOnGround()) {
             speed.setX(speed.getX() * (1 - FRICTION));
@@ -84,8 +120,8 @@ public class PlayerModel implements UpdatableModel {
     @Override
     public void update() {
         checkBounds();
-        calculateTotalAcceleration();
-        speed.setY(Math.min(MAX_SPEED_Y, speed.getY()));
+        calculateTotalSpeed();
+        speed.setY(Math.min(MAX_SPEED.getY(), speed.getY()));
         cords.addVector(speed);
     }
 }
