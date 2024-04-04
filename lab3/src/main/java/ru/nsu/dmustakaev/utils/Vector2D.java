@@ -1,4 +1,4 @@
-package ru.nsu.dmustakaev.model;
+package ru.nsu.dmustakaev.utils;
 
 public class Vector2D {
     private double x;

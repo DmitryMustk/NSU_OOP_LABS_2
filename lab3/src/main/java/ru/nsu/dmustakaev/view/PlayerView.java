@@ -22,8 +22,8 @@ public class PlayerView {
         player = new ImageView(texture);
         player.setFitWidth(model.getRadius() * 2);
         player.setFitHeight(model.getRadius() * 2);
-        player.setTranslateX(model.getCentreX());
-        player.setTranslateY(model.getCentreY());
+        player.setTranslateX(model.getX() - model.getRadius());
+        player.setTranslateY(model.getY() - model.getRadius());
         pane.getChildren().add(player);
     }
 
@@ -33,8 +33,8 @@ public class PlayerView {
 
     public void update() {
         model.update();
-        player.setTranslateX(model.getCentreX());
-        player.setTranslateY(model.getCentreY());
+        player.setTranslateX(model.getX() - model.getRadius());
+        player.setTranslateY(model.getY() - model.getRadius());
     }
 
     public Bounds getBounds() {

@@ -1,5 +1,8 @@
 package ru.nsu.dmustakaev.model;
 
+import ru.nsu.dmustakaev.utils.Direction;
+import ru.nsu.dmustakaev.utils.Vector2D;
+
 public class PlayerModel implements UpdatableModel {
     private Vector2D cords;
     private Vector2D speed;
@@ -15,7 +18,7 @@ public class PlayerModel implements UpdatableModel {
     private static final double BOUNCE_FACTOR = 0.1;
     private static final double MOVEMENT_SPEED = 0.1;
     private static final double JUMP_SPEED = 15;
-    private static final Vector2D MAX_SPEED = new Vector2D(2, 15);
+    private static final Vector2D MAX_SPEED = new Vector2D(1, 15);
 
 
     private static final int FLOOR_DELTA = 3;
@@ -67,14 +70,15 @@ public class PlayerModel implements UpdatableModel {
     }
 
     public void move(Direction direction) {
-        if(direction == Direction.LEFT) {
-            isMovingLeft = true;
-        }
-        else if (direction == Direction.RIGHT) {
-            isMovingRight = true;
-        }
-//        speed.addVector(accelerationX, 0);
-//        speed.setX(Math.min(MAX_SPEED.getX(), Math.max(-MAX_SPEED.getX(), speed.getX())));
+        isMovingRight = direction == Direction.RIGHT;
+        isMovingLeft = direction == Direction.LEFT;
+//        if(direction == Direction.LEFT) {
+//            isMovingLeft = true;
+//        }
+//        else if (direction == Direction.RIGHT) {
+//            isMovingRight = true;
+//        }
+
     }
 
     private void checkBounds() {

@@ -1,5 +1,7 @@
 package ru.nsu.dmustakaev.model;
 
+import ru.nsu.dmustakaev.utils.Direction;
+
 public class BallModel implements UpdatableModel {
     private double X = 100;
     private double Y = 100;

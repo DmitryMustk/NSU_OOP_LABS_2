@@ -4,7 +4,7 @@ import javafx.animation.AnimationTimer;
 import javafx.geometry.Bounds;
 import javafx.scene.input.KeyCode;
 import ru.nsu.dmustakaev.model.BallModel;
-import ru.nsu.dmustakaev.model.Direction;
+import ru.nsu.dmustakaev.utils.Direction;
 import ru.nsu.dmustakaev.model.PlayerModel;
 import ru.nsu.dmustakaev.view.BallView;
 import ru.nsu.dmustakaev.view.PlayerView;
@@ -16,12 +16,15 @@ public class BallController {
     private PlayerView playerView;
     private PlayerModel playerModel;
 
+
     public BallController(BallView ballView, BallModel ballModel, PlayerView playerView, PlayerModel playerModel) {
         this.ballView = ballView;
         this.ballModel = ballModel;
 
         this.playerView = playerView;
         this.playerModel = playerModel;
+
+
 
         AnimationTimer timer = new AnimationTimer() {
             @Override
@@ -36,8 +39,13 @@ public class BallController {
     }
 
     public void movePlayer(KeyCode keyCode) {
-        Direction direction = keyCode == KeyCode.LEFT ? Direction.LEFT : Direction.RIGHT;
+        Direction direction = keyCode == KeyCode.A ? Direction.LEFT : Direction.RIGHT;
         playerModel.move(direction);
+    }
+
+    public void stopPlayer(KeyCode keyCode) {
+        Direction direction = keyCode == KeyCode.A ? Direction.LEFT : Direction.RIGHT;
+        playerModel.stop(direction);
     }
 
     public void jump() {

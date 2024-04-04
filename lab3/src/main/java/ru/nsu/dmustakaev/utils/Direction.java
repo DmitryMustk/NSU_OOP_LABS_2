@@ -1,4 +1,4 @@
-package ru.nsu.dmustakaev.model;
+package ru.nsu.dmustakaev.utils;
 
 public enum Direction {
     LEFT,
