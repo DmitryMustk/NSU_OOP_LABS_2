@@ -8,7 +8,7 @@ public class BackgroundView {
     private final Pane pane;
     private final ImageView background;
 
-    private static final String TEXTURE_PATH = "/background.png";
+    private static final String TEXTURE_PATH = "/background_game.png";
 
     public BackgroundView() {
 

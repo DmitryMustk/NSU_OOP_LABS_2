@@ -35,6 +35,11 @@ public class Vector2D {
         this.y = y;
     }
 
+    public void copyVector(Vector2D other) {
+        this.x = other.x;
+        this.y = other.y;
+    }
+
     public void addVector(Vector2D vec) {
         this.x += vec.x;
         this.y += vec.y;
@@ -54,9 +59,7 @@ public class Vector2D {
         return Math.sqrt(x * x + y + y);
     }
 
-    public Vector2D getNormalized() {
-        Vector2D normVector = new Vector2D(this);
-        normVector.mulVecOnScalar(1 / this.getLength());
-        return normVector;
+    public void normalize() {
+        this.mulVecOnScalar(1 / this.getLength());
     }
 }

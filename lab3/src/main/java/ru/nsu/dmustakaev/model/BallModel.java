@@ -1,30 +1,38 @@
 package ru.nsu.dmustakaev.model;
 
 import ru.nsu.dmustakaev.utils.Direction;
+import ru.nsu.dmustakaev.utils.Vector2D;
 
 public class BallModel implements UpdatableModel {
-    private double X = 100;
-    private double Y = 100;
-    private double SpeedX = 0;
-    private double SpeedY = 0;
+
+
+    private final Vector2D cords;
+    private final Vector2D speed;
+
+    private static final Vector2D MAX_SPEED = new Vector2D(3, 3);
 
     private static final double RADIUS = 12;
     private static final double GRAVITY = 0.01;
     private static final double AIR_RESISTANCE = 0.0005;
     private static final double SOLD_RESISTANCE = 0.02;
-    private static final double BOUNCE_FACTOR = 0.8;
+    private static final double BOUNCE_FACTOR = 0.7;
 
     private static final double MAX_SPEED_X = 3;
     private static final double MAX_SPEED_Y = 3;
 
     private static final int FLOOR = 400;
 
+    public BallModel() {
+        cords = new Vector2D(100, 100);
+        speed = new Vector2D(0, 0);
+    }
+
     public double getX() {
-        return X;
+        return cords.getX();
     }
 
     public double getY() {
-        return Y;
+        return cords.getY();
     }
 
     public double getBallRadius() {
@@ -32,58 +40,58 @@ public class BallModel implements UpdatableModel {
     }
 
     public double getCentreX() {
-        return X - RADIUS;
+        return cords.getX() - RADIUS;
     }
 
     public double getCentreY() {
-        return Y - RADIUS;
+        return cords.getY() - RADIUS;
     }
 
     public boolean isMove() {
-        return Math.abs(SpeedX) + Math.abs(SpeedY) > 0.2;
+        return Math.abs(cords.getX()) + Math.abs(cords.getY()) > 0.2;
     }
 
     public void kick(Direction direction) {
-        SpeedX += direction == Direction.RIGHT ? 1: -1;
-        SpeedY -= 1.5;
+        speed.setX(speed.getX() + (direction == Direction.RIGHT ? 0.1: -0.1));
+        speed.setY(speed.getY() - 0.2);
     }
 
     private void checkBounds() {
-        if (Y + RADIUS >= FLOOR) {
-            Y = FLOOR - RADIUS;
-            SpeedY = -SpeedY * BOUNCE_FACTOR;
+        if (cords.getY() + RADIUS >= FLOOR) {
+            cords.setY( FLOOR - RADIUS);
+            speed.setY(-speed.getY() * BOUNCE_FACTOR);
         }
 
-        if (X - RADIUS <= 0) {
-            X = RADIUS;
-            SpeedX = -SpeedX * BOUNCE_FACTOR;
+        if (cords.getX() - RADIUS <= 0) {
+            cords.setX(RADIUS);
+            speed.setX(-speed.getX() * BOUNCE_FACTOR);
         }
 
-        if (X + RADIUS >= 1024) {
-            X = 1024 - RADIUS;
-            SpeedX = -SpeedX * BOUNCE_FACTOR;
+        if (cords.getX() + RADIUS >= 1024) {
+            cords.setX(1024 - RADIUS);
+            speed.setX(-speed.getX() * BOUNCE_FACTOR);
         }
 
-        if (Y - RADIUS <= 0) {
-            Y = 0 + RADIUS;
-            SpeedY = -SpeedY * BOUNCE_FACTOR;
+        if (cords.getY() - RADIUS <= 0) {
+            cords.setY(0 + RADIUS);
+            speed.setY(-speed.getY() * BOUNCE_FACTOR);
         }
     }
     private void calculateGravity() {
-        if (Y + RADIUS < FLOOR) {
-            SpeedY += GRAVITY;
+        if (cords.getY() + RADIUS < FLOOR) {
+            speed.setY(speed.getY() + GRAVITY);
         }
     }
 
     private void calculateAirResistance() {
-        if (SpeedX != 0) {
-            SpeedX = (SpeedX / Math.abs(SpeedX)) * (Math.abs(SpeedX) - AIR_RESISTANCE);
+        if (speed.getX() != 0) {
+            speed.setX( (speed.getX() / Math.abs(speed.getX())) * (Math.abs(speed.getX()) - AIR_RESISTANCE));
         }
     }
 
     private void calculateFrictionForce() {
-        if (SpeedX != 0 && Y + RADIUS > FLOOR - 3) {
-            SpeedX = (SpeedX / Math.abs(SpeedX)) * (Math.abs(SpeedX) - SOLD_RESISTANCE);
+        if (speed.getX() != 0 && cords.getY() + RADIUS > FLOOR - 3) {
+            speed.setX( (speed.getX() / Math.abs(speed.getX())) * (Math.abs(speed.getX()) - SOLD_RESISTANCE));
         }
     }
     private void calculateTotalAcceleration() {
@@ -95,14 +103,13 @@ public class BallModel implements UpdatableModel {
     @Override
     public void update() {
         calculateTotalAcceleration();
-        System.out.println("x: " + X + " y: " + Y);
         checkBounds();
 
-        X += SpeedX;
-        Y += SpeedY;
+        cords.addVector(speed);
 
-        SpeedX = Math.min(SpeedX, MAX_SPEED_X);
-        SpeedY = Math.min(SpeedY, MAX_SPEED_Y);
+
+        speed.setX( Math.min(speed.getX(), MAX_SPEED_X));
+        speed.setY( Math.min(speed.getY(), MAX_SPEED_Y));
     }
 
 }

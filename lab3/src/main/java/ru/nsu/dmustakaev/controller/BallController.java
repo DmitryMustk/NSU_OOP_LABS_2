@@ -24,8 +24,6 @@ public class BallController {
         this.playerView = playerView;
         this.playerModel = playerModel;
 
-
-
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
