@@ -4,8 +4,6 @@ import ru.nsu.dmustakaev.utils.Direction;
 import ru.nsu.dmustakaev.utils.Vector2D;
 
 public class BallModel implements UpdatableModel {
-
-
     private final Vector2D cords;
     private final Vector2D speed;
 
@@ -48,7 +46,7 @@ public class BallModel implements UpdatableModel {
     }
 
     public boolean isMove() {
-        return Math.abs(cords.getX()) + Math.abs(cords.getY()) > 0.2;
+        return speed.getLength() > 0.2;
     }
 
     public void kick(Direction direction) {
@@ -94,6 +92,7 @@ public class BallModel implements UpdatableModel {
             speed.setX( (speed.getX() / Math.abs(speed.getX())) * (Math.abs(speed.getX()) - SOLD_RESISTANCE));
         }
     }
+
     private void calculateTotalAcceleration() {
         calculateGravity();
         calculateFrictionForce();
@@ -111,5 +110,4 @@ public class BallModel implements UpdatableModel {
         speed.setX( Math.min(speed.getX(), MAX_SPEED_X));
         speed.setY( Math.min(speed.getY(), MAX_SPEED_Y));
     }
-
 }

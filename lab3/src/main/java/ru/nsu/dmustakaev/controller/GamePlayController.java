@@ -5,6 +5,9 @@ import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 import ru.nsu.dmustakaev.model.BallModel;
 import ru.nsu.dmustakaev.model.GoalModel;
 import ru.nsu.dmustakaev.model.PlayerModel;
@@ -14,6 +17,9 @@ import ru.nsu.dmustakaev.view.BallView;
 import ru.nsu.dmustakaev.view.FieldView;
 import ru.nsu.dmustakaev.view.GoalView;
 import ru.nsu.dmustakaev.view.PlayerView;
+
+import static ru.nsu.dmustakaev.Main.addMusic;
+import static ru.nsu.dmustakaev.Main.mediaPlayer;
 
 public class GamePlayController {
     @FXML
@@ -36,6 +42,10 @@ public class GamePlayController {
 
     @FXML
     public void initialize() {
+        mediaPlayer.stop();
+        Media sound = new Media(getClass().getResource("/in_game_stadium_noises.mp3").toString());
+        mediaPlayer = new MediaPlayer(sound);
+        addMusic();
         ballModel = new BallModel();
         ballView = new BallView(ballModel);
 
