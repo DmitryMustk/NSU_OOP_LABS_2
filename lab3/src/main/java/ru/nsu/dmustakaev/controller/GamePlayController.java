@@ -7,19 +7,18 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
+import ru.nsu.dmustakaev.GameEngine;
+import ru.nsu.dmustakaev.SoundEngine;
 import ru.nsu.dmustakaev.model.BallModel;
 import ru.nsu.dmustakaev.model.GoalModel;
 import ru.nsu.dmustakaev.model.PlayerModel;
 import ru.nsu.dmustakaev.view.BackgroundView;
-import ru.nsu.dmustakaev.controller.BallController;
 import ru.nsu.dmustakaev.view.BallView;
 import ru.nsu.dmustakaev.view.FieldView;
 import ru.nsu.dmustakaev.view.GoalView;
 import ru.nsu.dmustakaev.view.PlayerView;
 
-import static ru.nsu.dmustakaev.Main.addMusic;
-import static ru.nsu.dmustakaev.Main.mediaPlayer;
+import static ru.nsu.dmustakaev.Main.*;
 
 public class GamePlayController {
     @FXML
@@ -28,61 +27,62 @@ public class GamePlayController {
     private ImageView background_game;
     @FXML
     private ImageView field;
+    private SoundEngine soundEngine;
 
-    private BallModel ballModel;
-    private BallView ballView;
+    private GameEngine gameEngine;
 
-    private PlayerModel playerModel;
-    private PlayerView playerView;
 
-    private GoalView leftGoalView;
-    private GoalView rightGoalView;
-
-    private BallController ballController;
+    public GamePlayController(SoundEngine soundEngine) {
+        this.soundEngine = soundEngine;
+    }
 
     @FXML
     public void initialize() {
-        mediaPlayer.stop();
-        Media sound = new Media(getClass().getResource("/in_game_stadium_noises.mp3").toString());
-        mediaPlayer = new MediaPlayer(sound);
-        addMusic();
-        ballModel = new BallModel();
-        ballView = new BallView(ballModel);
+        BallModel ballModel = new BallModel();
+        BallView ballView = new BallView(ballModel);
 
-        playerModel = new PlayerModel();
-        playerView = new PlayerView(playerModel);
+        PlayerModel playerModel = new PlayerModel();
+        PlayerView playerView = new PlayerView(playerModel);
 
-        GoalModel leftGoalModel = new GoalModel(0, 400 - 200 + 40, 20, 160);
-        GoalModel rightGoalModel = new GoalModel(1004, 400 - 200 + 40, 20, 160);
+        GoalModel leftGoalModel = new GoalModel(0, SCREEN_HEIGHT - 200 - 200 + 40, 20, 160);
+        GoalModel rightGoalModel = new GoalModel(SCREEN_WIDTH - 20, SCREEN_HEIGHT - 200 - 200 + 40, 20, 160);
 
-        leftGoalView = new GoalView(leftGoalModel);
-        rightGoalView = new GoalView(rightGoalModel);
+        GoalView leftGoalView = new GoalView(leftGoalModel);
+        GoalView rightGoalView = new GoalView(rightGoalModel);
 
         BackgroundView backgroundView = new BackgroundView();
         FieldView fieldView = new FieldView();
 
-        ballController = new BallController(ballView, ballModel, playerView, playerModel);
+        soundEngine.stopMusic();
+        soundEngine.setMusic("/in_game_stadium_noises.wav");
+        soundEngine.playMusic();
+
+        gameEngine = new GameEngine(ballView, ballModel, playerView, playerModel, rightGoalView);
 
         GamePlayRoot.getChildren().addAll(backgroundView.getPane(), fieldView.getPane(), leftGoalView.getPane(), rightGoalView.getPane(), ballView.getPane(), playerView.getPane());
 
         GamePlayRoot.requestFocus();
     }
 
+    public GameEngine getGameEngine() {
+        return gameEngine;
+    }
+
     public void setScene(Scene scene) {
         scene.setOnKeyPressed(event -> {
             KeyCode code = event.getCode();
             if (code == KeyCode.A || code == KeyCode.D) {
-                ballController.movePlayer(code);
+                gameEngine.movePlayer(code);
             }
             if (code == KeyCode.SPACE) {
-                ballController.jump();
+                gameEngine.jump();
             }
         });
 
         scene.setOnKeyReleased(event -> {
             KeyCode code = event.getCode();
             if (code == KeyCode.A || code == KeyCode.D) {
-                ballController.stopPlayer(code);
+                gameEngine.stopPlayer(code);
             }
         });
     }

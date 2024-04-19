@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import ru.nsu.dmustakaev.model.GoalModel;
 
-public class GoalView {
+public class GoalView implements GameObjectView {
     private final GoalModel model;
     private final Pane pane;
     private final Rectangle goalRectangle;
@@ -21,6 +21,7 @@ public class GoalView {
         pane.getChildren().add(goalRectangle);
     }
 
+    @Override
     public Pane getPane() {
         return pane;
     }

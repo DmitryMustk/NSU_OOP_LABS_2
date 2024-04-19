@@ -5,14 +5,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
+import ru.nsu.dmustakaev.SoundEngine;
 
-import static ru.nsu.dmustakaev.Main.addMusic;
-import static ru.nsu.dmustakaev.Main.mediaPlayer;
 
 public class GameMenuController {
     @FXML
     public AnchorPane mainRoot;
+    private SoundEngine soundEngine;
 
     @FXML
     public void showMainMenu() {
@@ -21,9 +20,8 @@ public class GameMenuController {
 
     @FXML
     public void startGame() throws Exception{
-
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/GamePlay.fxml"));
-        fxmlLoader.setController(new GamePlayController());
+        fxmlLoader.setController(new GamePlayController(soundEngine));
         GamePlayController gamePlayController = fxmlLoader.getController();
         gamePlayController.setScene(mainRoot.getScene());
         AnchorPane pane = fxmlLoader.load();
@@ -31,9 +29,9 @@ public class GameMenuController {
     }
     @FXML
     public void initialize() {
-        Media sound = new Media(getClass().getResource("/menu_song.mp3").toString());
-        mediaPlayer = new MediaPlayer(sound);
-        addMusic();
+        soundEngine = new SoundEngine();
+        soundEngine.setMusic("/menu_song.mp3");
+        soundEngine.playMusic();
     }
 
     @FXML

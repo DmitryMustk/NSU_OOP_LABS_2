@@ -1,28 +1,43 @@
-package ru.nsu.dmustakaev.controller;
+package ru.nsu.dmustakaev;
 
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Bounds;
 import javafx.scene.input.KeyCode;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import ru.nsu.dmustakaev.model.BallModel;
 import ru.nsu.dmustakaev.utils.Direction;
 import ru.nsu.dmustakaev.model.PlayerModel;
 import ru.nsu.dmustakaev.view.BallView;
+import ru.nsu.dmustakaev.view.GoalView;
 import ru.nsu.dmustakaev.view.PlayerView;
 
-public class BallController {
-    private BallView ballView;
-    private BallModel ballModel;
-
-    private PlayerView playerView;
-    private PlayerModel playerModel;
+import java.util.ArrayList;
+import java.util.List;
 
 
-    public BallController(BallView ballView, BallModel ballModel, PlayerView playerView, PlayerModel playerModel) {
+public class GameEngine {
+    private final BallView ballView;
+    private final BallModel ballModel;
+
+    private final PlayerView playerView;
+    private final PlayerModel playerModel;
+
+    private final GoalView rightGoalView;
+    private SoundEngine soundEngine;
+//    private final List<UpdatableModel> updatableModelList;
+//    private final List<GameObjectView> gameObjectViewList;
+
+
+    public GameEngine(BallView ballView, BallModel ballModel, PlayerView playerView, PlayerModel playerModel, GoalView rightGoalView) {
         this.ballView = ballView;
         this.ballModel = ballModel;
-
         this.playerView = playerView;
         this.playerModel = playerModel;
+
+        this.rightGoalView = rightGoalView;
+
+        soundEngine = new SoundEngine();
 
         AnimationTimer timer = new AnimationTimer() {
             @Override
@@ -34,6 +49,10 @@ public class BallController {
         };
 
         timer.start();
+    }
+
+    public SoundEngine getSoundEngine() {
+        return soundEngine;
     }
 
     public void movePlayer(KeyCode keyCode) {
@@ -53,6 +72,7 @@ public class BallController {
     private void checkCollision() {
         Bounds ballBounds = ballView.getBounds();
         Bounds playerBounds = playerView.getBounds();
+        Bounds rightGoalBounds = rightGoalView.getBounds();
 
         double ballCenterX = ballBounds.getCenterX();
         double playerCenterX = playerBounds.getCenterX();
@@ -61,6 +81,11 @@ public class BallController {
 
         if (ballBounds.intersects(playerBounds)) {
             ballModel.kick(direction);
+        }
+
+        if (rightGoalBounds.intersects(ballBounds)) {
+            soundEngine.playSound("/sii.mp3");
+            ballModel.reset();
         }
     }
 }

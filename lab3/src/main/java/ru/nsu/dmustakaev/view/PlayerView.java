@@ -6,7 +6,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import ru.nsu.dmustakaev.model.PlayerModel;
 
-public class PlayerView {
+public class PlayerView implements GameObjectView {
     private final PlayerModel model;
     private final Pane pane;
     private final ImageView player;
@@ -27,6 +27,7 @@ public class PlayerView {
         pane.getChildren().add(player);
     }
 
+    @Override
     public Pane getPane() {
         return pane;
     }

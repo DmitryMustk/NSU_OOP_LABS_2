@@ -4,7 +4,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
-public class BackgroundView {
+import ru.nsu.dmustakaev.Main;
+
+public class BackgroundView implements GameObjectView {
     private final Pane pane;
     private final ImageView background;
 
@@ -17,13 +19,13 @@ public class BackgroundView {
         Image texture = new Image(TEXTURE_PATH);
 
         background = new ImageView(texture);
-        background.setFitWidth(1024);
-        background.setFitHeight(768);
-//        player.setTranslateX(model.getX());
-//        player.setTranslateY(model.getY());
+        background.setFitWidth(Main.SCREEN_WIDTH);
+        background.setFitHeight(Main.SCREEN_HEIGHT);
+
         pane.getChildren().add(background);
     }
 
+    @Override
     public Pane getPane() {
         return pane;
     }

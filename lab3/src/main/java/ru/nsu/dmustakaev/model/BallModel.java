@@ -2,6 +2,7 @@ package ru.nsu.dmustakaev.model;
 
 import ru.nsu.dmustakaev.utils.Direction;
 import ru.nsu.dmustakaev.utils.Vector2D;
+import ru.nsu.dmustakaev.Main;
 
 public class BallModel implements UpdatableModel {
     private final Vector2D cords;
@@ -18,10 +19,10 @@ public class BallModel implements UpdatableModel {
     private static final double MAX_SPEED_X = 3;
     private static final double MAX_SPEED_Y = 3;
 
-    private static final int FLOOR = 400;
+    private static final int FLOOR = Main.SCREEN_HEIGHT * 2 / 3;
 
     public BallModel() {
-        cords = new Vector2D(100, 100);
+        cords = new Vector2D(Main.SCREEN_WIDTH /2.0, FLOOR / 4.0);
         speed = new Vector2D(0, 0);
     }
 
@@ -65,8 +66,8 @@ public class BallModel implements UpdatableModel {
             speed.setX(-speed.getX() * BOUNCE_FACTOR);
         }
 
-        if (cords.getX() + RADIUS >= 1024) {
-            cords.setX(1024 - RADIUS);
+        if (cords.getX() + RADIUS >= Main.SCREEN_WIDTH) {
+            cords.setX(Main.SCREEN_WIDTH - RADIUS);
             speed.setX(-speed.getX() * BOUNCE_FACTOR);
         }
 
@@ -99,13 +100,16 @@ public class BallModel implements UpdatableModel {
         calculateAirResistance();
     }
 
+    public void reset() {
+        cords.copyVector(Main.SCREEN_WIDTH /2.0, FLOOR / 4.0);
+        speed.copyVector(0, 0);
+    }
+
     @Override
     public void update() {
         calculateTotalAcceleration();
         checkBounds();
-
         cords.addVector(speed);
-
 
         speed.setX( Math.min(speed.getX(), MAX_SPEED_X));
         speed.setY( Math.min(speed.getY(), MAX_SPEED_Y));

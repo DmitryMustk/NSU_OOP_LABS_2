@@ -40,6 +40,11 @@ public class Vector2D {
         this.y = other.y;
     }
 
+    public void copyVector(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
     public void addVector(Vector2D vec) {
         this.x += vec.x;
         this.y += vec.y;

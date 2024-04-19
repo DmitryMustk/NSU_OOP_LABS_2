@@ -1,16 +1,12 @@
 package ru.nsu.dmustakaev.view;
 
-import javafx.animation.TranslateTransition;
 import javafx.geometry.Bounds;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.util.Duration;
 import ru.nsu.dmustakaev.model.BallModel;
 
-import java.util.Objects;
-
-public class BallView {
+public class BallView implements GameObjectView {
     private final BallModel model;
     private final Pane pane;
     private final ImageView ball;
@@ -37,12 +33,13 @@ public class BallView {
         pane.getChildren().add(ball);
     }
 
+    @Override
     public Pane getPane() {
         return pane;
     }
 
     public void animate() {
-        if(ball.getImage() == texture) {
+        if (ball.getImage() == texture) {
             ball.setImage(mirrorTexture);
             return;
         }
@@ -61,5 +58,4 @@ public class BallView {
     public Bounds getBounds() {
         return ball.localToScene(ball.getBoundsInLocal());
     }
-
 }
