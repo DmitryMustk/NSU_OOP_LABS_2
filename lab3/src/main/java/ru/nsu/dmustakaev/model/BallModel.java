@@ -95,7 +95,6 @@ public class BallModel implements UpdatableModel {
 
     @Override
     public void update() {
-        System.out.println("My x is " + getX());
         calculateTotalAcceleration();
         checkBounds();
         cords.addVector(speed);

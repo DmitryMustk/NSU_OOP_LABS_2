@@ -5,7 +5,7 @@ import ru.nsu.dmustakaev.utils.Bounds;
 import ru.nsu.dmustakaev.utils.Direction;
 import ru.nsu.dmustakaev.utils.Vector2D;
 
-public class PlayerModel implements UpdatableModel {
+public class EnemyModel implements UpdatableModel {
     private final Vector2D cords;
     private final Vector2D speed;
 
@@ -24,8 +24,8 @@ public class PlayerModel implements UpdatableModel {
     private static final int FLOOR_DELTA = 3;
     private static final int FLOOR = 400;
 
-    public PlayerModel() {
-        cords = new Vector2D(100, 100);
+    public EnemyModel() {
+        cords = new Vector2D(600, 100);
         speed = new Vector2D();
     }
 
@@ -57,7 +57,7 @@ public class PlayerModel implements UpdatableModel {
     }
 
     public void jump() {
-        if (!isOnGround() && !isOnEnemyHead) {
+        if (!isOnGround()) {
             return;
         }
 
@@ -90,12 +90,6 @@ public class PlayerModel implements UpdatableModel {
         }
     }
 
-    public void pushBack(Direction direction) {
-        speed.setXY(0, 0);
-        speed.setX(speed.getX() + (direction == Direction.RIGHT ? 0.1: -0.1));
-        speed.setY(speed.getY() - 0.5);
-    }
-
     private void calculateTotalSpeed() {
         double accelerationX = 0;
         if(isMovingLeft) {
@@ -117,9 +111,14 @@ public class PlayerModel implements UpdatableModel {
         return new Bounds(getX() - RADIUS, getY() - RADIUS, getRadius()* 2, getRadius() * 2);
     }
 
+    public void pushBack(Direction direction) {
+        speed.setXY(0, 0);
+        speed.setX(speed.getX() + (direction == Direction.RIGHT ? 0.1: -0.1));
+        speed.setY(speed.getY() - 0.5);
+    }
+
     @Override
     public void update() {
-        System.out.println(isOnEnemyHead);
         checkBounds();
         calculateTotalSpeed();
         speed.setY(Math.min(MAX_SPEED.getY(), speed.getY()));

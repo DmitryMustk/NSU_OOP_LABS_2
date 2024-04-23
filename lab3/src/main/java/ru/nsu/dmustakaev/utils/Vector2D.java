@@ -35,6 +35,11 @@ public class Vector2D {
         this.y = y;
     }
 
+    public void setXY(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
     public void copyVector(Vector2D other) {
         this.x = other.x;
         this.y = other.y;

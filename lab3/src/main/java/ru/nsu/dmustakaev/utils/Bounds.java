@@ -37,11 +37,22 @@ public class Bounds {
         return (minY - height) / 2.0;
     }
 
-    public boolean intersects(Bounds bounds) {
-        boolean intersectsX = minX + width >= bounds.getMinX() && bounds.getMinX() + bounds.getWidth() >= minX;
-        boolean intersectsY = minY + height >= bounds.getMinY() && bounds.getMinY() + bounds.getHeight() >= minY;
+    public boolean intersects(Bounds other) {
+        boolean intersectsX = minX + width >= other.getMinX() && other.getMinX() + other.getWidth() >= minX;
+        boolean intersectsY = minY + height >= other.getMinY() && other.getMinY() + other.getHeight() >= minY;
 
         return intersectsX && intersectsY;
     }
 
+    public double calculateOverlapX(Bounds other) {
+        double overlapLeft = other.minX - (this.minX + this.width);
+        double overlapRight = (other.minX + other.width) - this.minX;
+        return Math.min(overlapLeft, overlapRight);
+    }
+
+    public double calculateOverlapY(Bounds other) {
+        double overlapTop = other.minY - (this.minY + this.height);
+        double overlapBottom = (other.minY + other.height) - this.minY;
+        return Math.min(overlapTop, overlapBottom);
+    }
 }

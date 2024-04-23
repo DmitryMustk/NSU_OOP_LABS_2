@@ -10,14 +10,11 @@ import javafx.scene.media.MediaPlayer;
 import ru.nsu.dmustakaev.GameEngine;
 import ru.nsu.dmustakaev.SoundEngine;
 import ru.nsu.dmustakaev.model.BallModel;
+import ru.nsu.dmustakaev.model.EnemyModel;
 import ru.nsu.dmustakaev.model.GoalModel;
 import ru.nsu.dmustakaev.model.PlayerModel;
 import ru.nsu.dmustakaev.utils.Direction;
-import ru.nsu.dmustakaev.view.BackgroundView;
-import ru.nsu.dmustakaev.view.BallView;
-import ru.nsu.dmustakaev.view.FieldView;
-import ru.nsu.dmustakaev.view.GoalView;
-import ru.nsu.dmustakaev.view.PlayerView;
+import ru.nsu.dmustakaev.view.*;
 
 import static ru.nsu.dmustakaev.Main.*;
 
@@ -54,13 +51,16 @@ public class GamePlayController {
         var backgroundView = new BackgroundView();
         var fieldView = new FieldView();
 
+        var enemyModel = new EnemyModel();
+        var enemyView = new EnemyView(enemyModel);
+
         soundEngine.stopMusic();
         soundEngine.setMusic("/in_game_stadium_noises.wav");
         soundEngine.playMusic();
 
-        gameEngine = new GameEngine(ballView, ballModel, playerView, playerModel, rightGoalView);
+        gameEngine = new GameEngine(ballView, ballModel, playerView, playerModel, rightGoalView, enemyModel, enemyView);
 
-        GamePlayRoot.getChildren().addAll(backgroundView.getPane(), fieldView.getPane(), leftGoalView.getPane(), rightGoalView.getPane(), ballView.getPane(), playerView.getPane());
+        GamePlayRoot.getChildren().addAll(backgroundView.getPane(), fieldView.getPane(), leftGoalView.getPane(), rightGoalView.getPane(), ballView.getPane(), playerView.getPane(), enemyView.getPane());
 
         GamePlayRoot.requestFocus();
     }
