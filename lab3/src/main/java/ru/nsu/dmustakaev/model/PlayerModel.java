@@ -1,5 +1,7 @@
 package ru.nsu.dmustakaev.model;
 
+import ru.nsu.dmustakaev.Main;
+import ru.nsu.dmustakaev.utils.Bounds;
 import ru.nsu.dmustakaev.utils.Direction;
 import ru.nsu.dmustakaev.utils.Vector2D;
 
@@ -10,7 +12,6 @@ public class PlayerModel implements UpdatableModel {
     private boolean isMovingLeft;
     private boolean isMovingRight;
 
-
     private static final double RADIUS = 30 ;
     private static final double GRAVITY = 0.01;
     private static final double AIR_RESISTANCE = 0.01;
@@ -19,7 +20,6 @@ public class PlayerModel implements UpdatableModel {
     private static final double MOVEMENT_SPEED = 0.1;
     private static final double JUMP_SPEED = 15;
     private static final Vector2D MAX_SPEED = new Vector2D(1, 15);
-
 
     private static final int FLOOR_DELTA = 3;
     private static final int FLOOR = 400;
@@ -56,13 +56,6 @@ public class PlayerModel implements UpdatableModel {
         return cords.getY() + RADIUS >= FLOOR - FLOOR_DELTA;
     }
 
-    private Direction getDirectionOfMovement() {
-        if(speed.getX() > 0){
-            return Direction.RIGHT;
-        }
-        return Direction.LEFT;
-    }
-
     public void jump() {
         if (!isOnGround()) {
             return;
@@ -86,24 +79,14 @@ public class PlayerModel implements UpdatableModel {
     }
 
     private void checkBounds() {
-        if (cords.getY() + RADIUS >= FLOOR) {
-            cords.setY(FLOOR - RADIUS);
+        if (cords.getY() + RADIUS >= FLOOR || cords.getY() - RADIUS <= 0) {
+            cords.setY(Math.min(Math.max(cords.getY(), RADIUS), FLOOR - RADIUS));
             speed.setY(-speed.getY() * BOUNCE_FACTOR);
         }
 
-        if (cords.getX() - RADIUS <= 0) {
-            cords.setX(RADIUS);
+        if (cords.getX() - RADIUS <= 0 || cords.getX() + RADIUS >= Main.SCREEN_WIDTH) {
+            cords.setX(Math.min(Math.max(cords.getX(), RADIUS), Main.SCREEN_WIDTH - RADIUS));
             speed.setX(-speed.getX() * BOUNCE_FACTOR);
-        }
-
-        if (cords.getX() + RADIUS >= 1024) {
-            cords.setX(1024 - RADIUS);
-            speed.setX(-speed.getX() * BOUNCE_FACTOR);
-        }
-
-        if (cords.getY() - RADIUS <= 0) {
-            cords.setY(RADIUS);
-            speed.setY(-speed.getY() * BOUNCE_FACTOR);
         }
     }
 
@@ -122,6 +105,10 @@ public class PlayerModel implements UpdatableModel {
             speed.setX(speed.getX() * (1 - FRICTION));
         }
         speed.setX(speed.getX() * (1 - AIR_RESISTANCE));
+    }
+
+    public Bounds getBounds() {
+        return new Bounds(getX() - RADIUS, getY() - RADIUS, getRadius()* 2, getRadius() * 2);
     }
 
     @Override

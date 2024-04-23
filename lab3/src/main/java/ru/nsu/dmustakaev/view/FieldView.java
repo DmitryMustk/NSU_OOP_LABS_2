@@ -13,14 +13,13 @@ public class FieldView implements GameObjectView {
     private static final String TEXTURE_PATH = "/field_texture.png";
 
     public FieldView() {
-        pane = new Pane();
-        Image texture = new Image(TEXTURE_PATH);
-
-        field = new ImageView(texture);
+        field = new ImageView(new Image(TEXTURE_PATH));
         field.setFitWidth(Main.SCREEN_WIDTH);
         field.setFitHeight(Main.SCREEN_HEIGHT);
-
+        field.setTranslateX(0);
         field.setTranslateY(Main.SCREEN_HEIGHT * 2 / 3.0);
+
+        pane = new Pane();
         pane.getChildren().add(field);
     }
 

@@ -1,5 +1,6 @@
 package ru.nsu.dmustakaev.model;
 
+import ru.nsu.dmustakaev.utils.Bounds;
 import ru.nsu.dmustakaev.utils.Vector2D;
 
 public class GoalModel {
@@ -27,5 +28,9 @@ public class GoalModel {
 
     public int getWidth() {
         return width;
+    }
+
+    public Bounds getBounds() {
+        return new Bounds(getX(), getY(), getHeight(), getWidth());
     }
 }

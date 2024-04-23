@@ -1,5 +1,6 @@
 package ru.nsu.dmustakaev.model;
 
+import ru.nsu.dmustakaev.utils.Bounds;
 import ru.nsu.dmustakaev.utils.Direction;
 import ru.nsu.dmustakaev.utils.Vector2D;
 import ru.nsu.dmustakaev.Main;
@@ -34,20 +35,12 @@ public class BallModel implements UpdatableModel {
         return cords.getY();
     }
 
-    public double getBallRadius() {
+    public double getRadius() {
         return RADIUS;
     }
 
-    public double getCentreX() {
-        return cords.getX() - RADIUS;
-    }
-
-    public double getCentreY() {
-        return cords.getY() - RADIUS;
-    }
-
     public boolean isMove() {
-        return speed.getLength() > 0.2;
+        return speed.getLength() > 0.3;
     }
 
     public void kick(Direction direction) {
@@ -56,26 +49,17 @@ public class BallModel implements UpdatableModel {
     }
 
     private void checkBounds() {
-        if (cords.getY() + RADIUS >= FLOOR) {
-            cords.setY( FLOOR - RADIUS);
+        if (cords.getY() + RADIUS >= FLOOR || cords.getY() - RADIUS <= 0) {
+            cords.setY(Math.min(Math.max(cords.getY(), RADIUS), FLOOR - RADIUS));
             speed.setY(-speed.getY() * BOUNCE_FACTOR);
         }
 
-        if (cords.getX() - RADIUS <= 0) {
-            cords.setX(RADIUS);
+        if (cords.getX() - RADIUS <= 0 || cords.getX() + RADIUS >= Main.SCREEN_WIDTH) {
+            cords.setX(Math.min(Math.max(cords.getX(), RADIUS), Main.SCREEN_WIDTH - RADIUS));
             speed.setX(-speed.getX() * BOUNCE_FACTOR);
-        }
-
-        if (cords.getX() + RADIUS >= Main.SCREEN_WIDTH) {
-            cords.setX(Main.SCREEN_WIDTH - RADIUS);
-            speed.setX(-speed.getX() * BOUNCE_FACTOR);
-        }
-
-        if (cords.getY() - RADIUS <= 0) {
-            cords.setY(0 + RADIUS);
-            speed.setY(-speed.getY() * BOUNCE_FACTOR);
         }
     }
+
     private void calculateGravity() {
         if (cords.getY() + RADIUS < FLOOR) {
             speed.setY(speed.getY() + GRAVITY);
@@ -105,8 +89,13 @@ public class BallModel implements UpdatableModel {
         speed.copyVector(0, 0);
     }
 
+    public Bounds getBounds() {
+        return new Bounds(getX() - RADIUS, getY() - RADIUS, getRadius()* 2, getRadius() * 2);
+    }
+
     @Override
     public void update() {
+        System.out.println("My x is " + getX());
         calculateTotalAcceleration();
         checkBounds();
         cords.addVector(speed);

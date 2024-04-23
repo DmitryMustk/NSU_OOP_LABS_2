@@ -1,24 +1,34 @@
 package ru.nsu.dmustakaev.view;
 
-import javafx.geometry.Bounds;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import ru.nsu.dmustakaev.model.GoalModel;
+import ru.nsu.dmustakaev.utils.Bounds;
+import ru.nsu.dmustakaev.utils.Direction;
 
 public class GoalView implements GameObjectView {
     private final GoalModel model;
     private final Pane pane;
-    private final Rectangle goalRectangle;
+    private final ImageView goalView;
+    private final Direction direction;
 
-    public GoalView(GoalModel model) {
+    private static final String LEFT_TEXTURE_PATH = "/left_goal_texture.png";
+    private static final String RIGHT_TEXTURE_PATH = "/right_goal_texture.png";
+
+    public GoalView(GoalModel model, Direction direction) {
         this.model = model;
+        this.direction = direction;
+
+        Image texture = direction == Direction.LEFT ? new Image(LEFT_TEXTURE_PATH) : new Image(RIGHT_TEXTURE_PATH);
+        goalView = new ImageView(texture);
+        goalView.setFitWidth(model.getWidth());
+        goalView.setFitHeight(model.getHeight());
+        goalView.setTranslateX(model.getX());
+        goalView.setTranslateY(model.getY());
 
         pane = new Pane();
-        goalRectangle = new Rectangle(model.getX(), model.getY(), model.getHeight(), model.getWidth());
-        goalRectangle.setFill(Color.TRANSPARENT);
-        goalRectangle.setStroke(Color.BLACK);
-        pane.getChildren().add(goalRectangle);
+        pane.getChildren().add(goalView);
     }
 
     @Override
@@ -27,6 +37,7 @@ public class GoalView implements GameObjectView {
     }
 
     public Bounds getBounds() {
-        return goalRectangle.localToScene(goalRectangle.getBoundsInLocal());
+//        return goalView.localToScene(goalView.getBoundsInLocal());
+        return  model.getBounds();
     }
 }

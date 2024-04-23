@@ -12,6 +12,7 @@ import ru.nsu.dmustakaev.SoundEngine;
 import ru.nsu.dmustakaev.model.BallModel;
 import ru.nsu.dmustakaev.model.GoalModel;
 import ru.nsu.dmustakaev.model.PlayerModel;
+import ru.nsu.dmustakaev.utils.Direction;
 import ru.nsu.dmustakaev.view.BackgroundView;
 import ru.nsu.dmustakaev.view.BallView;
 import ru.nsu.dmustakaev.view.FieldView;
@@ -38,20 +39,20 @@ public class GamePlayController {
 
     @FXML
     public void initialize() {
-        BallModel ballModel = new BallModel();
-        BallView ballView = new BallView(ballModel);
+        var ballModel = new BallModel();
+        var ballView = new BallView(ballModel);
 
-        PlayerModel playerModel = new PlayerModel();
-        PlayerView playerView = new PlayerView(playerModel);
+        var playerModel = new PlayerModel();
+        var playerView = new PlayerView(playerModel);
 
-        GoalModel leftGoalModel = new GoalModel(0, SCREEN_HEIGHT - 200 - 200 + 40, 20, 160);
-        GoalModel rightGoalModel = new GoalModel(SCREEN_WIDTH - 20, SCREEN_HEIGHT - 200 - 200 + 40, 20, 160);
+        var leftGoalModel = new GoalModel(0, 240, 160, 20);
+        var rightGoalModel = new GoalModel(SCREEN_WIDTH - 20, SCREEN_HEIGHT - 200 - 200 + 40, 160, 20);
 
-        GoalView leftGoalView = new GoalView(leftGoalModel);
-        GoalView rightGoalView = new GoalView(rightGoalModel);
+        var leftGoalView = new GoalView(leftGoalModel, Direction.LEFT);
+        var rightGoalView = new GoalView(rightGoalModel, Direction.RIGHT);
 
-        BackgroundView backgroundView = new BackgroundView();
-        FieldView fieldView = new FieldView();
+        var backgroundView = new BackgroundView();
+        var fieldView = new FieldView();
 
         soundEngine.stopMusic();
         soundEngine.setMusic("/in_game_stadium_noises.wav");

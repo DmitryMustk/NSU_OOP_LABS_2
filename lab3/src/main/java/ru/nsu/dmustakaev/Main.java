@@ -24,6 +24,12 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+    //TODO: change the field texture
+    //TODO: remove code repeating in view classes
+    //TODO: remove all the magic numbers
+    //TODO: add enemy
+    //TODO: add enemy ai
+    //TODO: add pvp mode
 }
 
 

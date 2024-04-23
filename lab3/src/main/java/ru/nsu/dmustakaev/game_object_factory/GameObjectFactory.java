@@ -7,7 +7,7 @@ public class GameObjectFactory {
     private final Properties properties;
 
     public GameObjectFactory() {
-        ClassLoader classLoader = GameObjectFactory.class.getClassLoader();
+        var classLoader = GameObjectFactory.class.getClassLoader();
         if(classLoader == null) {
             throw new ClassLoaderException();
         }

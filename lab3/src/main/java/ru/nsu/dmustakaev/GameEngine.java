@@ -1,10 +1,7 @@
 package ru.nsu.dmustakaev;
 
 import javafx.animation.AnimationTimer;
-import javafx.geometry.Bounds;
 import javafx.scene.input.KeyCode;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import ru.nsu.dmustakaev.model.BallModel;
 import ru.nsu.dmustakaev.utils.Direction;
 import ru.nsu.dmustakaev.model.PlayerModel;
@@ -70,9 +67,9 @@ public class GameEngine {
     }
 
     private void checkCollision() {
-        Bounds ballBounds = ballView.getBounds();
-        Bounds playerBounds = playerView.getBounds();
-        Bounds rightGoalBounds = rightGoalView.getBounds();
+        var ballBounds = ballView.getBounds();
+        var playerBounds = playerView.getBounds();
+        var rightGoalBounds = rightGoalView.getBounds();
 
         double ballCenterX = ballBounds.getCenterX();
         double playerCenterX = playerBounds.getCenterX();
