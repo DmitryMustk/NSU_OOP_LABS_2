@@ -9,4 +9,6 @@ module ru.nsu.dmustakaev.lab3 {
     exports ru.nsu.dmustakaev.controller;
     exports ru.nsu.dmustakaev.game_object_factory;
     opens ru.nsu.dmustakaev.game_object_factory to javafx.fxml;
+    exports ru.nsu.dmustakaev.utils;
+    opens ru.nsu.dmustakaev.utils to javafx.fxml;
 }

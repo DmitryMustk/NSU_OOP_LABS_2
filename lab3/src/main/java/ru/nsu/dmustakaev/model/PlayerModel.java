@@ -57,7 +57,7 @@ public class PlayerModel implements UpdatableModel {
     }
 
     public void jump() {
-        if (!isOnGround() && !isOnEnemyHead) {
+        if (!isOnGround()) {
             return;
         }
 
@@ -92,8 +92,8 @@ public class PlayerModel implements UpdatableModel {
 
     public void pushBack(Direction direction) {
         speed.setXY(0, 0);
-        speed.setX(speed.getX() + (direction == Direction.RIGHT ? 0.1: -0.1));
-        speed.setY(speed.getY() - 0.5);
+        speed.setX(speed.getX() + (direction == Direction.RIGHT ? 0.2: -0.2));
+        speed.setY(speed.getY() );
     }
 
     private void calculateTotalSpeed() {
@@ -119,7 +119,6 @@ public class PlayerModel implements UpdatableModel {
 
     @Override
     public void update() {
-        System.out.println(isOnEnemyHead);
         checkBounds();
         calculateTotalSpeed();
         speed.setY(Math.min(MAX_SPEED.getY(), speed.getY()));

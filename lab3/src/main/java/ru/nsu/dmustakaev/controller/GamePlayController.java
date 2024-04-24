@@ -5,10 +5,8 @@ import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import ru.nsu.dmustakaev.GameEngine;
-import ru.nsu.dmustakaev.SoundEngine;
+import ru.nsu.dmustakaev.utils.SoundEngine;
 import ru.nsu.dmustakaev.model.BallModel;
 import ru.nsu.dmustakaev.model.EnemyModel;
 import ru.nsu.dmustakaev.model.GoalModel;
@@ -51,14 +49,14 @@ public class GamePlayController {
         var backgroundView = new BackgroundView();
         var fieldView = new FieldView();
 
-        var enemyModel = new EnemyModel();
+        var enemyModel = new EnemyModel(ballModel, leftGoalModel, rightGoalModel);
         var enemyView = new EnemyView(enemyModel);
 
         soundEngine.stopMusic();
         soundEngine.setMusic("/in_game_stadium_noises.wav");
         soundEngine.playMusic();
 
-        gameEngine = new GameEngine(ballView, ballModel, playerView, playerModel, rightGoalView, enemyModel, enemyView);
+        gameEngine = new GameEngine(ballView, ballModel, playerView, playerModel, rightGoalView, enemyModel, enemyView, leftGoalView);
 
         GamePlayRoot.getChildren().addAll(backgroundView.getPane(), fieldView.getPane(), leftGoalView.getPane(), rightGoalView.getPane(), ballView.getPane(), playerView.getPane(), enemyView.getPane());
 

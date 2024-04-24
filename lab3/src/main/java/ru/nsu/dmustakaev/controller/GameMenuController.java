@@ -3,9 +3,7 @@ package ru.nsu.dmustakaev.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import ru.nsu.dmustakaev.SoundEngine;
+import ru.nsu.dmustakaev.utils.SoundEngine;
 
 
 public class GameMenuController {

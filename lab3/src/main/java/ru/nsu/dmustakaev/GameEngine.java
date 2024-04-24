@@ -6,13 +6,11 @@ import ru.nsu.dmustakaev.model.BallModel;
 import ru.nsu.dmustakaev.model.EnemyModel;
 import ru.nsu.dmustakaev.utils.Direction;
 import ru.nsu.dmustakaev.model.PlayerModel;
+import ru.nsu.dmustakaev.utils.SoundEngine;
 import ru.nsu.dmustakaev.view.BallView;
 import ru.nsu.dmustakaev.view.EnemyView;
 import ru.nsu.dmustakaev.view.GoalView;
 import ru.nsu.dmustakaev.view.PlayerView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class GameEngine {
@@ -25,13 +23,14 @@ public class GameEngine {
     private final EnemyView enemyView;
     private final EnemyModel enemyModel;
 
+    private final GoalView leftGoalView;
     private final GoalView rightGoalView;
     private SoundEngine soundEngine;
 //    private final List<UpdatableModel> updatableModelList;
 //    private final List<GameObjectView> gameObjectViewList;
 
 
-    public GameEngine(BallView ballView, BallModel ballModel, PlayerView playerView, PlayerModel playerModel, GoalView rightGoalView, EnemyModel enemyModel, EnemyView enemyView) {
+    public GameEngine(BallView ballView, BallModel ballModel, PlayerView playerView, PlayerModel playerModel, GoalView rightGoalView, EnemyModel enemyModel, EnemyView enemyView, GoalView leftGoalView) {
         this.ballView = ballView;
         this.ballModel = ballModel;
         this.playerView = playerView;
@@ -39,6 +38,7 @@ public class GameEngine {
         this.enemyView = enemyView;
         this.enemyModel = enemyModel;
 
+        this.leftGoalView = leftGoalView;
         this.rightGoalView = rightGoalView;
 
         soundEngine = new SoundEngine();
@@ -78,6 +78,7 @@ public class GameEngine {
         var ballBounds = ballView.getBounds();
         var playerBounds = playerView.getBounds();
         var enemyBounds = enemyView.getBounds();
+        var leftGoalBounds = leftGoalView.getBounds();
         var rightGoalBounds = rightGoalView.getBounds();
 
         double ballCenterX = ballBounds.getCenterX();
@@ -92,6 +93,11 @@ public class GameEngine {
         }
         if (ballBounds.intersects(enemyBounds)) {
             ballModel.kick(enemyKickDirection);
+        }
+
+        if(leftGoalBounds.intersects(ballBounds)) {
+            soundEngine.playSound("/fail.mp3");
+            ballModel.reset();
         }
 
         if (rightGoalBounds.intersects(ballBounds)) {

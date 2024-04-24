@@ -5,6 +5,9 @@ import ru.nsu.dmustakaev.utils.Bounds;
 import ru.nsu.dmustakaev.utils.Direction;
 import ru.nsu.dmustakaev.utils.Vector2D;
 
+import java.util.Random;
+import java.util.random.RandomGenerator;
+
 public class EnemyModel implements UpdatableModel {
     private final Vector2D cords;
     private final Vector2D speed;
@@ -19,14 +22,23 @@ public class EnemyModel implements UpdatableModel {
     private static final double BOUNCE_FACTOR = 0.1;
     private static final double MOVEMENT_SPEED = 0.1;
     private static final double JUMP_SPEED = 15;
-    private static final Vector2D MAX_SPEED = new Vector2D(1, 15);
+    private static final Vector2D MAX_SPEED = new Vector2D(0.5, 5);
 
     private static final int FLOOR_DELTA = 3;
     private static final int FLOOR = 400;
 
-    public EnemyModel() {
+    private BallModel ballModel;
+    private GoalModel leftGoalModel;
+    private GoalModel rightGoalModel;
+
+
+    public EnemyModel(BallModel ballModel, GoalModel leftGoalModel, GoalModel rightGoalModel) {
         cords = new Vector2D(600, 100);
         speed = new Vector2D();
+
+        this.ballModel = ballModel;
+        this.leftGoalModel = leftGoalModel;
+        this.rightGoalModel = rightGoalModel;
     }
 
     public double getRadius() {
@@ -113,8 +125,16 @@ public class EnemyModel implements UpdatableModel {
 
     public void pushBack(Direction direction) {
         speed.setXY(0, 0);
-        speed.setX(speed.getX() + (direction == Direction.RIGHT ? 0.1: -0.1));
+        speed.setX(speed.getX() + (direction == Direction.RIGHT ? 0.2: -0.2));
         speed.setY(speed.getY() - 0.5);
+    }
+
+    public void processAI() {
+        Direction dir = ballModel.getX() - getX() > 0 ? Direction.RIGHT : Direction.LEFT;
+        move(dir);
+        if(Math.random() < 0.1) {
+            jump();
+        }
     }
 
     @Override
@@ -123,5 +143,6 @@ public class EnemyModel implements UpdatableModel {
         calculateTotalSpeed();
         speed.setY(Math.min(MAX_SPEED.getY(), speed.getY()));
         cords.addVector(speed);
+        processAI();
     }
 }

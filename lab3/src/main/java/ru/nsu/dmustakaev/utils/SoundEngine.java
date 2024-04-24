@@ -1,4 +1,4 @@
-package ru.nsu.dmustakaev;
+package ru.nsu.dmustakaev.utils;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -25,6 +25,7 @@ public class SoundEngine {
         mediaPlayer.setAutoPlay(true);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaPlayer.setStartTime(Duration.seconds(0));
+        mediaPlayer.setVolume(0.01);
         mediaPlayer.play();
     }
 
