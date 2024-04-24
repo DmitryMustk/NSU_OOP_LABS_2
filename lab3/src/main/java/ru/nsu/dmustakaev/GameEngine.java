@@ -1,7 +1,10 @@
 package ru.nsu.dmustakaev;
 
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.input.KeyCode;
+import javafx.util.Duration;
 import ru.nsu.dmustakaev.model.BallModel;
 import ru.nsu.dmustakaev.model.EnemyModel;
 import ru.nsu.dmustakaev.utils.Direction;
@@ -12,6 +15,7 @@ import ru.nsu.dmustakaev.view.EnemyView;
 import ru.nsu.dmustakaev.view.GoalView;
 import ru.nsu.dmustakaev.view.PlayerView;
 
+import java.util.Random;
 
 public class GameEngine {
     private final BallView ballView;
@@ -25,10 +29,18 @@ public class GameEngine {
 
     private final GoalView leftGoalView;
     private final GoalView rightGoalView;
+    private Random random;
     private SoundEngine soundEngine;
+
+    private long lastUpdateTime = 0;
+    private long updateInterval = 1_000_00000L / 30; // 30 FPS
+
+    private static final String[] bumpSounds = {"/bump_sound_1.mp3", "/bump_sound_2.mp3"};
+    private static final String[] kickBallSounds = {"/ball_kick_sound_1.mp3", "/ball_kick_sound_2.mp3", "/ball_kick_sound_3.wav", "/ball_kick_sound_4.wav"};
 //    private final List<UpdatableModel> updatableModelList;
 //    private final List<GameObjectView> gameObjectViewList;
 
+    private Timeline timeline = new Timeline();
 
     public GameEngine(BallView ballView, BallModel ballModel, PlayerView playerView, PlayerModel playerModel, GoalView rightGoalView, EnemyModel enemyModel, EnemyView enemyView, GoalView leftGoalView) {
         this.ballView = ballView;
@@ -41,19 +53,36 @@ public class GameEngine {
         this.leftGoalView = leftGoalView;
         this.rightGoalView = rightGoalView;
 
+        random = new Random();
         soundEngine = new SoundEngine();
 
-        AnimationTimer timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                playerView.update();
-                enemyView.update();
-                ballView.update();
-                checkCollision();
-            }
-        };
+        KeyFrame frame = new KeyFrame(Duration.seconds(0.008), actionEvent -> {
+            playerView.update();
+            enemyView.update();
+            ballView.update();
+            checkCollision();
+        });
 
-        timer.start();
+        timeline.getKeyFrames().add(frame);
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+//        AnimationTimer timer = new AnimationTimer() {
+//            @Override
+//            public void handle(long now) {
+//                try {
+//                    Thread.sleep(1000 / 100);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//                playerView.update();
+//                enemyView.update();
+//                ballView.update();
+//                checkCollision();
+//
+//            }
+//        };
+//
+//        timer.start();
     }
 
     public SoundEngine getSoundEngine() {
@@ -74,6 +103,12 @@ public class GameEngine {
         playerModel.jump();
     }
 
+    private void resetAfterScore() {
+        ballModel.reset();
+        playerModel.reset();
+        enemyModel.reset();
+    }
+
     private void checkCollision() {
         var ballBounds = ballView.getBounds();
         var playerBounds = playerView.getBounds();
@@ -90,19 +125,21 @@ public class GameEngine {
 
         if (ballBounds.intersects(playerBounds)) {
             ballModel.kick(playerKickDirection);
+//            soundEngine.playSound(kickBallSounds[random.nextInt(kickBallSounds.length)]);
         }
         if (ballBounds.intersects(enemyBounds)) {
             ballModel.kick(enemyKickDirection);
+//            soundEngine.playSound(kickBallSounds[random.nextInt(kickBallSounds.length)]);
         }
 
-        if(leftGoalBounds.intersects(ballBounds)) {
+        if (leftGoalBounds.intersects(ballBounds)) {
             soundEngine.playSound("/fail.mp3");
-            ballModel.reset();
+            resetAfterScore();
         }
 
         if (rightGoalBounds.intersects(ballBounds)) {
             soundEngine.playSound("/sii.mp3");
-            ballModel.reset();
+            resetAfterScore();
         }
 
         if (playerBounds.intersects(enemyBounds)) {
@@ -110,6 +147,7 @@ public class GameEngine {
             Direction enemyPushDirection = playerPushDirection == Direction.LEFT ? Direction.RIGHT : Direction.LEFT;
             playerModel.pushBack(playerPushDirection);
             enemyModel.pushBack(enemyPushDirection);
+            soundEngine.playSound(bumpSounds[random.nextInt(bumpSounds.length)]);
         }
     }
 }

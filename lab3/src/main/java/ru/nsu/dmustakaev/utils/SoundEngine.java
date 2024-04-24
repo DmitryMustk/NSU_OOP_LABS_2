@@ -25,7 +25,7 @@ public class SoundEngine {
         mediaPlayer.setAutoPlay(true);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaPlayer.setStartTime(Duration.seconds(0));
-        mediaPlayer.setVolume(0.01);
+        mediaPlayer.setVolume(0.05);
         mediaPlayer.play();
     }
 

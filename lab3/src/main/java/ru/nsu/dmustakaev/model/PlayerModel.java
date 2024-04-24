@@ -24,8 +24,12 @@ public class PlayerModel implements UpdatableModel {
     private static final int FLOOR_DELTA = 3;
     private static final int FLOOR = 400;
 
+    private static final int initX = 100;
+    private static final int initY = 100;
+
+
     public PlayerModel() {
-        cords = new Vector2D(100, 100);
+        cords = new Vector2D(initX, initY);
         speed = new Vector2D();
     }
 
@@ -94,6 +98,11 @@ public class PlayerModel implements UpdatableModel {
         speed.setXY(0, 0);
         speed.setX(speed.getX() + (direction == Direction.RIGHT ? 0.2: -0.2));
         speed.setY(speed.getY() );
+    }
+
+    public void reset() {
+        speed.setXY(0, 0);
+        cords.setXY(initX, initY);
     }
 
     private void calculateTotalSpeed() {

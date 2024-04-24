@@ -27,13 +27,16 @@ public class EnemyModel implements UpdatableModel {
     private static final int FLOOR_DELTA = 3;
     private static final int FLOOR = 400;
 
+    private static final int initX = 924;
+    private static final int initY = 100;
+
     private BallModel ballModel;
     private GoalModel leftGoalModel;
     private GoalModel rightGoalModel;
 
 
     public EnemyModel(BallModel ballModel, GoalModel leftGoalModel, GoalModel rightGoalModel) {
-        cords = new Vector2D(600, 100);
+        cords = new Vector2D(initX, initY);
         speed = new Vector2D();
 
         this.ballModel = ballModel;
@@ -72,7 +75,6 @@ public class EnemyModel implements UpdatableModel {
         if (!isOnGround()) {
             return;
         }
-
         speed.addVector(0, JUMP_SPEED);
     }
 
@@ -132,9 +134,14 @@ public class EnemyModel implements UpdatableModel {
     public void processAI() {
         Direction dir = ballModel.getX() - getX() > 0 ? Direction.RIGHT : Direction.LEFT;
         move(dir);
-        if(Math.random() < 0.1) {
+        if(Math.random() < 0.05) {
             jump();
         }
+    }
+
+    public void reset() {
+        speed.setXY(0, 0);
+        cords.setXY(initX, initY);
     }
 
     @Override
