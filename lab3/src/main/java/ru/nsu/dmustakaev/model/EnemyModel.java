@@ -16,19 +16,21 @@ public class EnemyModel implements UpdatableModel {
     private boolean isMovingRight;
 
     private static final double RADIUS = 30 ;
-    private static final double GRAVITY = 0.01;
+    private static final double GRAVITY = 0.02;
     private static final double AIR_RESISTANCE = 0.01;
     private static final double FRICTION = 0.05;
     private static final double BOUNCE_FACTOR = 0.1;
     private static final double MOVEMENT_SPEED = 0.1;
-    private static final double JUMP_SPEED = 15;
-    private static final Vector2D MAX_SPEED = new Vector2D(0.5, 5);
+    private static final double JUMP_SPEED = 20;
+    private static final Vector2D MAX_SPEED = new Vector2D(0.8, 5);
 
     private static final int FLOOR_DELTA = 3;
     private static final int FLOOR = 400;
 
     private static final int initX = 924;
     private static final int initY = 100;
+
+    private boolean isEvil;
 
     private BallModel ballModel;
     private GoalModel leftGoalModel;
@@ -38,6 +40,7 @@ public class EnemyModel implements UpdatableModel {
     public EnemyModel(BallModel ballModel, GoalModel leftGoalModel, GoalModel rightGoalModel) {
         cords = new Vector2D(initX, initY);
         speed = new Vector2D();
+        isEvil = false;
 
         this.ballModel = ballModel;
         this.leftGoalModel = leftGoalModel;
@@ -128,11 +131,17 @@ public class EnemyModel implements UpdatableModel {
     public void pushBack(Direction direction) {
         speed.setXY(0, 0);
         speed.setX(speed.getX() + (direction == Direction.RIGHT ? 0.2: -0.2));
-        speed.setY(speed.getY() - 0.5);
+        speed.setY(speed.getY() - 0.3);
     }
 
     public void processAI() {
         Direction dir = ballModel.getX() - getX() > 0 ? Direction.RIGHT : Direction.LEFT;
+        double distanceToBall = Math.abs(ballModel.getX() - getX());
+        double distanceToSelfGoal = rightGoalModel.getX() - getX();
+
+        if(distanceToBall > 100 && distanceToSelfGoal > 400 && !isEvil) {
+            dir = Direction.RIGHT;
+        }
         move(dir);
         if(Math.random() < 0.05) {
             jump();
@@ -142,6 +151,7 @@ public class EnemyModel implements UpdatableModel {
     public void reset() {
         speed.setXY(0, 0);
         cords.setXY(initX, initY);
+        isEvil = !isEvil;
     }
 
     @Override

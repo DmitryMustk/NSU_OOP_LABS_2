@@ -14,7 +14,7 @@ public class BallModel implements UpdatableModel {
     private static final double RADIUS = 12;
     private static final double GRAVITY = 0.01;
     private static final double AIR_RESISTANCE = 0.0005;
-    private static final double SOLD_RESISTANCE = 0.02;
+    private static final double SOLD_RESISTANCE = 0.01;
     private static final double BOUNCE_FACTOR = 0.7;
 
     private static final double MAX_SPEED_X = 3;
@@ -43,9 +43,18 @@ public class BallModel implements UpdatableModel {
         return speed.getLength() > 0.3;
     }
 
-    public void kick(Direction direction) {
-        speed.setX(speed.getX() + (direction == Direction.RIGHT ? 0.1: -0.1));
-        speed.setY(speed.getY() - 0.2);
+    public void kick(Bounds bounds) {
+        if(cords.getX() >= bounds.getMinX() - RADIUS / 2 && cords.getX() <= bounds.getCenterX() ) {
+            cords.setX(bounds.getMinX() - RADIUS);
+            speed.setX(-(speed.getX() + 3) * BOUNCE_FACTOR);
+            speed.setY(-(speed.getY() + 2) * BOUNCE_FACTOR);
+        }
+
+        if (cords.getX() <= bounds.getMinX() + bounds.getWidth() + RADIUS / 2 && cords.getX() >= bounds.getCenterX() - RADIUS ) {
+            cords.setX(bounds.getMinX() + bounds.getWidth() + RADIUS);
+            speed.setX(-(speed.getX() - 3) * BOUNCE_FACTOR);
+            speed.setY(-(speed.getY() + 2) * BOUNCE_FACTOR);
+        }
     }
 
     private void checkBounds() {

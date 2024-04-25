@@ -2,6 +2,7 @@ package ru.nsu.dmustakaev.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
@@ -23,6 +24,8 @@ public class GamePlayController {
     private ImageView background_game;
     @FXML
     private ImageView field;
+    @FXML
+    private Label scoreLabel;
     private SoundEngine soundEngine;
 
     private GameEngine gameEngine;
@@ -52,19 +55,17 @@ public class GamePlayController {
         var enemyModel = new EnemyModel(ballModel, leftGoalModel, rightGoalModel);
         var enemyView = new EnemyView(enemyModel);
 
+        var scoreView = new ScoreView();
+
         soundEngine.stopMusic();
         soundEngine.setMusic("/in_game_stadium_noises.wav");
         soundEngine.playMusic();
 
-        gameEngine = new GameEngine(ballView, ballModel, playerView, playerModel, rightGoalView, enemyModel, enemyView, leftGoalView);
-
-        GamePlayRoot.getChildren().addAll(backgroundView.getPane(), fieldView.getPane(), leftGoalView.getPane(), rightGoalView.getPane(), ballView.getPane(), playerView.getPane(), enemyView.getPane());
+        gameEngine = new GameEngine(ballView, ballModel, playerView, playerModel, rightGoalView, enemyModel, enemyView, leftGoalView, scoreView);
+        scoreLabel.setText("0:0");
+        GamePlayRoot.getChildren().addAll(backgroundView.getPane(), fieldView.getPane(), leftGoalView.getPane(), rightGoalView.getPane(), ballView.getPane(), playerView.getPane(), enemyView.getPane(), scoreView.getPane());
 
         GamePlayRoot.requestFocus();
-    }
-
-    public GameEngine getGameEngine() {
-        return gameEngine;
     }
 
     public void setScene(Scene scene) {
@@ -84,5 +85,6 @@ public class GamePlayController {
                 gameEngine.stopPlayer(code);
             }
         });
+
     }
 }

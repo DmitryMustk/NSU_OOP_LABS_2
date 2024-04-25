@@ -13,13 +13,13 @@ public class PlayerModel implements UpdatableModel {
     private boolean isMovingRight;
 
     private static final double RADIUS = 30 ;
-    private static final double GRAVITY = 0.01;
+    private static final double GRAVITY = 0.02;
     private static final double AIR_RESISTANCE = 0.01;
     private static final double FRICTION = 0.05;
     private static final double BOUNCE_FACTOR = 0.1;
     private static final double MOVEMENT_SPEED = 0.1;
-    private static final double JUMP_SPEED = 15;
-    private static final Vector2D MAX_SPEED = new Vector2D(1, 15);
+    private static final double JUMP_SPEED = 20;
+    private static final Vector2D MAX_SPEED = new Vector2D(1, 20);
 
     private static final int FLOOR_DELTA = 3;
     private static final int FLOOR = 400;
@@ -95,8 +95,8 @@ public class PlayerModel implements UpdatableModel {
     }
 
     public void pushBack(Direction direction) {
-        speed.setXY(0, 0);
-        speed.setX(speed.getX() + (direction == Direction.RIGHT ? 0.2: -0.2));
+//        speed.setXY(0, 0);
+        speed.setX(speed.getX() + (direction == Direction.RIGHT ? 0.5: -0.5));
         speed.setY(speed.getY() );
     }
 

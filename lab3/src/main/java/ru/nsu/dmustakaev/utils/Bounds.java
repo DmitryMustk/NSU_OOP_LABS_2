@@ -30,11 +30,11 @@ public class Bounds {
     }
 
     public double getCenterX() {
-        return (minX + width) / 2.0;
+        return minX + width / 2.0;
     }
 
     public double getCenterY() {
-        return (minY - height) / 2.0;
+        return minY - height / 2.0;
     }
 
     public boolean intersects(Bounds other) {
