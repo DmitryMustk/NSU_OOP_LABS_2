@@ -52,7 +52,8 @@ public class Chat {
     }
 
     public void sendResponse(Socket socket, String response) {
-        try (DataOutputStream out = new DataOutputStream(socket.getOutputStream())){
+        try { // окончательное место ебания сокета
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
             byte[] messageBytes = response.getBytes();
             out.writeInt(messageBytes.length);
             out.write(messageBytes);
@@ -62,33 +63,37 @@ public class Chat {
         }
     }
 
-    private UUID login(Session session) {
+    private UUID login(Session session) { //СОКЕТЫ ЕБУТ ЗДЕСЬ
         lock.lock();
         UUID uuid = UUID.randomUUID();
         sessions.put(uuid, session);
         String response = EVENT_RESPONSE.formatted("userlogin", NAME_RESPONSE.formatted(session.getUsername()));
-        sendResponseToOnlineUsers(response);
+        sendResponseToOnlineUsers(response); //МЕСТО ДЛЯ ЕБАНИЯ СОКЕТОВ СТОПУД
+
         lock.unlock();
 
         return uuid;
     }
 
     public UUID register(User user, Socket socket) {
+
         if (!users.containsKey(user.getUsername())) {
             users.put(user.getUsername(), user);
             return login(new Session(socket, user.getUsername()));
         }
+
         if (!users.get(user.getUsername()).getPassword().equals(user.getPassword())) {
             String response = ERROR_RESPONSE.formatted("Invalid username or password");
             sendResponse(socket, response);
-            try {
-                socket.close();
-            } catch (Exception e) {
-                logger.warning("Failed to close socket. " + e.getMessage());
-            }
+//            try {
+//                socket.close();
+//            } catch (Exception e) {
+//                logger.warning("Failed to close socket. " + e.getMessage());
+//            }
             throw new RuntimeException("Invalid username or password");
         }
-        return login(new Session(socket, user.getUsername()));
+
+        return login(new Session(socket, user.getUsername())); //ТУТ ЕБУТ СОКЕТЫ
     }
 
     public void logout(UUID sessionID) {

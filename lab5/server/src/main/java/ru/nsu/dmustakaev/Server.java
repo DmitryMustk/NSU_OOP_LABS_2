@@ -28,9 +28,9 @@ public class Server {
     public void start() {
         logger.info("Starting server...");
         try (ServerSocket serverSocket = new ServerSocket(port, connectionsCount)){
-            Thread stopThread = createStopThread();
-            stopThread.start();
-            while (stopThread.isAlive()) {
+//            Thread stopThread = createStopThread();
+//            stopThread.start();
+            while (true ) {
                 try {
                     Socket socket = serverSocket.accept();
                     logger.info("New connection from " + socket.getRemoteSocketAddress());
@@ -40,7 +40,7 @@ public class Server {
                     logger.warning(e.getMessage());
                 }
             }
-            executorService.shutdown();
+//            executorService.shutdown();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
