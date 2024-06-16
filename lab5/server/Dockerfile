@@ -1,4 +1,4 @@
-FROM gradle:7.6-jdk11 AS builder
+FROM amazoncorretto:21 AS builder
 
 WORKDIR /app
 
@@ -8,7 +8,7 @@ COPY src /app/src/
 
 RUN ./gradlew build
 
-FROM openjdk:11-jre-slim
+FROM amazoncorretto:21
 
 WORKDIR /app
 

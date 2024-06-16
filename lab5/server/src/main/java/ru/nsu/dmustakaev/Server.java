@@ -14,6 +14,7 @@ public class Server {
     private final int port;
     private final int connectionsCount;
     private final ExecutorService executorService;
+    private final Chat chat;
 
 
     public Server(String host, int port, int connectionsCount) {
@@ -21,6 +22,7 @@ public class Server {
         this.port = port;
         this.connectionsCount = connectionsCount;
         executorService = Executors.newFixedThreadPool(connectionsCount);
+        chat = new Chat("chatTest", 100L, 5L);
     }
 
     public void start() {
@@ -31,7 +33,8 @@ public class Server {
             while (stopThread.isAlive()) {
                 try {
                     Socket socket = serverSocket.accept();
-                    Connection connection = new Connection(socket);
+                    logger.info("New connection from " + socket.getRemoteSocketAddress());
+                    Connection connection = new Connection(chat, socket);
                     executorService.submit(connection);
                 } catch (IOException | RuntimeException e) {
                     logger.warning(e.getMessage());
@@ -54,5 +57,3 @@ public class Server {
         });
     }
 }
-
-//TODO: Command class with adecvat parser
