@@ -53,7 +53,10 @@ public class Chat {
 
     public void sendResponse(Socket socket, String response) {
         try (DataOutputStream out = new DataOutputStream(socket.getOutputStream())){
-            out.writeUTF(response);
+            byte[] messageBytes = response.getBytes();
+            out.writeInt(messageBytes.length);
+            out.write(messageBytes);
+            out.flush();
         } catch (IOException e) {
             logger.warning("Failed to send response: " + e.getMessage());
         }
