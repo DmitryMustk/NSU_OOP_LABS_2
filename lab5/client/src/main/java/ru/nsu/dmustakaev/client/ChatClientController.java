@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import static ru.nsu.dmustakaev.client.RequestsTags.*;
+import static ru.nsu.dmustakaev.client.RequestTags.*;
 
 public class ChatClientController {
     @FXML
@@ -44,7 +44,7 @@ public class ChatClientController {
     private DataInputStream reader;
 
     private boolean isLogged = false;
-    private RequestCommand lastCommand;
+    private RequestCommands lastCommand;
 
     private final ObservableList<String> messages = FXCollections.observableArrayList();
     private final ObservableList<String> users = FXCollections.observableArrayList();
@@ -60,8 +60,6 @@ public class ChatClientController {
         writer = new DataOutputStream(socket.getOutputStream());
         reader = new DataInputStream(socket.getInputStream());
 
-        loginButton.setOnAction(event -> onClickLogin());
-        logoutButton.setOnAction(event -> onClickLogout());
         logoutButton.setVisible(false);
     }
 
@@ -84,6 +82,7 @@ public class ChatClientController {
             if (username.isEmpty() || password.isEmpty()) {
                 errorAlert.setContentText("Please enter your username and password");
                 errorAlert.show();
+                return null;
             }
             sendCommand(COMMAND_REQUEST.formatted(
                     "login", USERNAME_REQUEST.formatted(username) + PASSWORD_REQUEST.formatted(password)));
@@ -91,7 +90,7 @@ public class ChatClientController {
             new Thread(this::listenForMessages).start();
             loginButton.setVisible(false);
             logoutButton.setVisible(true);
-            lastCommand = RequestCommand.LOGIN;
+            lastCommand = RequestCommands.LOGIN;
             return null;
         });
         loginDialog.showAndWait();
@@ -101,12 +100,18 @@ public class ChatClientController {
     public void onClickFindUsers() {
         checkLoging();
         sendCommand(COMMAND_REQUEST.formatted("list", ""));
-        lastCommand = RequestCommand.LIST;
+        lastCommand = RequestCommands.LIST;
     }
 
     @FXML
     public void onClickLogout() {
+        checkLoging();//somehow
 
+        sendCommand(COMMAND_REQUEST.formatted("logout", ""));
+        lastCommand = RequestCommands.LOGOUT;
+
+        logoutButton.setVisible(false);
+        loginButton.setVisible(true);
     }
 
     private void sendCommand(String command) {
@@ -184,11 +189,12 @@ public class ChatClientController {
         } else if (message.contains("<event name=\"userlogout\">")) {
             String name = extractXmlValue(message, "name");
             Platform.runLater(() -> users.remove(name));
-        } else if (message.contains("<success>")) {
-            if (lastCommand == RequestCommand.LOGIN) {
-                isLogged = true;
-            }
+        } else if (message.contains("<success>") && lastCommand == RequestCommands.LIST) {
             Platform.runLater(() -> users.addAll(getUsernamesFromXML(message)));
+        } else if (message.contains("<success>") && lastCommand == RequestCommands.LOGIN) {
+            isLogged = true;
+        } else if (message.contains("<success>") && lastCommand == RequestCommands.LOGOUT) {
+            isLogged = false;
         }
     }
 

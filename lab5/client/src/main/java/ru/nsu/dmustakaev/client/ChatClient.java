@@ -19,7 +19,6 @@ public class ChatClient extends Application {
     }
 
     //TODO: norm exit
-    //TODO: logout
     //TODO: connection window
     //TODO: fix protocol issues
     //TODO: [BUG_FIX] user list button sejaet

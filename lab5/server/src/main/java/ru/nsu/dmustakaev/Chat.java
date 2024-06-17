@@ -105,8 +105,11 @@ public class Chat {
         lock.lock();
         try {
             Session session = sessions.get(sessionID);
-            String response = EVENT_RESPONSE.formatted("userlogout", NAME_RESPONSE.formatted(session.getUsername()));
-            sendResponseToOnlineUsers(response);
+            String responseToAll = EVENT_RESPONSE.formatted("userlogout", NAME_RESPONSE.formatted(session.getUsername()));
+            String responseToOne = SUCCESS_RESPONSE.formatted("");
+
+            sendResponseToOnlineUsers(responseToAll);
+            sendResponse(session.getSocket(), responseToOne);
             if (session.getSocket().isConnected()) {
                 session.getSocket().close();
             }
