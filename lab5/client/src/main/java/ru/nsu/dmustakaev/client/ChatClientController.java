@@ -12,9 +12,20 @@ import org.controlsfx.dialog.LoginDialog;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-import static ru.nsu.dmustakaev.client.Requests.*;
+import org.w3c.dom.*;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import static ru.nsu.dmustakaev.client.RequestsTags.*;
 
 public class ChatClientController {
     @FXML
@@ -31,6 +42,9 @@ public class ChatClientController {
     private Socket socket;
     private DataOutputStream writer;
     private DataInputStream reader;
+
+    private boolean isLogged = false;
+    private RequestCommand lastCommand;
 
     private final ObservableList<String> messages = FXCollections.observableArrayList();
     private final ObservableList<String> users = FXCollections.observableArrayList();
@@ -53,6 +67,7 @@ public class ChatClientController {
 
     @FXML
     public void onClickSendMessage() {
+        checkLoging();
         String message = inputArea.getText().trim();
         if (!message.isEmpty()) {
             sendCommand(COMMAND_REQUEST.formatted("message", MESSAGE_REQUEST.formatted(message)));
@@ -76,6 +91,7 @@ public class ChatClientController {
             new Thread(this::listenForMessages).start();
             loginButton.setVisible(false);
             logoutButton.setVisible(true);
+            lastCommand = RequestCommand.LOGIN;
             return null;
         });
         loginDialog.showAndWait();
@@ -83,6 +99,9 @@ public class ChatClientController {
 
     @FXML
     public void onClickFindUsers() {
+        checkLoging();
+        sendCommand(COMMAND_REQUEST.formatted("list", ""));
+        lastCommand = RequestCommand.LIST;
     }
 
     @FXML
@@ -122,6 +141,38 @@ public class ChatClientController {
         }
     }
 
+    private void checkLoging() {
+        if(!isLogged) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("You are not logged in!");
+            alert.show();
+        }
+    }
+
+    private List<String> getUsernamesFromXML(String xmlString) {
+        List<String> usernames;
+        try {
+            Document document = DocumentBuilderFactory.newInstance()
+                    .newDocumentBuilder()
+                    .parse(new InputSource(new StringReader(xmlString)));
+            document.getDocumentElement().normalize();
+            NodeList nodeList = document.getElementsByTagName("user");
+            usernames = IntStream.range(0, nodeList.getLength())
+                    .mapToObj(nodeList::item)
+                    .filter(node -> node.getNodeType() == Node.ELEMENT_NODE)
+                    .map(node -> (Element) node)
+                    .map(element -> {
+                        Node nameNode = element.getElementsByTagName("name").item(0);
+                        return nameNode != null ? nameNode.getTextContent() : null;
+                    })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+            return usernames;
+        } catch (SAXException | ParserConfigurationException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void processServerMessage(String message) {
         if (message.contains("<event name=\"message\">")) {
             String from = extractXmlValue(message, "from");
@@ -133,6 +184,11 @@ public class ChatClientController {
         } else if (message.contains("<event name=\"userlogout\">")) {
             String name = extractXmlValue(message, "name");
             Platform.runLater(() -> users.remove(name));
+        } else if (message.contains("<success>")) {
+            if (lastCommand == RequestCommand.LOGIN) {
+                isLogged = true;
+            }
+            Platform.runLater(() -> users.addAll(getUsernamesFromXML(message)));
         }
     }
 

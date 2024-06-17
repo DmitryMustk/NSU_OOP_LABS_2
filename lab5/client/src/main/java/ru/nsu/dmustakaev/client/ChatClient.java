@@ -20,9 +20,8 @@ public class ChatClient extends Application {
 
     //TODO: norm exit
     //TODO: logout
-    //TODO: get_list
     //TODO: connection window
-    //TODO: [BUG_FIX] login after send
+    //TODO: fix protocol issues
     //TODO: [BUG_FIX] user list button sejaet
     public static void main(String[] args) {
         launch(args);

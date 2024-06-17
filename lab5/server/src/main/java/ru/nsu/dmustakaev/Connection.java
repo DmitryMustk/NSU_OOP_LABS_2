@@ -51,6 +51,7 @@ public class Connection extends Thread {
                 logger.info("Command=%s.".formatted(command));
                 switch (command.getCommandName()) {
                     case "message" -> chat.sendMessage(sessionID, command.getMessage());
+                    case "list" -> chat.sendRegisteredUsers(sessionID);
                     case "logout" -> chat.logout(sessionID);
                     default -> logger.warning("Unknown command=%s".formatted(command));
                 }

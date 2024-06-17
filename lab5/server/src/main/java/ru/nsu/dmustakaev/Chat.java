@@ -44,8 +44,8 @@ public class Chat {
     }
 
     public void sendResponseToOnlineUsers(String response) {
-        for(Session session : sessions.values()) {
-            if(session.getSocket().isConnected()) {
+        for (Session session : sessions.values()) {
+            if (session.getSocket().isConnected()) {
                 sendResponse(session.getSocket(), response);
             }
         }
@@ -67,11 +67,13 @@ public class Chat {
         lock.lock();
         UUID uuid = UUID.randomUUID();
         sessions.put(uuid, session);
-        String response = EVENT_RESPONSE.formatted("userlogin", NAME_RESPONSE.formatted(session.getUsername()));
-        sendResponseToOnlineUsers(response);
+        String responseToAll = EVENT_RESPONSE.formatted("userlogin", NAME_RESPONSE.formatted(session.getUsername()));
+        String responseToOne = SUCCESS_RESPONSE.formatted("");
+
+        sendResponseToOnlineUsers(responseToAll);
+        sendResponse(session.getSocket(), responseToOne);
 
         lock.unlock();
-
         return uuid;
     }
 
@@ -105,7 +107,7 @@ public class Chat {
             Session session = sessions.get(sessionID);
             String response = EVENT_RESPONSE.formatted("userlogout", NAME_RESPONSE.formatted(session.getUsername()));
             sendResponseToOnlineUsers(response);
-            if(session.getSocket().isConnected()) {
+            if (session.getSocket().isConnected()) {
                 session.getSocket().close();
             }
             sessions.remove(sessionID);
@@ -132,5 +134,18 @@ public class Chat {
         sendResponseToOnlineUsers(response);
         sessions.get(sessionID).extend();
         lock.unlock();
+    }
+
+    public void sendRegisteredUsers(UUID sessionID) {
+        if (!sessions.containsKey(sessionID) || !sessions.get(sessionID).getSocket().isConnected()) {
+            return;
+        }
+        String response = SUCCESS_RESPONSE.formatted(String.join("",
+                users.values().stream()
+                        .map(user -> USER_RESPONSE.formatted(NAME_RESPONSE.formatted(user.getUsername())))
+                        .toList()));
+        Session session = sessions.get(sessionID);
+        sendResponse(session.getSocket(), response);
+        session.extend();
     }
 }
