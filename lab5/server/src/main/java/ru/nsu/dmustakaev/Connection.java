@@ -38,20 +38,20 @@ public class Connection extends Thread {
 
     @Override
     public void run() {
-//        logger.info("Connection started. " + socket.isClosed());
         while (!socket.isClosed()) {
-//                if (session.isTimeout(chat.getTimeoutInMinutes())) {
-//                    chat.logout(sessionID);
-//                    return;
-//                }
-            logger.info("Waiting for command..." + socket.toString());
+            if (session.isTimeout(chat.getTimeoutInMinutes())) {
+                chat.logout(sessionID);
+                return;
+            }
             try {
                 Command command = readCommand(in);
                 if (command == null) {
                     continue;
                 }
+                logger.info("Command=%s.".formatted(command));
                 switch (command.getCommandName()) {
-//                    case "logout" -> chat.logout(sessionID);
+                    case "message" -> chat.sendMessage(sessionID, command.getMessage());
+                    case "logout" -> chat.logout(sessionID);
                     default -> logger.warning("Unknown command=%s".formatted(command));
                 }
             } catch (IOException e) {

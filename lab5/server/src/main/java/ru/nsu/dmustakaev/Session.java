@@ -26,6 +26,10 @@ public class Session {
         return lastActionTime.plusMinutes(timeoutInMinutes).isBefore(ZonedDateTime.now());
     }
 
+    public void extend() {
+        lastActionTime = ZonedDateTime.now();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -52,7 +52,7 @@ public class Chat {
     }
 
     public void sendResponse(Socket socket, String response) {
-        try { // окончательное место ебания сокета
+        try {
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
             byte[] messageBytes = response.getBytes();
             out.writeInt(messageBytes.length);
@@ -63,12 +63,12 @@ public class Chat {
         }
     }
 
-    private UUID login(Session session) { //СОКЕТЫ ЕБУТ ЗДЕСЬ
+    private UUID login(Session session) {
         lock.lock();
         UUID uuid = UUID.randomUUID();
         sessions.put(uuid, session);
         String response = EVENT_RESPONSE.formatted("userlogin", NAME_RESPONSE.formatted(session.getUsername()));
-        sendResponseToOnlineUsers(response); //МЕСТО ДЛЯ ЕБАНИЯ СОКЕТОВ СТОПУД
+        sendResponseToOnlineUsers(response);
 
         lock.unlock();
 
@@ -85,11 +85,11 @@ public class Chat {
         if (!users.get(user.getUsername()).getPassword().equals(user.getPassword())) {
             String response = ERROR_RESPONSE.formatted("Invalid username or password");
             sendResponse(socket, response);
-//            try {
-//                socket.close();
-//            } catch (Exception e) {
-//                logger.warning("Failed to close socket. " + e.getMessage());
-//            }
+            try {
+                socket.close();
+            } catch (Exception e) {
+                logger.warning("Failed to close socket. " + e.getMessage());
+            }
             throw new RuntimeException("Invalid username or password");
         }
 
@@ -112,6 +112,25 @@ public class Chat {
         } catch (IOException e) {
             logger.warning("Failed to close session: " + e.getMessage());
         }
+        lock.unlock();
+    }
+
+    public void sendMessage(UUID sessionID, String message) {
+        if (!sessions.containsKey(sessionID) || !sessions.get(sessionID).getSocket().isConnected()) {
+            return;
+        }
+        String fromName = sessions.get(sessionID).getUsername();
+        lock.lock();
+        if (messages.size() >= messageCapacity) {
+            messages.removeFirst();
+        }
+        messages.addLast(message);
+        String response = EVENT_RESPONSE.formatted(
+                "message",
+                FROM_RESPONSE.formatted(fromName) + MESSAGE_RESPONSE.formatted(message)
+        );
+        sendResponseToOnlineUsers(response);
+        sessions.get(sessionID).extend();
         lock.unlock();
     }
 }
