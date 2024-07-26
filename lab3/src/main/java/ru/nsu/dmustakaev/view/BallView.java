@@ -14,8 +14,8 @@ public class BallView implements GameObjectView {
     private final Image texture;
     private final Image mirrorTexture;
 
-    private static final String TEXTURE_PATH = "/soccer_ball_texture.png";
-    private static final String MIRROR_TEXTURE_PATH = "/soccer_ball_texture_mirrored.png";
+    private static final String TEXTURE_PATH = "/game/pictures/model_textures/ball/soccer_ball_texture.png";
+    private static final String MIRROR_TEXTURE_PATH = "/game/pictures/model_textures/ball/soccer_ball_texture_mirrored.png";
 
     public BallView(BallModel model) {
         this.model = model;

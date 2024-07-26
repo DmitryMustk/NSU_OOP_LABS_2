@@ -10,12 +10,12 @@
     <children>
         <ImageView fx:id="backround_game" fitHeight="600.0" fitWidth="1024.0" layoutX="0.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <image>
-                <Image url="@background_game.png" />
+                <Image url="@pictures/background_game.png" />
             </image>
         </ImageView>
         <ImageView fx:id="field" fitHeight="200.0" fitWidth="1024.0" layoutY = "400.0">
             <image>
-                <Image url="field_texture.png" />
+                <Image url="@pictures/field_texture.png" />
             </image>
         </ImageView>
         <Label fx:id="scoreLabel" layoutX="20.0" layoutY="20.0" text="0:0" />

@@ -13,8 +13,8 @@ public class GoalView implements GameObjectView {
     private final ImageView goalView;
     private final Direction direction;
 
-    private static final String LEFT_TEXTURE_PATH = "/left_goal_texture.png";
-    private static final String RIGHT_TEXTURE_PATH = "/right_goal_texture.png";
+    private static final String LEFT_TEXTURE_PATH = "/game/pictures/model_textures/goal/left_goal_texture.png";
+    private static final String RIGHT_TEXTURE_PATH = "/game/pictures/model_textures/goal/right_goal_texture.png";
 
     public GoalView(GoalModel model, Direction direction) {
         this.model = model;

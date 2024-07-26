@@ -4,9 +4,9 @@ import ru.nsu.dmustakaev.utils.Bounds;
 import ru.nsu.dmustakaev.utils.Vector2D;
 
 public class GoalModel {
-    private Vector2D cords;
-    private int height;
-    private int width;
+    private final Vector2D cords;
+    private final int height;
+    private final int width;
 
     public GoalModel(double x, double y, int height, int width) {
         this.cords = new Vector2D(x, y);

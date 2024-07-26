@@ -8,17 +8,17 @@
     <children>
         <ImageView  onMouseClicked="#showMainMenu" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <image>
-                <Image url="@/background_menu.png" />
+                <Image url="@/menu/pictures/background_menu.png" />
             </image>
         </ImageView>
         <ImageView fx:id="startgame" fitHeight="109.0" fitWidth="241.0" layoutX="44.0" layoutY="300.0" onMouseClicked="#startGame" pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@startgame_button.png" />
+                <Image url="@pictures/startgame_button.png" />
             </image>
         </ImageView>
         <ImageView fx:id="exitGame" fitHeight="109.0" fitWidth="241.0" layoutX="44.0" layoutY="400.0" onMouseClicked="#exitGame" pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@exit_button.png" />
+                <Image url="@pictures/exit_button.png" />
             </image>
         </ImageView>
 <!--        <ImageView fx:id="selectLevel" fitHeight="109.0" fitWidth="241.0" layoutX="520.0" layoutY="460.0" onMouseClicked="#showLevelMenu" pickOnBounds="true" preserveRatio="true">-->

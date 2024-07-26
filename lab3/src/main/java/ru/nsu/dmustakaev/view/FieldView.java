@@ -10,7 +10,7 @@ public class FieldView implements GameObjectView {
     private final Pane pane;
     private final ImageView field;
 
-    private static final String TEXTURE_PATH = "/field_texture.png";
+    private static final String TEXTURE_PATH = "/game/pictures/field_texture.png";
 
     public FieldView() {
         field = new ImageView(new Image(TEXTURE_PATH));

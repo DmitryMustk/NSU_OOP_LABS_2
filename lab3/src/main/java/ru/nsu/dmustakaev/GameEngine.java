@@ -30,7 +30,7 @@ public class GameEngine {
 
     private static final int FPS = 240;
 
-    private SoundEngine soundEngine;
+    private final SoundEngine soundEngine;
 
 //    private final List<UpdatableModel> updatableModelList;
 //    private final List<GameObjectView> gameObjectViewList;
@@ -104,13 +104,13 @@ public class GameEngine {
         }
 
         if (leftGoalBounds.intersects(ballBounds)) {
-            soundEngine.playSound("/fail.mp3");
+            soundEngine.playSound("/game/sounds/score/fail.mp3");
             enemyScore++;
             resetAfterScore();
         }
 
         if (rightGoalBounds.intersects(ballBounds)) {
-            soundEngine.playSound("/sii.mp3");
+            soundEngine.playSound("/game/sounds/score/sii.mp3");
             playerScore++;
             resetAfterScore();
         }

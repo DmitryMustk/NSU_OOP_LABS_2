@@ -8,7 +8,7 @@ import ru.nsu.dmustakaev.Main;
 
 public class BackgroundView implements GameObjectView {
     private final Pane pane;
-    private static final String TEXTURE_PATH = "/background_game.png";
+    private static final String TEXTURE_PATH = "/game/pictures/background_game.png";
 
     public BackgroundView() {
         var texture = new Image(TEXTURE_PATH);

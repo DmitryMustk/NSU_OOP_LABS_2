@@ -1,14 +1,18 @@
-module ru.nsu.dmustakaev.lab3 {
+module ru.nsu.dmustakaev {
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.web;
+
+    requires org.controlsfx.controls;
+    requires com.dlsc.formsfx;
+    requires net.synedra.validatorfx;
+    requires org.kordamp.ikonli.javafx;
+    requires org.kordamp.bootstrapfx.core;
+    requires eu.hansolo.tilesfx;
+    requires com.almasb.fxgl.all;
     requires javafx.media;
 
     opens ru.nsu.dmustakaev to javafx.fxml;
     opens ru.nsu.dmustakaev.controller to javafx.fxml;
     exports ru.nsu.dmustakaev;
-    exports ru.nsu.dmustakaev.controller;
-    exports ru.nsu.dmustakaev.game_object_factory;
-    opens ru.nsu.dmustakaev.game_object_factory to javafx.fxml;
-    exports ru.nsu.dmustakaev.utils;
-    opens ru.nsu.dmustakaev.utils to javafx.fxml;
 }

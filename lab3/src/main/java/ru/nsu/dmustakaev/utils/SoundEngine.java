@@ -4,6 +4,8 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
+import java.util.Objects;
+
 public class SoundEngine {
     private MediaPlayer mediaPlayer;
 
@@ -11,12 +13,12 @@ public class SoundEngine {
        if(mediaPlayer != null) {
            mediaPlayer.stop();
        }
-        Media sound = new Media(getClass().getResource(soundName).toString());
+        Media sound = new Media(Objects.requireNonNull(getClass().getResource(soundName)).toString());
         mediaPlayer = new MediaPlayer(sound);
     }
 
     public void playSound(String soundName) {
-        Media sound = new Media(getClass().getResource(soundName).toString());
+        Media sound = new Media(Objects.requireNonNull(getClass().getResource(soundName)).toString());
         MediaPlayer soundPlayer = new MediaPlayer(sound);
         soundPlayer.play();
     }

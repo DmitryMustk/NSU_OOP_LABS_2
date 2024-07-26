@@ -58,7 +58,7 @@ public class GamePlayController {
         var scoreView = new ScoreView();
 
         soundEngine.stopMusic();
-        soundEngine.setMusic("/in_game_stadium_noises.wav");
+        soundEngine.setMusic("/game/sounds/in_game_stadium_noises.wav");
         soundEngine.playMusic();
 
         gameEngine = new GameEngine(ballView, ballModel, playerView, playerModel, rightGoalView, enemyModel, enemyView, leftGoalView, scoreView);

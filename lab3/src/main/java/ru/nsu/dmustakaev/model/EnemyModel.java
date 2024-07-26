@@ -5,9 +5,6 @@ import ru.nsu.dmustakaev.utils.Bounds;
 import ru.nsu.dmustakaev.utils.Direction;
 import ru.nsu.dmustakaev.utils.Vector2D;
 
-import java.util.Random;
-import java.util.random.RandomGenerator;
-
 public class EnemyModel implements UpdatableModel {
     private final Vector2D cords;
     private final Vector2D speed;

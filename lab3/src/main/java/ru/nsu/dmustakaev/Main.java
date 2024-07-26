@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 public class Main extends Application {
     public static final int SCREEN_WIDTH = 1024;
     public static final int SCREEN_HEIGHT = 600;
@@ -14,9 +16,16 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent mainPage = FXMLLoader.load(getClass().getResource("/GameMenu.fxml"));
+        Parent mainPage = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/menu/GameMenu.fxml")));
         Scene scene = new Scene(mainPage, SCREEN_WIDTH, SCREEN_HEIGHT);
         primaryStage.setTitle("HeadBall");
+
+        primaryStage.setResizable(false);
+        primaryStage.setMinWidth(SCREEN_WIDTH);
+        primaryStage.setMinHeight(SCREEN_HEIGHT);
+        primaryStage.setMaxWidth(SCREEN_WIDTH);
+        primaryStage.setMaxHeight(SCREEN_HEIGHT);
+
         primaryStage.setScene(scene);
         primaryStage.show();
     }

@@ -11,7 +11,7 @@ public class PlayerView implements GameObjectView {
     private final Pane pane;
     private final ImageView playerView;
 
-    private static final String TEXTURE_PATH = "/player_texture.png";
+    private static final String TEXTURE_PATH = "/game/pictures/model_textures/player_texture.png";
 
     public PlayerView(PlayerModel model) {
         this.model = model;

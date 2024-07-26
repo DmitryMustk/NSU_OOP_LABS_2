@@ -11,7 +11,7 @@ public class EnemyView implements GameObjectView {
     private final Pane pane;
     private final ImageView enemyView;
 
-    private static final String TEXTURE_PATH = "/enemy_texture.png";
+    private static final String TEXTURE_PATH = "/game/pictures/model_textures/enemy_texture.png";
 
     public EnemyView(EnemyModel model) {
         this.model = model;

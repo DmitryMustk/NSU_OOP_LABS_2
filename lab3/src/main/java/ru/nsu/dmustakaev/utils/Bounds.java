@@ -43,16 +43,4 @@ public class Bounds {
 
         return intersectsX && intersectsY;
     }
-
-    public double calculateOverlapX(Bounds other) {
-        double overlapLeft = other.minX - (this.minX + this.width);
-        double overlapRight = (other.minX + other.width) - this.minX;
-        return Math.min(overlapLeft, overlapRight);
-    }
-
-    public double calculateOverlapY(Bounds other) {
-        double overlapTop = other.minY - (this.minY + this.height);
-        double overlapBottom = (other.minY + other.height) - this.minY;
-        return Math.min(overlapTop, overlapBottom);
-    }
 }

@@ -9,11 +9,6 @@ public class Vector2D {
         this.y = y;
     }
 
-    public Vector2D(Vector2D other) {
-        this.x = other.x;
-        this.y = other.y;
-    }
-
     public Vector2D() {
         this.x = 0;
         this.y = 0;
@@ -38,11 +33,6 @@ public class Vector2D {
     public void setXY(double x, double y) {
         this.x = x;
         this.y = y;
-    }
-
-    public void copyVector(Vector2D other) {
-        this.x = other.x;
-        this.y = other.y;
     }
 
     public void copyVector(double x, double y) {
