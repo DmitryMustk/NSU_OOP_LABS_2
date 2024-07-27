@@ -1,15 +1,12 @@
 package ru.nsu.dmustakaev.model;
 
 import ru.nsu.dmustakaev.utils.Bounds;
-import ru.nsu.dmustakaev.utils.Direction;
 import ru.nsu.dmustakaev.utils.Vector2D;
 import ru.nsu.dmustakaev.Main;
 
 public class BallModel implements UpdatableModel {
     private final Vector2D cords;
     private final Vector2D speed;
-
-    private static final Vector2D MAX_SPEED = new Vector2D(3, 3);
 
     private static final double RADIUS = 12;
     private static final double GRAVITY = 0.01;
@@ -44,14 +41,14 @@ public class BallModel implements UpdatableModel {
     }
 
     public void kick(Bounds bounds) {
-        if(cords.getX() >= bounds.getMinX() - RADIUS / 2 && cords.getX() <= bounds.getCenterX() ) {
-            cords.setX(bounds.getMinX() - RADIUS);
+        if(cords.getX() >= bounds.minX() - RADIUS / 2 && cords.getX() <= bounds.getCenterX() ) {
+            cords.setX(bounds.minX() - RADIUS);
             speed.setX(-(speed.getX() + 3) * BOUNCE_FACTOR);
             speed.setY(-(speed.getY() + 2) * BOUNCE_FACTOR);
         }
 
-        if (cords.getX() <= bounds.getMinX() + bounds.getWidth() + RADIUS / 2 && cords.getX() >= bounds.getCenterX() - RADIUS ) {
-            cords.setX(bounds.getMinX() + bounds.getWidth() + RADIUS);
+        if (cords.getX() <= bounds.minX() + bounds.width() + RADIUS / 2 && cords.getX() >= bounds.getCenterX() - RADIUS ) {
+            cords.setX(bounds.minX() + bounds.width() + RADIUS);
             speed.setX(-(speed.getX() - 3) * BOUNCE_FACTOR);
             speed.setY(-(speed.getY() + 2) * BOUNCE_FACTOR);
         }

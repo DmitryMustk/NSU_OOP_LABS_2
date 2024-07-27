@@ -6,7 +6,7 @@ import javafx.scene.layout.Pane;
 import ru.nsu.dmustakaev.model.EnemyModel;
 import ru.nsu.dmustakaev.utils.Bounds;
 
-public class EnemyView implements GameObjectView {
+public class EnemyView implements GameObjectView, DynamicGameObjectView {
     private final EnemyModel model;
     private final Pane pane;
     private final ImageView enemyView;
@@ -38,8 +38,6 @@ public class EnemyView implements GameObjectView {
     }
 
     public Bounds getBounds() {
-//        return playerView.localToScene(playerView.getBoundsInLocal());
-//        return new Bounds(1, 2, 3, 4, 5, 7);
         return model.getBounds();
     }
 }

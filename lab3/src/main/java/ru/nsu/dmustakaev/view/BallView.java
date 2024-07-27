@@ -6,10 +6,10 @@ import javafx.scene.layout.Pane;
 import ru.nsu.dmustakaev.model.BallModel;
 import ru.nsu.dmustakaev.utils.Bounds;
 
-public class BallView implements GameObjectView {
+public class BallView implements GameObjectView, DynamicGameObjectView {
     private final BallModel model;
     private final Pane pane;
-    private final ImageView ballView;
+    private final ImageView ballImageView;
 
     private final Image texture;
     private final Image mirrorTexture;
@@ -23,15 +23,15 @@ public class BallView implements GameObjectView {
         texture = new Image(TEXTURE_PATH);
         mirrorTexture = new Image(MIRROR_TEXTURE_PATH);
 
-        ballView = new ImageView(texture);
+        ballImageView = new ImageView(texture);
 
-        ballView.setFitWidth(model.getRadius() * 2);
-        ballView.setFitHeight(model.getRadius() * 2);
-        ballView.setTranslateX(model.getX() - model.getRadius());
-        ballView.setTranslateY(model.getY() - model.getRadius());
+        ballImageView.setFitWidth(model.getRadius() * 2);
+        ballImageView.setFitHeight(model.getRadius() * 2);
+        ballImageView.setTranslateX(model.getX() - model.getRadius());
+        ballImageView.setTranslateY(model.getY() - model.getRadius());
 
         pane = new Pane();
-        pane.getChildren().add(ballView);
+        pane.getChildren().add(ballImageView);
     }
 
     @Override
@@ -40,24 +40,23 @@ public class BallView implements GameObjectView {
     }
 
     public void animate() {
-        if (ballView.getImage() == texture) {
-            ballView.setImage(mirrorTexture);
+        if (ballImageView.getImage() == texture) {
+            ballImageView.setImage(mirrorTexture);
             return;
         }
-        ballView.setImage(texture);
+        ballImageView.setImage(texture);
     }
 
     public void update() {
         model.update();
-        ballView.setTranslateX(model.getX() - model.getRadius());
-        ballView.setTranslateY(model.getY() - model.getRadius());
+        ballImageView.setTranslateX(model.getX() - model.getRadius());
+        ballImageView.setTranslateY(model.getY() - model.getRadius());
         if (model.isMove()) {
             animate();
         }
     }
 
     public Bounds getBounds() {
-//        return ballView.localToScene(ballView.getBoundsInLocal());
         return model.getBounds();
     }
 }

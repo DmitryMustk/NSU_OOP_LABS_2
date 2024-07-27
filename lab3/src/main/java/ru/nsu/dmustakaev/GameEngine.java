@@ -4,68 +4,88 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
-import ru.nsu.dmustakaev.model.BallModel;
-import ru.nsu.dmustakaev.model.EnemyModel;
+import ru.nsu.dmustakaev.model.*;
+import ru.nsu.dmustakaev.utils.Bounds;
 import ru.nsu.dmustakaev.utils.Direction;
-import ru.nsu.dmustakaev.model.PlayerModel;
 import ru.nsu.dmustakaev.utils.SoundEngine;
 import ru.nsu.dmustakaev.view.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static ru.nsu.dmustakaev.Main.SCREEN_HEIGHT;
+import static ru.nsu.dmustakaev.Main.SCREEN_WIDTH;
+
 public class GameEngine {
-    private final BallView ballView;
-    private final BallModel ballModel;
-
-    private final PlayerView playerView;
-    private final PlayerModel playerModel;
-
-    private final EnemyView enemyView;
-    private final EnemyModel enemyModel;
-
-    private final GoalView leftGoalView;
-    private final GoalView rightGoalView;
-    private final ScoreView scoreView;
-
-    private int playerScore;
-    private int enemyScore;
-
     private static final int FPS = 240;
+
+    private BallModel ballModel;
+    private PlayerModel playerModel;
+    private EnemyModel enemyModel;
+    private GoalModel leftGoalModel;
+    private GoalModel rightGoalModel;
+    private ScoreModel scoreModel;
+
+    private List<GameObjectView> staticGameObjectViews;
+    private List<DynamicGameObjectView> dynamicGameObjectViews;
+
 
     private final SoundEngine soundEngine;
 
-//    private final List<UpdatableModel> updatableModelList;
-//    private final List<GameObjectView> gameObjectViewList;
+    private void createGameObjects() {
+        leftGoalModel = new GoalModel(Direction.LEFT,0,  240, 160, 20);
+        rightGoalModel = new GoalModel(Direction.RIGHT,SCREEN_WIDTH - 20, SCREEN_HEIGHT - 200 - 200 + 40, 160, 20);
 
-    private Timeline timeline = new Timeline();
+        ballModel = new BallModel();
 
-    public GameEngine(BallView ballView, BallModel ballModel, PlayerView playerView, PlayerModel playerModel, GoalView rightGoalView, EnemyModel enemyModel, EnemyView enemyView, GoalView leftGoalView, ScoreView scoreView) {
-        this.ballView = ballView;
-        this.ballModel = ballModel;
-        this.playerView = playerView;
-        this.playerModel = playerModel;
-        this.enemyView = enemyView;
-        this.enemyModel = enemyModel;
+        playerModel = new PlayerModel();
+        enemyModel = new EnemyModel(ballModel, leftGoalModel, rightGoalModel);
+        scoreModel = new ScoreModel();
+    }
 
-        this.leftGoalView = leftGoalView;
-        this.rightGoalView = rightGoalView;
+    private void createGameObjectViews() {
+        staticGameObjectViews = new ArrayList<>();
+        staticGameObjectViews.addAll(Arrays.asList(
+                new BackgroundView(),
+                new FieldView(),
+                new GoalView(leftGoalModel),
+                new GoalView(rightGoalModel)
+        ));
 
-        this.scoreView = scoreView;
+        dynamicGameObjectViews = new ArrayList<>();
+        dynamicGameObjectViews.addAll(Arrays.asList(
+                new BallView(ballModel),
+                new PlayerView(playerModel),
+                new EnemyView(enemyModel),
+                new ScoreView(scoreModel)
+        ));
+    }
+
+
+    public GameEngine() {
+        createGameObjects();
+        createGameObjectViews();
 
         soundEngine = new SoundEngine();
 
         KeyFrame frame = new KeyFrame(Duration.seconds(1.0 / FPS), actionEvent -> {
-            playerView.update();
-            enemyView.update();
-            ballView.update();
+            dynamicGameObjectViews.forEach(DynamicGameObjectView::update);
             checkCollision();
         });
 
+        Timeline timeline = new Timeline();
         timeline.getKeyFrames().add(frame);
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
 
-    public SoundEngine getSoundEngine() {
-        return soundEngine;
+    public List<GameObjectView> getGameObjectViews() {
+        return Stream.concat(
+                staticGameObjectViews.stream(),
+                dynamicGameObjectViews.stream()
+        ).toList();
     }
 
     public void movePlayer(KeyCode keyCode) {
@@ -83,18 +103,17 @@ public class GameEngine {
     }
 
     private void resetAfterScore() {
-        scoreView.reset(playerScore, enemyScore);
         ballModel.reset();
         playerModel.reset();
         enemyModel.reset();
     }
 
     private void checkCollision() {
-        var ballBounds = ballView.getBounds();
-        var playerBounds = playerView.getBounds();
-        var enemyBounds = enemyView.getBounds();
-        var leftGoalBounds = leftGoalView.getBounds();
-        var rightGoalBounds = rightGoalView.getBounds();
+        Bounds ballBounds = ballModel.getBounds();
+        Bounds playerBounds = playerModel.getBounds();
+        Bounds enemyBounds = enemyModel.getBounds();
+        Bounds leftGoalBounds = leftGoalModel.getBounds();
+        Bounds rightGoalBounds = rightGoalModel.getBounds();
 
         if (ballBounds.intersects(playerBounds)) {
             ballModel.kick(playerBounds);
@@ -105,13 +124,13 @@ public class GameEngine {
 
         if (leftGoalBounds.intersects(ballBounds)) {
             soundEngine.playSound("/game/sounds/score/fail.mp3");
-            enemyScore++;
+            scoreModel.incrementEnemyScore();
             resetAfterScore();
         }
 
         if (rightGoalBounds.intersects(ballBounds)) {
             soundEngine.playSound("/game/sounds/score/sii.mp3");
-            playerScore++;
+            scoreModel.incrementPlayerScore();
             resetAfterScore();
         }
 

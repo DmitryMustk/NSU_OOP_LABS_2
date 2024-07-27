@@ -11,8 +11,8 @@ public class BackgroundView implements GameObjectView {
     private static final String TEXTURE_PATH = "/game/pictures/background_game.png";
 
     public BackgroundView() {
-        var texture = new Image(TEXTURE_PATH);
-        var background = new ImageView(texture);
+        Image texture = new Image(TEXTURE_PATH);
+        ImageView background = new ImageView(texture);
         background.setFitWidth(Main.SCREEN_WIDTH);
         background.setFitHeight(Main.SCREEN_HEIGHT);
 

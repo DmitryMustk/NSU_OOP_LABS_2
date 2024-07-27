@@ -8,12 +8,11 @@ import ru.nsu.dmustakaev.Main;
 
 public class FieldView implements GameObjectView {
     private final Pane pane;
-    private final ImageView field;
 
     private static final String TEXTURE_PATH = "/game/pictures/field_texture.png";
 
     public FieldView() {
-        field = new ImageView(new Image(TEXTURE_PATH));
+        ImageView field = new ImageView(new Image(TEXTURE_PATH));
         field.setFitWidth(Main.SCREEN_WIDTH);
         field.setFitHeight(Main.SCREEN_HEIGHT);
         field.setTranslateX(0);

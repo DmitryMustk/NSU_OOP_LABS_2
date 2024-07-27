@@ -6,7 +6,7 @@ import javafx.scene.layout.Pane;
 import ru.nsu.dmustakaev.model.PlayerModel;
 import ru.nsu.dmustakaev.utils.Bounds;
 
-public class PlayerView implements GameObjectView {
+public class PlayerView implements GameObjectView, DynamicGameObjectView {
     private final PlayerModel model;
     private final Pane pane;
     private final ImageView playerView;
@@ -38,8 +38,6 @@ public class PlayerView implements GameObjectView {
     }
 
     public Bounds getBounds() {
-//        return playerView.localToScene(playerView.getBoundsInLocal());
-//        return new Bounds(1, 2, 3, 4, 5, 7);
         return model.getBounds();
     }
 }
