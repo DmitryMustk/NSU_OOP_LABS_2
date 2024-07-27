@@ -33,12 +33,15 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    //TODO: change the field texture
-    //TODO: remove code repeating in view classes
+
+    //TODO: fix code repeating in model classes (hz kak eto sdelat no v golovu prishla
+    // idea ebanut record s konstantami)
     //TODO: remove all the magic numbers
-    //TODO: add enemy
-    //TODO: add enemy ai
     //TODO: add pvp mode
+    //TODO: add cvc mode
+    //TODO: add pause
+    //TODO: add setting with difficulty changer
+    //TODO: maybe powerups???
 }
 
 

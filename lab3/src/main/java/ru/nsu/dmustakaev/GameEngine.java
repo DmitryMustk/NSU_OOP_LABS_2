@@ -2,7 +2,6 @@ package ru.nsu.dmustakaev;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
 import ru.nsu.dmustakaev.model.*;
 import ru.nsu.dmustakaev.utils.Bounds;
@@ -31,12 +30,11 @@ public class GameEngine {
     private List<GameObjectView> staticGameObjectViews;
     private List<DynamicGameObjectView> dynamicGameObjectViews;
 
-
     private final SoundEngine soundEngine;
 
     private void createGameObjects() {
         leftGoalModel = new GoalModel(Direction.LEFT,0,  240, 160, 20);
-        rightGoalModel = new GoalModel(Direction.RIGHT,SCREEN_WIDTH - 20, SCREEN_HEIGHT - 200 - 200 + 40, 160, 20);
+        rightGoalModel = new GoalModel(Direction.RIGHT,SCREEN_WIDTH - 20, SCREEN_HEIGHT - 360, 160, 20);
 
         ballModel = new BallModel();
 
@@ -88,24 +86,8 @@ public class GameEngine {
         ).toList();
     }
 
-    public void movePlayer(KeyCode keyCode) {
-        Direction direction = keyCode == KeyCode.A ? Direction.LEFT : Direction.RIGHT;
-        playerModel.move(direction);
-    }
-
-    public void stopPlayer(KeyCode keyCode) {
-        Direction direction = keyCode == KeyCode.A ? Direction.LEFT : Direction.RIGHT;
-        playerModel.stop(direction);
-    }
-
-    public void jump() {
-        playerModel.jump();
-    }
-
-    private void resetAfterScore() {
-        ballModel.reset();
-        playerModel.reset();
-        enemyModel.reset();
+    public PlayerModel getPlayerModel() {
+        return playerModel;
     }
 
     private void checkCollision() {
@@ -141,4 +123,11 @@ public class GameEngine {
             enemyModel.pushBack(enemyPushDirection);
         }
     }
+
+    private void resetAfterScore() {
+        ballModel.reset();
+        playerModel.reset();
+        enemyModel.reset();
+    }
+
 }

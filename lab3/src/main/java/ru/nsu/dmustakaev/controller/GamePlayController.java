@@ -4,9 +4,10 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import ru.nsu.dmustakaev.GameEngine;
+import ru.nsu.dmustakaev.model.PlayerModel;
+import ru.nsu.dmustakaev.utils.Direction;
 import ru.nsu.dmustakaev.utils.SoundEngine;
 import ru.nsu.dmustakaev.view.*;
 
@@ -47,19 +48,21 @@ public class GamePlayController {
 
     public void setScene(Scene scene) {
         scene.setOnKeyPressed(event -> {
-            KeyCode code = event.getCode();
-            if (code == KeyCode.A || code == KeyCode.D) {
-                gameEngine.movePlayer(code);
+            PlayerModel playerModel = gameEngine.getPlayerModel();
+            Direction direction = Direction.getDirectionFromKeyCode(event.getCode());
+            if (direction == Direction.LEFT || direction == Direction.RIGHT) {
+                playerModel.move(direction);
             }
-            if (code == KeyCode.SPACE) {
-                gameEngine.jump();
+            if (direction == Direction.UP) {
+                playerModel.jump();
             }
         });
 
         scene.setOnKeyReleased(event -> {
-            KeyCode code = event.getCode();
-            if (code == KeyCode.A || code == KeyCode.D) {
-                gameEngine.stopPlayer(code);
+            PlayerModel playerModel = gameEngine.getPlayerModel();
+            Direction direction = Direction.getDirectionFromKeyCode(event.getCode());
+            if (direction == Direction.LEFT || direction == Direction.RIGHT) {
+                playerModel.stop(direction);
             }
         });
 
