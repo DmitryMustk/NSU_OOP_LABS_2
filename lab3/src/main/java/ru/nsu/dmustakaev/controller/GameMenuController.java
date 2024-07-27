@@ -2,14 +2,18 @@ package ru.nsu.dmustakaev.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import ru.nsu.dmustakaev.utils.SoundEngine;
 
+import java.io.IOException;
 
 public class GameMenuController {
     @FXML
     public AnchorPane mainRoot;
     private SoundEngine soundEngine;
+    private Stage primaryStage;
 
     @FXML
     public void initialize() {
@@ -18,14 +22,23 @@ public class GameMenuController {
         soundEngine.playMusic();
     }
 
+    public void setPrimaryStage(Stage stage) {
+        this.primaryStage = stage;
+    }
+
     @FXML
-    public void startGame() throws Exception{
+    public void startGame() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/game/GamePlay.fxml"));
-        fxmlLoader.setController(new GamePlayController(soundEngine));
+        AnchorPane gamePlayRoot = fxmlLoader.load();
+
         GamePlayController gamePlayController = fxmlLoader.getController();
-        gamePlayController.setScene(mainRoot.getScene());
-        AnchorPane pane = fxmlLoader.load();
-        mainRoot.getChildren().setAll(pane);
+        gamePlayController.setSoundEngine(soundEngine);
+        Scene gameScene = new Scene(gamePlayRoot);
+        gamePlayController.setScene(gameScene, primaryStage);
+
+        soundEngine.stopMusic();
+        primaryStage.setScene(gameScene);
+        primaryStage.show();
     }
 
     @FXML

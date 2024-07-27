@@ -32,7 +32,7 @@ public class GameEngine {
 
     private final SoundEngine soundEngine;
 
-    private void createGameObjects() {
+    private void createGameObjectsModels() {
         leftGoalModel = new GoalModel(Direction.LEFT,0,  240, 160, 20);
         rightGoalModel = new GoalModel(Direction.RIGHT,SCREEN_WIDTH - 20, SCREEN_HEIGHT - 360, 160, 20);
 
@@ -62,11 +62,13 @@ public class GameEngine {
     }
 
 
-    public GameEngine() {
-        createGameObjects();
+    public GameEngine(SoundEngine soundEngine) {
+        createGameObjectsModels();
         createGameObjectViews();
 
-        soundEngine = new SoundEngine();
+        this.soundEngine = soundEngine;
+
+//        soundEngine = new SoundEngine();
 
         KeyFrame frame = new KeyFrame(Duration.seconds(1.0 / FPS), actionEvent -> {
             dynamicGameObjectViews.forEach(DynamicGameObjectView::update);
