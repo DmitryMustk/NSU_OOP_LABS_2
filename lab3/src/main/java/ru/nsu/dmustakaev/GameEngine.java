@@ -105,15 +105,15 @@ public class GameEngine {
         }
 
         if (leftGoalBounds.intersects(ballBounds)) {
+            resetAfterScore();
             soundEngine.playSound("/game/sounds/score/fail.mp3");
             scoreModel.incrementEnemyScore();
-            resetAfterScore();
         }
 
         if (rightGoalBounds.intersects(ballBounds)) {
+            resetAfterScore();
             soundEngine.playSound("/game/sounds/score/sii.mp3");
             scoreModel.incrementPlayerScore();
-            resetAfterScore();
         }
 
         if (playerBounds.intersects(enemyBounds)) {

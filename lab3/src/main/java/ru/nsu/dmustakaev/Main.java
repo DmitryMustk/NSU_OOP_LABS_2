@@ -34,14 +34,14 @@ public class Main extends Application {
         launch(args);
     }
 
-    //TODO: fix code repeating in model classes (hz kak eto sdelat no v golovu prishla
-    // idea ebanut record s konstantami)
-    //TODO: remove all the magic numbers
+
     //TODO: add pvp mode
     //TODO: add cvc mode
     //TODO: add pause
     //TODO: add setting with difficulty changer
     //TODO: maybe powerups???
+    //TODO: ebeyshaya ideya, sdelat kak v soccer physics random na kajdom sbrose
+    //TODO: timer
 }
 
 

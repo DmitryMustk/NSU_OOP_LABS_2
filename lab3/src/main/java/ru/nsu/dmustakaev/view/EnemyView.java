@@ -4,7 +4,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import ru.nsu.dmustakaev.model.EnemyModel;
-import ru.nsu.dmustakaev.utils.Bounds;
 
 public class EnemyView implements GameObjectView, DynamicGameObjectView {
     private final EnemyModel model;
@@ -17,6 +16,7 @@ public class EnemyView implements GameObjectView, DynamicGameObjectView {
         this.model = model;
 
         enemyView = new ImageView(new Image(TEXTURE_PATH));
+
         enemyView.setFitWidth(model.getRadius() * 2);
         enemyView.setFitHeight(model.getRadius() * 2);
         enemyView.setTranslateX(model.getX() - model.getRadius());
@@ -35,9 +35,5 @@ public class EnemyView implements GameObjectView, DynamicGameObjectView {
         model.update();
         enemyView.setTranslateX(model.getX() - model.getRadius());
         enemyView.setTranslateY(model.getY() - model.getRadius());
-    }
-
-    public Bounds getBounds() {
-        return model.getBounds();
     }
 }

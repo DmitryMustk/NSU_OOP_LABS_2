@@ -6,7 +6,8 @@ import ru.nsu.dmustakaev.utils.Vector2D;
 
 public class GoalModel {
     private final Vector2D cords;
-    private Direction direction;
+    private final Direction direction;
+
     private final int height;
     private final int width;
 
@@ -25,16 +26,17 @@ public class GoalModel {
         return cords.getY();
     }
 
+
+    public Bounds getBounds() {
+        return new Bounds(getX(), getY(), getHeight(), getWidth());
+    }
+
     public int getHeight() {
         return height;
     }
 
     public int getWidth() {
         return width;
-    }
-
-    public Bounds getBounds() {
-        return new Bounds(getX(), getY(), getHeight(), getWidth());
     }
 
     public Direction getDirection() {

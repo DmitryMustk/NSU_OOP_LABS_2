@@ -1,90 +1,41 @@
 package ru.nsu.dmustakaev.model;
 
-import ru.nsu.dmustakaev.Main;
-import ru.nsu.dmustakaev.utils.Bounds;
 import ru.nsu.dmustakaev.utils.Direction;
 import ru.nsu.dmustakaev.utils.Vector2D;
 
-public class EnemyModel implements UpdatableModel {
-    private final Vector2D cords;
-    private final Vector2D speed;
+public class EnemyModel extends PhysicalBody implements UpdatableModel {
+
+    private static final double MOVEMENT_SPEED = 0.1;
+    private static final double JUMP_SPEED = 15;
+    private static final Vector2D MAX_SPEED = new Vector2D(1.2, 5);
+    private static final Vector2D INIT_CORDS = new Vector2D(924, 100);
+    private static final int FLOOR_DELTA = 3;
 
     private boolean isMovingLeft;
     private boolean isMovingRight;
-
-    private static final double RADIUS = 30 ;
-    private static final double GRAVITY = 0.02;
-    private static final double AIR_RESISTANCE = 0.01;
-    private static final double FRICTION = 0.05;
-    private static final double BOUNCE_FACTOR = 0.1;
-    private static final double MOVEMENT_SPEED = 0.1;
-    private static final double JUMP_SPEED = 20;
-    private static final Vector2D MAX_SPEED = new Vector2D(0.8, 5);
-
-    private static final int FLOOR_DELTA = 3;
-    private static final int FLOOR = 400;
-
-    private static final int initX = 924;
-    private static final int initY = 100;
-
     private boolean isEvil;
 
-    private BallModel ballModel;
-    private GoalModel leftGoalModel;
-    private GoalModel rightGoalModel;
-
+    private final BallModel ballModel;
+    private final GoalModel leftGoalModel;
+    private final GoalModel rightGoalModel;
 
     public EnemyModel(BallModel ballModel, GoalModel leftGoalModel, GoalModel rightGoalModel) {
-        cords = new Vector2D(initX, initY);
-        speed = new Vector2D();
-        isEvil = false;
-
+        super(
+                new Vector2D(1.2, 5),
+                30,
+                0.1, new PhysicsSimulationSettings( 0.02, 0.01, 0.05));
+        setCords(INIT_CORDS);
         this.ballModel = ballModel;
         this.leftGoalModel = leftGoalModel;
         this.rightGoalModel = rightGoalModel;
-    }
-
-    public double getRadius() {
-        return RADIUS;
-    }
-
-    public double getX() {
-        return cords.getX();
-    }
-
-    public double getY() {
-        return cords.getY();
-    }
-
-    public double getSpeedX() {
-        return speed.getX();
-    }
-
-    public double getSpeedY() {
-        return speed.getY();
-    }
-
-    public static double getMaxSpeedX() {
-        return MAX_SPEED.getX();
-    }
-    private boolean isOnGround() {
-        return cords.getY() + RADIUS >= FLOOR - FLOOR_DELTA;
+        isEvil = false;
     }
 
     public void jump() {
         if (!isOnGround()) {
             return;
         }
-        speed.addVector(0, JUMP_SPEED);
-    }
-
-    public void stop(Direction direction) {
-        if(direction == Direction.LEFT) {
-            isMovingLeft = false;
-        }
-        else if (direction == Direction.RIGHT) {
-            isMovingRight = false;
-        }
+        getSpeed().addVector(0, JUMP_SPEED);
     }
 
     public void move(Direction direction) {
@@ -92,43 +43,18 @@ public class EnemyModel implements UpdatableModel {
         isMovingLeft = direction == Direction.LEFT;
     }
 
-    private void checkBounds() {
-        if (cords.getY() + RADIUS >= FLOOR || cords.getY() - RADIUS <= 0) {
-            cords.setY(Math.min(Math.max(cords.getY(), RADIUS), FLOOR - RADIUS));
-            speed.setY(-speed.getY() * BOUNCE_FACTOR);
-        }
-
-        if (cords.getX() - RADIUS <= 0 || cords.getX() + RADIUS >= Main.SCREEN_WIDTH) {
-            cords.setX(Math.min(Math.max(cords.getX(), RADIUS), Main.SCREEN_WIDTH - RADIUS));
-            speed.setX(-speed.getX() * BOUNCE_FACTOR);
-        }
-    }
-
-    private void calculateTotalSpeed() {
+    private void calculateMovement() {
         double accelerationX = 0;
-        if(isMovingLeft) {
-            accelerationX = -MOVEMENT_SPEED;
-        } else if (isMovingRight) {
-            accelerationX = MOVEMENT_SPEED;
-        }
-        speed.addVector(accelerationX, 0);
-        speed.setX(Math.min(MAX_SPEED.getX(), Math.max(-MAX_SPEED.getX(), speed.getX())));
+        accelerationX = isMovingLeft ? -MOVEMENT_SPEED : MOVEMENT_SPEED;
+        getSpeed().addVector(accelerationX, 0);
+        getSpeed().setX(Math.min(MAX_SPEED.getX(), Math.max(-MAX_SPEED.getX(), getSpeed().getX())));
 
-        speed.addVector(0, GRAVITY);
-        if (isOnGround()) {
-            speed.setX(speed.getX() * (1 - FRICTION));
-        }
-        speed.setX(speed.getX() * (1 - AIR_RESISTANCE));
-    }
-
-    public Bounds getBounds() {
-        return new Bounds(getX() - RADIUS, getY() - RADIUS, getRadius()* 2, getRadius() * 2);
     }
 
     public void pushBack(Direction direction) {
-        speed.setXY(0, 0);
-        speed.setX(speed.getX() + (direction == Direction.RIGHT ? 0.2: -0.2));
-        speed.setY(speed.getY() - 0.3);
+        getSpeed().setXY(0, 0);
+        getSpeed().setX(getSpeed().getX() + (direction == Direction.RIGHT ? 0.2: -0.2));
+        getSpeed().setY(getSpeed().getY() - 0.3);
     }
 
     public void processAI() {
@@ -140,23 +66,25 @@ public class EnemyModel implements UpdatableModel {
             dir = Direction.RIGHT;
         }
         move(dir);
-        if(Math.random() < 0.05) {
+        if(distanceToBall < 150 && Math.random() < 0.3) {
             jump();
         }
     }
 
     public void reset() {
-        speed.setXY(0, 0);
-        cords.setXY(initX, initY);
+        setSpeed(Vector2D.getZeroVector());
+        setCords(new Vector2D(924, 100));
         isEvil = !isEvil;
     }
 
     @Override
     public void update() {
-        checkBounds();
         calculateTotalSpeed();
-        speed.setY(Math.min(MAX_SPEED.getY(), speed.getY()));
-        cords.addVector(speed);
+        calculateMovement();
+        checkBounds();
+        limitSpeed();
+//        getSpeed().setY(Math.min(MAX_SPEED.getY(), getSpeed().getY()));
+        getCords().addVector(getSpeed());
         processAI();
     }
 }

@@ -14,6 +14,10 @@ public class Vector2D {
         this.y = 0;
     }
 
+    public static Vector2D getZeroVector() {
+        return new Vector2D(0, 0);
+    }
+
     public double getX() {
         return x;
     }
@@ -38,6 +42,11 @@ public class Vector2D {
     public void copyVector(double x, double y) {
         this.x = x;
         this.y = y;
+    }
+
+    public void copyVector(Vector2D vector) {
+        this.x = vector.getX();
+        this.y = vector.getY();
     }
 
     public void addVector(Vector2D vec) {
