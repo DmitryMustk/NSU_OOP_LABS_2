@@ -17,10 +17,6 @@ public class PlayerView implements GameObjectView, DynamicGameObjectView {
         this.model = model;
 
         playerView = new ImageView(new Image(TEXTURE_PATH));
-        playerView.setFitWidth(model.getRadius() * 2);
-        playerView.setFitHeight(model.getRadius() * 2);
-        playerView.setTranslateX(model.getX() - model.getRadius());
-        playerView.setTranslateY(model.getY() - model.getRadius());
 
         pane = new Pane();
         pane.getChildren().add(playerView);
@@ -31,13 +27,13 @@ public class PlayerView implements GameObjectView, DynamicGameObjectView {
         return pane;
     }
 
+    @Override
     public void update() {
         model.update();
         playerView.setTranslateX(model.getX() - model.getRadius());
         playerView.setTranslateY(model.getY() - model.getRadius());
-    }
 
-    public Bounds getBounds() {
-        return model.getBounds();
+        playerView.setFitWidth(model.getRadius() * 2);
+        playerView.setFitHeight(model.getRadius() * 2);
     }
 }

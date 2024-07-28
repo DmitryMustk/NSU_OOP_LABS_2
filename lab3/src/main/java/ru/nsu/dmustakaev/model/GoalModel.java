@@ -35,9 +35,9 @@ public class GoalModel {
     }
 
     public void setY(double y) {
-        if (y < 0 || y > Main.SCREEN_HEIGHT) {
-            throw new IllegalArgumentException("Y out of bounds");
-        }
+//        if (y < 0 || y > Main.SCREEN_HEIGHT) {
+//            throw new IllegalArgumentException("Y out of bounds");
+//        }
         this.cords.setY(y);
     }
 

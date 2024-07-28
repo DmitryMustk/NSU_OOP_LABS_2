@@ -25,11 +25,6 @@ public class BallView implements GameObjectView, DynamicGameObjectView {
 
         ballImageView = new ImageView(texture);
 
-        ballImageView.setFitWidth(model.getRadius() * 2);
-        ballImageView.setFitHeight(model.getRadius() * 2);
-        ballImageView.setTranslateX(model.getX() - model.getRadius());
-        ballImageView.setTranslateY(model.getY() - model.getRadius());
-
         pane = new Pane();
         pane.getChildren().add(ballImageView);
     }
@@ -47,10 +42,16 @@ public class BallView implements GameObjectView, DynamicGameObjectView {
         ballImageView.setImage(texture);
     }
 
+    @Override
     public void update() {
         model.update();
+
         ballImageView.setTranslateX(model.getX() - model.getRadius());
         ballImageView.setTranslateY(model.getY() - model.getRadius());
+
+        ballImageView.setFitWidth(model.getRadius() * 2);
+        ballImageView.setFitHeight(model.getRadius() * 2);
+
         if (model.isMove()) {
             animate();
         }

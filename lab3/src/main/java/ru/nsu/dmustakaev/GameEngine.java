@@ -4,8 +4,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 import ru.nsu.dmustakaev.model.*;
-import ru.nsu.dmustakaev.modes.BigGoalsGameMode;
-import ru.nsu.dmustakaev.modes.GameMode;
+import ru.nsu.dmustakaev.modes.*;
 import ru.nsu.dmustakaev.utils.Bounds;
 import ru.nsu.dmustakaev.utils.Direction;
 import ru.nsu.dmustakaev.utils.SoundEngine;
@@ -14,6 +13,7 @@ import ru.nsu.dmustakaev.view.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Stream;
 
 import static ru.nsu.dmustakaev.Main.SCREEN_HEIGHT;
@@ -37,6 +37,8 @@ public class GameEngine {
     private List<DynamicGameObjectView> dynamicGameObjectViews;
 
     private final SoundEngine soundEngine;
+
+    private final Random random;
 
     private void createGameObjectsModels() {
         leftGoalModel = new GoalModel(Direction.LEFT,0,  240, 160, 20);
@@ -70,7 +72,16 @@ public class GameEngine {
     private void createGameModes() {
         gameModes = new ArrayList<>();
         gameModes.addAll(Arrays.asList(
-                new BigGoalsGameMode(leftGoalModel, rightGoalModel)
+                new BigGoalsGameMode(leftGoalModel, rightGoalModel),
+                new SmallGoalsGameMode(leftGoalModel, rightGoalModel),
+                new BigBallGameMode(ballModel),
+                new BigPlayersGameMode(playerModel, enemyModel),
+                new DefaultGameMode(),
+                new SmallBallGameMode(ballModel),
+                new SmallPlayersGameMode(playerModel, enemyModel),
+                new LightBallGameMode(ballModel),
+                new HeavyBallGameMode(ballModel),
+                new MoonGravityGameMode(ballModel, playerModel, enemyModel)
         ));
     }
 
@@ -80,6 +91,8 @@ public class GameEngine {
         createGameModes();
 
         this.soundEngine = soundEngine;
+        this.random = new Random();
+
         KeyFrame frame = new KeyFrame(Duration.seconds(1.0 / FPS), actionEvent -> {
             if (isOnPause) {
                 return;
@@ -119,22 +132,17 @@ public class GameEngine {
         if (ballBounds.intersects(playerBounds)) {
             ballModel.kick(playerBounds);
         }
+
         if (ballBounds.intersects(enemyBounds)) {
             ballModel.kick(enemyBounds);
         }
 
-        if (leftGoalBounds.intersects(ballBounds)) {
-            resetModels();
-            applyNewMode();
-            soundEngine.playSound("/game/sounds/score/fail.mp3");
-            scoreModel.incrementEnemyScore();
+        if (rightGoalBounds.intersects(ballBounds)) {
+            handleScore(Direction.LEFT);
         }
 
-        if (rightGoalBounds.intersects(ballBounds)) {
-            resetModels();
-            applyNewMode();
-            soundEngine.playSound("/game/sounds/score/sii.mp3");
-            scoreModel.incrementPlayerScore();
+        if (leftGoalBounds.intersects(ballBounds)) {
+            handleScore(Direction.RIGHT);
         }
 
         if (playerBounds.intersects(enemyBounds)) {
@@ -150,8 +158,6 @@ public class GameEngine {
             throw new IllegalArgumentException("Wrong direction");
         }
 
-        resetModels();
-
         if (whoScored == Direction.LEFT) {
             soundEngine.playSound("/game/sounds/score/sii.mp3");
             scoreModel.incrementPlayerScore();
@@ -160,8 +166,8 @@ public class GameEngine {
             scoreModel.incrementEnemyScore();
         }
 
-
-
+        resetModels();
+        applyNewMode();
     }
 
     private void resetModels() {
@@ -174,8 +180,18 @@ public class GameEngine {
         if (currentGameMode != null) {
             currentGameMode.unapply();
         }
-        currentGameMode = gameModes.getFirst();
+//        currentGameMode = gameModes.getFirst();
+        currentGameMode = gameModes.stream()
+                .filter(g -> !g.equals(currentGameMode))
+                .toList()
+                .get((random.nextInt(gameModes.size() - 1)))
+        ;
+
         currentGameMode.apply();
+    }
+
+    public GameMode getCurrentGameMode() {
+        return currentGameMode;
     }
 
 }

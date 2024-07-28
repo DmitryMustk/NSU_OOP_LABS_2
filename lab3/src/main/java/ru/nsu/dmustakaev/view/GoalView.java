@@ -52,6 +52,7 @@ public class GoalView implements GameObjectView, DynamicGameObjectView {
         goalView.setTranslateX(model.getX());
         goalView.setTranslateY(model.getY());
 
-        System.out.println(model.getY());
+//        System.out.println(model.getY());
+//        System.out.println(model.getHeight());
     }
 }

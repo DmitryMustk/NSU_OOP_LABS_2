@@ -10,11 +10,11 @@ public class PhysicalBody {
     private Vector2D speed;
     private final Vector2D maxSpeed;
 
-    private final double radius;
-    private final double bounceFactor;
+    private double radius;
+    private double bounceFactor;
 
 
-    private final PhysicsSimulationSettings physicsSettings;
+    private PhysicsSimulationSettings physicsSettings;
 
     public PhysicalBody(Vector2D maxSpeed, double radius, double bounceFactor, PhysicsSimulationSettings simulationSettings) {
         cords = new Vector2D();
@@ -56,8 +56,19 @@ public class PhysicalBody {
         return radius;
     }
 
+    public void setRadius(double radius) {
+        if (radius < 0) {
+            throw new IllegalArgumentException("radius cannot be negative");
+        }
+        this.radius = radius;
+    }
+
     public double getBounceFactor() {
         return bounceFactor;
+    }
+
+    public void setBounceFactor(double bounceFactor) {
+        this.bounceFactor = bounceFactor;
     }
 
     public Vector2D getMaxSpeed() {
@@ -73,8 +84,12 @@ public class PhysicalBody {
                 );
     }
 
-    protected PhysicsSimulationSettings getSimulationSettings() {
+    public PhysicsSimulationSettings getSimulationSettings() {
         return physicsSettings;
+    }
+
+    public void  setSimulationSettings(PhysicsSimulationSettings physicsSettings) {
+        this.physicsSettings = physicsSettings;
     }
 
     protected void checkBounds() {

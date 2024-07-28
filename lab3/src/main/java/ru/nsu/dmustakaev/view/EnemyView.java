@@ -17,11 +17,6 @@ public class EnemyView implements GameObjectView, DynamicGameObjectView {
 
         enemyView = new ImageView(new Image(TEXTURE_PATH));
 
-        enemyView.setFitWidth(model.getRadius() * 2);
-        enemyView.setFitHeight(model.getRadius() * 2);
-        enemyView.setTranslateX(model.getX() - model.getRadius());
-        enemyView.setTranslateY(model.getY() - model.getRadius());
-
         pane = new Pane();
         pane.getChildren().add(enemyView);
     }
@@ -35,5 +30,8 @@ public class EnemyView implements GameObjectView, DynamicGameObjectView {
         model.update();
         enemyView.setTranslateX(model.getX() - model.getRadius());
         enemyView.setTranslateY(model.getY() - model.getRadius());
+
+        enemyView.setFitWidth(model.getRadius() * 2);
+        enemyView.setFitHeight(model.getRadius() * 2);
     }
 }

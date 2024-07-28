@@ -41,22 +41,21 @@ public class Main extends Application {
     //TODO: add cvc mode
     //TODO: add pause
     //TODO: add setting with difficulty changer
-    //TODO: maybe powerups???
-    //TODO: ebeyshaya ideya, sdelat kak v soccer physics random na kajdom sbrose
     //TODO: timer
     //TODO: win screen
     //TODO: loose screen`
+    //TODO: back to gameObject factory idea
 
 //TODO:(modes)
-// 1. big goals
-//2. big ball
-//3. big players
-//4. small goals
-//5. small ball
-//6. small players
-//7. light ball
-//8. heavy ball
-//9. moon gravity
+//1. big goals     DONE
+//2. big ball      DONE
+//3. big players   DONE
+//4. small goals   DONE
+//5. small ball    DONE
+//6. small players DONE
+//7. light ball    DONE
+//8. heavy ball    DONE
+//9. moon gravity  DONE
 //10. high speed
 //11. high jumps
 //12. на вулицi склизько
@@ -66,5 +65,5 @@ public class Main extends Application {
 //
 
 
-
+//TODO: true collision system
 
