@@ -47,6 +47,23 @@ public class Main extends Application {
     //TODO: win screen
     //TODO: loose screen`
 
+//TODO:(modes)
+// 1. big goals
+//2. big ball
+//3. big players
+//4. small goals
+//5. small ball
+//6. small players
+//7. light ball
+//8. heavy ball
+//9. moon gravity
+//10. high speed
+//11. high jumps
+//12. на вулицi склизько
+//13. 2 balls
+//14. without jump
+//15. 3 balls1
+//
 
 
 

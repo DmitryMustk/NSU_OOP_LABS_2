@@ -17,6 +17,7 @@ import ru.nsu.dmustakaev.view.GameObjectView;
 import java.io.IOException;
 
 public class GamePlayController {
+    public ImageView resumem;
     @FXML
     private AnchorPane gamePlayRoot;
     @FXML
@@ -25,18 +26,19 @@ public class GamePlayController {
     private ImageView field;
     @FXML
     private Label scoreLabel;
+    @FXML
+    private AnchorPane pauseMenuRoot;
 
     private SoundEngine soundEngine;
-
     private GameEngine gameEngine;
     private Scene gameScene;
-    private Stage stage;
+    private Stage primaryStage;
 
-    public GamePlayController() {}
+    public GamePlayController() {
+    }
 
     @FXML
     public void initialize() {
-//        soundEngine.stopMusic();
         soundEngine = new SoundEngine();
         soundEngine.setMusic("/game/sounds/in_game_stadium_noises.wav");
         soundEngine.playMusic();
@@ -52,9 +54,13 @@ public class GamePlayController {
         gamePlayRoot.requestFocus();
     }
 
-    public void setScene(Scene scene, Stage stage) {
+    public void setSoundEngine(SoundEngine soundEngine) {
+        this.soundEngine = soundEngine;
+    }
+
+    public void setScene(Scene scene, Stage primaryStage) {
         this.gameScene = scene;
-        this.stage = stage;
+        this.primaryStage = primaryStage;
 
         scene.setOnKeyPressed(event -> {
             PlayerModel playerModel = gameEngine.getPlayerModel();
@@ -67,7 +73,7 @@ public class GamePlayController {
             }
 
             if (event.getCode() == KeyCode.ESCAPE) {
-                showPauseMenu();
+                togglePauseMenu();
             }
         });
 
@@ -80,22 +86,35 @@ public class GamePlayController {
         });
     }
 
-    private void showPauseMenu() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/menu/pauseMenu.fxml"));
-            AnchorPane pauseMenuRoot = loader.load();
-
-            PauseMenuController controller = loader.getController();
-            controller.setStageAndScene(stage, gameScene);
-
-            Scene pauseMenuScene = new Scene(pauseMenuRoot);
-            stage.setScene(pauseMenuScene);
-        } catch (IOException e) {
-            e.printStackTrace();
+    private void togglePauseMenu() {
+        boolean isPaused = pauseMenuRoot.isVisible();
+        pauseMenuRoot.setVisible(!isPaused);
+        if (isPaused) {
+            gameScene.getRoot().setEffect(null);
+            gameEngine.setPause(false);
+        } else {
+            gameScene.getRoot().setEffect(new javafx.scene.effect.GaussianBlur(10));
+            gameEngine.setPause(true);
         }
     }
 
-    public void setSoundEngine(SoundEngine soundEngine) {
-        this.soundEngine = soundEngine;
+    @FXML
+    private void resumeGame() {
+        pauseMenuRoot.setVisible(false);
+        gameScene.getRoot().setEffect(null);
+    }
+
+    @FXML
+    private void exitToMainMenu() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/menu/GameMenu.fxml"));
+            AnchorPane mainMenuRoot = loader.load();
+            GameMenuController gameMenuController = loader.getController();
+            gameMenuController.setPrimaryStage(primaryStage);
+            Scene mainMenuScene = new Scene(mainMenuRoot);
+            primaryStage.setScene(mainMenuScene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

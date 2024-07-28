@@ -7,9 +7,11 @@ import ru.nsu.dmustakaev.model.GoalModel;
 import ru.nsu.dmustakaev.utils.Bounds;
 import ru.nsu.dmustakaev.utils.Direction;
 
-public class GoalView implements GameObjectView {
+public class GoalView implements GameObjectView, DynamicGameObjectView {
     private final GoalModel model;
     private final Pane pane;
+
+    private final ImageView goalView;
 
     private static final String LEFT_TEXTURE_PATH = "/game/pictures/model_textures/goal/left_goal_texture.png";
     private static final String RIGHT_TEXTURE_PATH = "/game/pictures/model_textures/goal/right_goal_texture.png";
@@ -19,7 +21,7 @@ public class GoalView implements GameObjectView {
 
         Direction direction = model.getDirection();
         Image texture = direction == Direction.LEFT ? new Image(LEFT_TEXTURE_PATH) : new Image(RIGHT_TEXTURE_PATH);
-        ImageView goalView = new ImageView(texture);
+        goalView = new ImageView(texture);
         goalView.setFitWidth(model.getWidth());
         goalView.setFitHeight(model.getHeight());
         goalView.setTranslateX(model.getX());
@@ -34,7 +36,22 @@ public class GoalView implements GameObjectView {
         return pane;
     }
 
+    public GoalModel getModel() {
+        return model;
+    }
+
     public Bounds getBounds() {
         return model.getBounds();
+    }
+
+    @Override
+    public void update() {
+        goalView.setFitWidth(model.getWidth());
+        goalView.setFitHeight(model.getHeight());
+
+        goalView.setTranslateX(model.getX());
+        goalView.setTranslateY(model.getY());
+
+        System.out.println(model.getY());
     }
 }

@@ -4,6 +4,8 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 import ru.nsu.dmustakaev.model.*;
+import ru.nsu.dmustakaev.modes.BigGoalsGameMode;
+import ru.nsu.dmustakaev.modes.GameMode;
 import ru.nsu.dmustakaev.utils.Bounds;
 import ru.nsu.dmustakaev.utils.Direction;
 import ru.nsu.dmustakaev.utils.SoundEngine;
@@ -19,6 +21,7 @@ import static ru.nsu.dmustakaev.Main.SCREEN_WIDTH;
 
 public class GameEngine {
     private static final int FPS = 240;
+    private boolean isOnPause = false;
 
     private BallModel ballModel;
     private PlayerModel playerModel;
@@ -26,6 +29,9 @@ public class GameEngine {
     private GoalModel leftGoalModel;
     private GoalModel rightGoalModel;
     private ScoreModel scoreModel;
+
+    private List<GameMode> gameModes;
+    private GameMode currentGameMode;
 
     private List<GameObjectView> staticGameObjectViews;
     private List<DynamicGameObjectView> dynamicGameObjectViews;
@@ -47,9 +53,7 @@ public class GameEngine {
         staticGameObjectViews = new ArrayList<>();
         staticGameObjectViews.addAll(Arrays.asList(
                 new BackgroundView(),
-                new FieldView(),
-                new GoalView(leftGoalModel),
-                new GoalView(rightGoalModel)
+                new FieldView()
         ));
 
         dynamicGameObjectViews = new ArrayList<>();
@@ -57,20 +61,29 @@ public class GameEngine {
                 new BallView(ballModel),
                 new PlayerView(playerModel),
                 new EnemyView(enemyModel),
-                new ScoreView(scoreModel)
+                new ScoreView(scoreModel),
+                new GoalView(leftGoalModel),
+                new GoalView(rightGoalModel)
         ));
     }
 
+    private void createGameModes() {
+        gameModes = new ArrayList<>();
+        gameModes.addAll(Arrays.asList(
+                new BigGoalsGameMode(leftGoalModel, rightGoalModel)
+        ));
+    }
 
     public GameEngine(SoundEngine soundEngine) {
         createGameObjectsModels();
         createGameObjectViews();
+        createGameModes();
 
         this.soundEngine = soundEngine;
-
-//        soundEngine = new SoundEngine();
-
         KeyFrame frame = new KeyFrame(Duration.seconds(1.0 / FPS), actionEvent -> {
+            if (isOnPause) {
+                return;
+            }
             dynamicGameObjectViews.forEach(DynamicGameObjectView::update);
             checkCollision();
         });
@@ -79,6 +92,10 @@ public class GameEngine {
         timeline.getKeyFrames().add(frame);
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
+    }
+
+    public void setPause(boolean pause) {
+        isOnPause = pause;
     }
 
     public List<GameObjectView> getGameObjectViews() {
@@ -107,13 +124,15 @@ public class GameEngine {
         }
 
         if (leftGoalBounds.intersects(ballBounds)) {
-            resetAfterScore();
+            resetModels();
+            applyNewMode();
             soundEngine.playSound("/game/sounds/score/fail.mp3");
             scoreModel.incrementEnemyScore();
         }
 
         if (rightGoalBounds.intersects(ballBounds)) {
-            resetAfterScore();
+            resetModels();
+            applyNewMode();
             soundEngine.playSound("/game/sounds/score/sii.mp3");
             scoreModel.incrementPlayerScore();
         }
@@ -126,10 +145,37 @@ public class GameEngine {
         }
     }
 
-    private void resetAfterScore() {
+    private void handleScore(Direction whoScored) {
+        if (whoScored != Direction.LEFT && whoScored != Direction.RIGHT) {
+            throw new IllegalArgumentException("Wrong direction");
+        }
+
+        resetModels();
+
+        if (whoScored == Direction.LEFT) {
+            soundEngine.playSound("/game/sounds/score/sii.mp3");
+            scoreModel.incrementPlayerScore();
+        } else {
+            soundEngine.playSound("/game/sounds/score/fail.mp3");
+            scoreModel.incrementEnemyScore();
+        }
+
+
+
+    }
+
+    private void resetModels() {
         ballModel.reset();
         playerModel.reset();
         enemyModel.reset();
+    }
+
+    private void applyNewMode() {
+        if (currentGameMode != null) {
+            currentGameMode.unapply();
+        }
+        currentGameMode = gameModes.getFirst();
+        currentGameMode.apply();
     }
 
 }
