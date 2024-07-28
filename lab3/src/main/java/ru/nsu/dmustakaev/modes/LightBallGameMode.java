@@ -8,8 +8,15 @@ public class LightBallGameMode implements GameMode {
 
     private static final double LIGHT_BOUNCE_FACTOR = 1.0;
 
+    private static final String SOUND_SOURCE = "/game/sounds/modes/light_ball.mp3";
+
     public LightBallGameMode(BallModel ballModel) {
         this.ballModel = ballModel;
+    }
+
+    @Override
+    public String getSoundSource() {
+        return SOUND_SOURCE;
     }
 
     @Override

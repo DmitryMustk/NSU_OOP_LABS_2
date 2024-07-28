@@ -16,10 +16,17 @@ public class MoonGravityGameMode implements GameMode {
 
     private static final double GRAvITY_MULTIPLIER = 0.5;
 
+    private static final String SOUND_SOURCE = "/game/sounds/modes/moon_gravity.mp3";
+
     public MoonGravityGameMode(BallModel ballModel, PlayerModel playerModel, EnemyModel enemyModel) {
         this.ballModel = ballModel;
         this.playerModel = playerModel;
         this.enemyModel = enemyModel;
+    }
+
+    @Override
+    public String getSoundSource() {
+        return SOUND_SOURCE;
     }
 
     @Override

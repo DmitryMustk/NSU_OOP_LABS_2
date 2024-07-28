@@ -3,12 +3,19 @@ package ru.nsu.dmustakaev.modes;
 import ru.nsu.dmustakaev.model.BallModel;
 
 public class SmallBallGameMode implements GameMode {
-    private BallModel ballModel;
+    private final BallModel ballModel;
 
     private final static double BALL_RADIUS_MULTIPLIER = 0.5;
 
+    private static final String SOUND_SOURCE = "/game/sounds/modes/small_ball.mp3";
+
     public SmallBallGameMode(BallModel ballModel) {
         this.ballModel = ballModel;
+    }
+
+    @Override
+    public String getSoundSource() {
+        return SOUND_SOURCE;
     }
 
     @Override

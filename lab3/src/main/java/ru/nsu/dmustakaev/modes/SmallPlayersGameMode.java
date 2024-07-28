@@ -9,9 +9,16 @@ public class SmallPlayersGameMode implements GameMode {
 
     private static final double PLAYERS_RADIUS_MULTIPLIER = 0.5;
 
+    private static final String SOUND_SOURCE = "/game/sounds/modes/small_players.mp3";
+
     public SmallPlayersGameMode(PlayerModel playerModel, EnemyModel enemyModel) {
         this.playerModel = playerModel;
         this.enemyModel = enemyModel;
+    }
+
+    @Override
+    public String getSoundSource() {
+        return "";
     }
 
     @Override

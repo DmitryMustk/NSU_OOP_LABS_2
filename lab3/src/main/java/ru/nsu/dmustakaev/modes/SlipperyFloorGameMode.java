@@ -3,15 +3,17 @@ package ru.nsu.dmustakaev.modes;
 import ru.nsu.dmustakaev.model.*;
 
 public class SlipperyFloorGameMode implements GameMode{
-    private BallModel ballModel;
-    private PlayerModel playerModel;
-    private EnemyModel enemyModel;
+    private final BallModel ballModel;
+    private final PlayerModel playerModel;
+    private final EnemyModel enemyModel;
 
     private PhysicsSimulationSettings ballModelSettings;
     private PhysicsSimulationSettings playerModelSettings;
     private PhysicsSimulationSettings enemyModelSettings;
 
     private static final double NEW_SOLID_RESISTANCE = -1;
+
+    private static final String SOUND_SOURCE = "/game/sounds/modes/slippery_floor.mp3";
 
     public SlipperyFloorGameMode(BallModel ballModel, PlayerModel playerModel, EnemyModel enemyModel) {
         this.ballModel = ballModel;
@@ -25,6 +27,11 @@ public class SlipperyFloorGameMode implements GameMode{
                 settings.airResistance(),
                 NEW_SOLID_RESISTANCE
         ));
+    }
+
+    @Override
+    public String getSoundSource() {
+        return SOUND_SOURCE;
     }
 
     @Override

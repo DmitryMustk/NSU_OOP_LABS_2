@@ -1,6 +1,7 @@
 package ru.nsu.dmustakaev;
 
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 import ru.nsu.dmustakaev.model.*;
@@ -10,10 +11,7 @@ import ru.nsu.dmustakaev.utils.Direction;
 import ru.nsu.dmustakaev.utils.SoundEngine;
 import ru.nsu.dmustakaev.view.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static ru.nsu.dmustakaev.Main.SCREEN_HEIGHT;
@@ -73,10 +71,13 @@ public class GameEngine {
         gameModes = new ArrayList<>();
         gameModes.addAll(Arrays.asList(
                 new DefaultGameMode(),
+
                 new BigGoalsGameMode(leftGoalModel, rightGoalModel),
                 new SmallGoalsGameMode(leftGoalModel, rightGoalModel),
+
                 new BigBallGameMode(ballModel),
                 new SmallBallGameMode(ballModel),
+
                 new BigPlayersGameMode(playerModel, enemyModel),
                 new SmallPlayersGameMode(playerModel, enemyModel),
 
@@ -159,7 +160,7 @@ public class GameEngine {
         }
     }
 
-    private void handleScore(Direction whoScored) {
+    private void handleScore(Direction whoScored)  {
         if (whoScored != Direction.LEFT && whoScored != Direction.RIGHT) {
             throw new IllegalArgumentException("Wrong direction");
         }
@@ -172,8 +173,14 @@ public class GameEngine {
             scoreModel.incrementEnemyScore();
         }
 
-        resetModels();
-        applyNewMode();
+        isOnPause = true;
+        PauseTransition pause = new PauseTransition(Duration.seconds(1.3));
+        pause.setOnFinished(event -> {
+            resetModels();
+            applyNewMode();
+            isOnPause = false;
+        });
+        pause.play();
     }
 
     private void resetModels() {
@@ -194,6 +201,7 @@ public class GameEngine {
         ;
 
         currentGameMode.apply();
+        soundEngine.playSound(currentGameMode.getSoundSource());
     }
 
     public GameMode getCurrentGameMode() {

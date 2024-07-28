@@ -8,6 +8,8 @@ public class BigGoalsGameMode implements GameMode {
 
     private static final int GOALS_HEIGHT_MULTIPLIER = 3;
 
+    private static final String SOUND_SOURCE = "/game/sounds/modes/big_goals.mp3";
+
     public BigGoalsGameMode(GoalModel leftGoalModel, GoalModel rightGoalModel) {
         this.leftGoalModel = leftGoalModel;
         this.rightGoalModel = rightGoalModel;
@@ -21,6 +23,11 @@ public class BigGoalsGameMode implements GameMode {
     private void restoreGoalModel(GoalModel goalModel) {
         goalModel.setHeight(goalModel.getHeight() / GOALS_HEIGHT_MULTIPLIER);
         goalModel.setY(goalModel.getY() + (GOALS_HEIGHT_MULTIPLIER - 1) * goalModel.getHeight());
+    }
+
+    @Override
+    public String getSoundSource() {
+        return SOUND_SOURCE;
     }
 
     @Override

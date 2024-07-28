@@ -49,4 +49,5 @@ public class Main extends Application {
 //TODO: add game mode messages1
 //TODO: true collision system
 //TODO: countdown
+//TODO: balance sound
 

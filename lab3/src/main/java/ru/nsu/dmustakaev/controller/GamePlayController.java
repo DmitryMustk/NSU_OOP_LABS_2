@@ -101,7 +101,7 @@ public class GamePlayController {
             gameScene.getRoot().setEffect(null);
             gameEngine.setPause(false);
         } else {
-//            gameScene.getRoot().setEffect(new javafx.scene.effect.GaussianBlur(10));
+            gameScene.getRoot().setEffect(new javafx.scene.effect.GaussianBlur(10));
             gameEngine.setPause(true);
         }
     }

@@ -9,9 +9,16 @@ public class PlayersHighSpeedGameMode implements GameMode{
 
     private static final double MOVEMENT_SPEED_MULTIPLIER = 1.6;
 
+    private static final String SOUND_SOURCE = "/game/sounds/modes/players_high_speed.mp3";
+
     public PlayersHighSpeedGameMode(PlayerModel playerModel, EnemyModel enemyModel) {
         this.playerModel = playerModel;
         this.enemyModel = enemyModel;
+    }
+
+    @Override
+    public String getSoundSource() {
+        return SOUND_SOURCE;
     }
 
     @Override

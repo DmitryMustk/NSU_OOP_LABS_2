@@ -9,9 +9,16 @@ public class BigPlayersGameMode implements GameMode {
 
     private static final int PLAYERS_RADIUS_MULTIPLIER = 2;
 
+    private static final String SOUND_SOURCE = "/game/sounds/modes/big_players.mp3";
+
     public BigPlayersGameMode(PlayerModel playerModel, EnemyModel enemyModel) {
         this.playerModel = playerModel;
         this.enemyModel = enemyModel;
+    }
+
+    @Override
+    public String getSoundSource() {
+        return SOUND_SOURCE;
     }
 
     @Override
