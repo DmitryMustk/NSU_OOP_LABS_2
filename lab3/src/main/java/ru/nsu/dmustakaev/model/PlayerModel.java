@@ -1,20 +1,17 @@
 package ru.nsu.dmustakaev.model;
 
-import ru.nsu.dmustakaev.Main;
-import ru.nsu.dmustakaev.utils.Bounds;
 import ru.nsu.dmustakaev.utils.Direction;
 import ru.nsu.dmustakaev.utils.Vector2D;
 
 public class PlayerModel extends PhysicalBody implements UpdatableModel {
-    private static final double MOVEMENT_SPEED = 0.1;
-    private static final double JUMP_SPEED = 20;
-    private static final Vector2D MAX_SPEED = new Vector2D(1, 20);
     private static final Vector2D INIT_CORDS = new Vector2D(100, 100);
+
+    private double movementSpeed = 0.1;
+    private Vector2D maxSpeed = new Vector2D(1, 20);
+    private double jumpSpeed = 20;
 
     private boolean isMovingLeft;
     private boolean isMovingRight;
-
-
 
     public PlayerModel() {
         super(
@@ -32,7 +29,7 @@ public class PlayerModel extends PhysicalBody implements UpdatableModel {
             return;
         }
 
-        getSpeed().addVector(0, JUMP_SPEED);
+        getSpeed().addVector(0, jumpSpeed);
     }
 
     public void stop(Direction direction) {
@@ -55,20 +52,46 @@ public class PlayerModel extends PhysicalBody implements UpdatableModel {
     }
 
     public void reset() {
-        getCords().copyVector(INIT_CORDS);
-        getSpeed().copyVector(Vector2D.getZeroVector());
+        setSpeed(Vector2D.getZeroVector());
+        setCords(INIT_CORDS);
+    }
+
+    public double getMovementSpeed() {
+        return movementSpeed;
+    }
+
+    public void setMovementSpeed(double speed) {
+        if (speed < 0) {
+            throw new IllegalArgumentException("Speed is negative");
+        }
+        movementSpeed = speed;
+    }
+
+    public Vector2D getMaxSpeed() {
+        return maxSpeed;
+    }
+
+    public double getJumpSpeed() {
+        return jumpSpeed;
+    }
+
+    public void setJumpSpeed(double jumpSpeed) {
+        if (jumpSpeed < 0) {
+            throw new IllegalArgumentException("JumpSpeed is negative");
+        }
+        this.jumpSpeed = jumpSpeed;
     }
 
     @Override
     protected void calculateTotalSpeed() {
         double accelerationX = 0;
         if(isMovingLeft) {
-            accelerationX = -MOVEMENT_SPEED;
+            accelerationX = -movementSpeed;
         } else if (isMovingRight) {
-            accelerationX = MOVEMENT_SPEED;
+            accelerationX = movementSpeed;
         }
         getSpeed().addVector(accelerationX, 0);
-        getSpeed().setX(Math.min(MAX_SPEED.getX(), Math.max(-MAX_SPEED.getX(), getSpeed().getX())));
+        getSpeed().setX(Math.min(maxSpeed.getX(), Math.max(-maxSpeed.getX(), getSpeed().getX())));
 
         getSpeed().addVector(0, getSimulationSettings().gravity());
         if (isOnGround()) {
@@ -83,7 +106,7 @@ public class PlayerModel extends PhysicalBody implements UpdatableModel {
         calculateTotalSpeed();
         checkBounds();
 
-        getSpeed().setY(Math.min(MAX_SPEED.getY(), getSpeed().getY()));
+        getSpeed().setY(Math.min(maxSpeed.getY(), getSpeed().getY()));
         getCords().addVector(getSpeed());
     }
 }

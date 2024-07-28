@@ -4,12 +4,13 @@ import ru.nsu.dmustakaev.utils.Direction;
 import ru.nsu.dmustakaev.utils.Vector2D;
 
 public class EnemyModel extends PhysicalBody implements UpdatableModel {
-
-    private static final double MOVEMENT_SPEED = 0.1;
-    private static final double JUMP_SPEED = 15;
-    private static final Vector2D MAX_SPEED = new Vector2D(1.2, 5);
     private static final Vector2D INIT_CORDS = new Vector2D(924, 100);
     private static final int FLOOR_DELTA = 3;
+
+    private double movementSpeed = 0.1;
+    private Vector2D maxSpeed = new Vector2D(1.2, 5);
+    private double jumpSpeed = 15;
+
 
     private boolean isMovingLeft;
     private boolean isMovingRight;
@@ -31,11 +32,41 @@ public class EnemyModel extends PhysicalBody implements UpdatableModel {
         isEvil = false;
     }
 
+    public double getMovementSpeed() {
+        return movementSpeed;
+    }
+
+    public void setMovementSpeed(double speed) {
+        if (speed < 0) {
+            throw new IllegalArgumentException("Speed is negative");
+        }
+        movementSpeed = speed;
+    }
+
+    public Vector2D getMaxSpeed() {
+        return maxSpeed;
+    }
+
+    public void setMaxSpeed(Vector2D maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
+
+    public double getJumpSpeed() {
+        return jumpSpeed;
+    }
+
+    public void setJumpSpeed(double jumpSpeed) {
+        if (jumpSpeed < 0) {
+            throw new IllegalArgumentException("JumpSpeed is negative");
+        }
+        this.jumpSpeed = jumpSpeed;
+    }
+
     public void jump() {
         if (!isOnGround()) {
             return;
         }
-        getSpeed().addVector(0, JUMP_SPEED);
+        getSpeed().addVector(0, jumpSpeed);
     }
 
     public void move(Direction direction) {
@@ -45,9 +76,9 @@ public class EnemyModel extends PhysicalBody implements UpdatableModel {
 
     private void calculateMovement() {
         double accelerationX = 0;
-        accelerationX = isMovingLeft ? -MOVEMENT_SPEED : MOVEMENT_SPEED;
+        accelerationX = isMovingLeft ? -movementSpeed : movementSpeed;
         getSpeed().addVector(accelerationX, 0);
-        getSpeed().setX(Math.min(MAX_SPEED.getX(), Math.max(-MAX_SPEED.getX(), getSpeed().getX())));
+        getSpeed().setX(Math.min(maxSpeed.getX(), Math.max(-maxSpeed.getX(), getSpeed().getX())));
 
     }
 
@@ -73,7 +104,7 @@ public class EnemyModel extends PhysicalBody implements UpdatableModel {
 
     public void reset() {
         setSpeed(Vector2D.getZeroVector());
-        setCords(new Vector2D(924, 100));
+        setCords(INIT_CORDS);
         isEvil = !isEvil;
     }
 
@@ -83,7 +114,6 @@ public class EnemyModel extends PhysicalBody implements UpdatableModel {
         calculateMovement();
         checkBounds();
         limitSpeed();
-//        getSpeed().setY(Math.min(MAX_SPEED.getY(), getSpeed().getY()));
         getCords().addVector(getSpeed());
         processAI();
     }

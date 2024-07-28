@@ -40,7 +40,8 @@ public class PhysicalBody {
     }
 
     public void setCords(Vector2D cords) {
-        this.cords = cords;
+        this.cords.setX(cords.getX());
+        this.cords.setY(cords.getY());
         checkBounds();
     }
 

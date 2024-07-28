@@ -72,16 +72,22 @@ public class GameEngine {
     private void createGameModes() {
         gameModes = new ArrayList<>();
         gameModes.addAll(Arrays.asList(
+                new DefaultGameMode(),
                 new BigGoalsGameMode(leftGoalModel, rightGoalModel),
                 new SmallGoalsGameMode(leftGoalModel, rightGoalModel),
                 new BigBallGameMode(ballModel),
-                new BigPlayersGameMode(playerModel, enemyModel),
-                new DefaultGameMode(),
                 new SmallBallGameMode(ballModel),
+                new BigPlayersGameMode(playerModel, enemyModel),
                 new SmallPlayersGameMode(playerModel, enemyModel),
+
                 new LightBallGameMode(ballModel),
                 new HeavyBallGameMode(ballModel),
-                new MoonGravityGameMode(ballModel, playerModel, enemyModel)
+
+                new MoonGravityGameMode(ballModel, playerModel, enemyModel),
+
+                new PlayersHighSpeedGameMode(playerModel, enemyModel),
+
+                new SlipperyFloorGameMode(ballModel, playerModel, enemyModel)
         ));
     }
 
