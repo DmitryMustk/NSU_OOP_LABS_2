@@ -201,6 +201,7 @@ public class GameEngine {
         ;
 
         currentGameMode.apply();
+        System.out.println("Current game mode: " + currentGameMode);
         soundEngine.playSound(currentGameMode.getSoundSource());
     }
 

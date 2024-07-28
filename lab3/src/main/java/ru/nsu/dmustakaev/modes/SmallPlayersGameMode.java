@@ -18,7 +18,7 @@ public class SmallPlayersGameMode implements GameMode {
 
     @Override
     public String getSoundSource() {
-        return "";
+        return SOUND_SOURCE;
     }
 
     @Override
