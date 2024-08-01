@@ -3,8 +3,7 @@ package ru.nsu.dmustakaev.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -17,15 +16,9 @@ import ru.nsu.dmustakaev.view.GameObjectView;
 import java.io.IOException;
 
 public class GamePlayController {
-    public ImageView resumem;
     @FXML
     private AnchorPane gamePlayRoot;
-    @FXML
-    private ImageView background_game;
-    @FXML
-    private ImageView field;
-    @FXML
-    private Label scoreLabel;
+
     @FXML
     private AnchorPane pauseMenuRoot;
 
@@ -33,9 +26,6 @@ public class GamePlayController {
     private GameEngine gameEngine;
     private Scene gameScene;
     private Stage primaryStage;
-
-    public GamePlayController() {
-    }
 
     @FXML
     public void initialize() {
@@ -54,13 +44,16 @@ public class GamePlayController {
         gamePlayRoot.requestFocus();
     }
 
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
+
     public void setSoundEngine(SoundEngine soundEngine) {
         this.soundEngine = soundEngine;
     }
 
-    public void setScene(Scene scene, Stage primaryStage) {
+    public void setScene(Scene scene) {
         this.gameScene = scene;
-        this.primaryStage = primaryStage;
 
         scene.setOnKeyPressed(event -> {
             PlayerModel playerModel = gameEngine.getPlayerModel();
@@ -98,18 +91,22 @@ public class GamePlayController {
         boolean isPaused = pauseMenuRoot.isVisible();
         pauseMenuRoot.setVisible(!isPaused);
         if (isPaused) {
-            gameScene.getRoot().setEffect(null);
-            gameEngine.setPause(false);
+            resumeGame();
         } else {
-            gameScene.getRoot().setEffect(new javafx.scene.effect.GaussianBlur(10));
             gameEngine.setPause(true);
+            gameScene.getRoot().setEffect(new GaussianBlur(10));
+            pauseMenuRoot.toFront();
+            pauseMenuRoot.setFocusTraversable(true);
+            pauseMenuRoot.requestFocus();
         }
     }
 
     @FXML
     private void resumeGame() {
         pauseMenuRoot.setVisible(false);
+        gameEngine.setPause(false);
         gameScene.getRoot().setEffect(null);
+        gamePlayRoot.requestFocus();
     }
 
     @FXML

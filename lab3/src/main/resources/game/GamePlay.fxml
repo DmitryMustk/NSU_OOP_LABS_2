@@ -16,18 +16,9 @@
         <Image url="@pictures/field_texture.png"/>
     </ImageView>
 
-    <ImageView fx:id="resumem" fitHeight="200.0" fitWidth="241.0" layoutX="480.0" layoutY="100.0" onMouseClicked="#resumeGame">
-        <Image url="@../menu/pictures/background_menu.png"/>
-    </ImageView>
+    <AnchorPane fx:id="pauseMenuRoot" prefHeight="600.0" prefWidth="1024.0" style="-fx-background-color: rgba(1, 1, 2, 0.5);" visible="false" focusTraversable="true">
 
-    <Label fx:id="scoreLabel" layoutX="20.0" layoutY="20.0" text="0:0"/>
-
-    <AnchorPane fx:id="pauseMenuRoot" prefHeight="600.0" prefWidth="1024.0" style="-fx-background-color: rgba(1, 1, 2, 0.5);" >
-        <ImageView fx:id="resume" fitHeight="109.0" fitWidth="241.0" layoutX="480.0" layoutY="300.0" onMouseClicked="#resumeGame">
-            <Image url="@../menu/pictures/startgame_button.png"/>
-        </ImageView>
-
-<!--        <Button layoutX="462.0" layoutY="200.0" mnemonicParsing="false" text="Resume" onAction="#resumeGame"/>-->
-<!--        <Button layoutX="462.0" layoutY="300.0" mnemonicParsing="false" text="Exit" onAction="#exitToMainMenu"/>-->
+        <Button layoutX="462.0" layoutY="200.0" text="Resume" onMouseClicked="#resumeGame"/>
+        <Button layoutX="462.0" layoutY="300.0" mnemonicParsing="false" text="Exit" onMouseClicked="#exitToMainMenu"/>
     </AnchorPane>
 </AnchorPane>

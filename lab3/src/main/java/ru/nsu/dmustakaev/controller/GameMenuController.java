@@ -12,6 +12,7 @@ import java.io.IOException;
 public class GameMenuController {
     @FXML
     public AnchorPane mainRoot;
+
     private SoundEngine soundEngine;
     private Stage primaryStage;
 
@@ -32,13 +33,14 @@ public class GameMenuController {
         AnchorPane gamePlayRoot = fxmlLoader.load();
 
         GamePlayController gamePlayController = fxmlLoader.getController();
+        gamePlayController.setPrimaryStage(primaryStage);
         gamePlayController.setSoundEngine(soundEngine);
+
         Scene gameScene = new Scene(gamePlayRoot);
-        gamePlayController.setScene(gameScene, primaryStage);
+        gamePlayController.setScene(gameScene);
 
         soundEngine.stopMusic();
         primaryStage.setScene(gameScene);
-        primaryStage.show();
     }
 
     @FXML

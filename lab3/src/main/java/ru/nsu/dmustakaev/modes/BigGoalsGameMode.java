@@ -6,7 +6,7 @@ public class BigGoalsGameMode implements GameMode {
     private final GoalModel leftGoalModel;
     private final GoalModel rightGoalModel;
 
-    private static final int GOALS_HEIGHT_MULTIPLIER = 3;
+    private static final int GOALS_HEIGHT_MULTIPLIER = 2;
 
     private static final String SOUND_SOURCE = "/game/sounds/modes/big_goals.mp3";
 

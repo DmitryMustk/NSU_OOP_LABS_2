@@ -40,14 +40,11 @@ public class Main extends Application {
 //TODO: add pvp mode
     //TODO: add cvc mode
     //TODO: add pause
-    //TODO: add setting with difficulty changer
-    //TODO: timer
+    //TODO: add settings
     //TODO: win screen
     //TODO: loose screen`
     //TODO: back to gameObject factory idea
 
 //TODO: add game mode messages1
-//TODO: true collision system
-//TODO: countdown
 //TODO: balance sound
 

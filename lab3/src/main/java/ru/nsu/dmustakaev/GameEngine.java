@@ -38,6 +38,9 @@ public class GameEngine {
 
     private final Random random;
 
+    private boolean isFinished;
+    private static final int GOALS_TO_WIN = 10;
+
     private void createGameObjectsModels() {
         leftGoalModel = new GoalModel(Direction.LEFT,0,  240, 160, 20);
         rightGoalModel = new GoalModel(Direction.RIGHT,SCREEN_WIDTH - 20, SCREEN_HEIGHT - 360, 160, 20);
@@ -52,8 +55,8 @@ public class GameEngine {
     private void createGameObjectViews() {
         staticGameObjectViews = new ArrayList<>();
         staticGameObjectViews.addAll(Arrays.asList(
-                new BackgroundView(),
-                new FieldView()
+//                new BackgroundView(),
+//                new FieldView()
         ));
 
         dynamicGameObjectViews = new ArrayList<>();
@@ -99,6 +102,7 @@ public class GameEngine {
 
         this.soundEngine = soundEngine;
         this.random = new Random();
+        this.isFinished = false;
 
         KeyFrame frame = new KeyFrame(Duration.seconds(1.0 / FPS), actionEvent -> {
             if (isOnPause) {
@@ -136,21 +140,14 @@ public class GameEngine {
         Bounds leftGoalBounds = leftGoalModel.getBounds();
         Bounds rightGoalBounds = rightGoalModel.getBounds();
 
-        if (ballBounds.intersects(playerBounds)) {
+        if (ballBounds.intersects(playerBounds))
             ballModel.kick(playerBounds);
-        }
-
-        if (ballBounds.intersects(enemyBounds)) {
+        if (ballBounds.intersects(enemyBounds))
             ballModel.kick(enemyBounds);
-        }
-
-        if (rightGoalBounds.intersects(ballBounds)) {
+        if (rightGoalBounds.intersects(ballBounds))
             handleScore(Direction.LEFT);
-        }
-
-        if (leftGoalBounds.intersects(ballBounds)) {
+        if (leftGoalBounds.intersects(ballBounds))
             handleScore(Direction.RIGHT);
-        }
 
         if (playerBounds.intersects(enemyBounds)) {
             Direction playerPushDirection = playerModel.getX() < enemyModel.getX() ? Direction.LEFT : Direction.RIGHT;
@@ -173,6 +170,11 @@ public class GameEngine {
             scoreModel.incrementEnemyScore();
         }
 
+        pauseAfterScore();
+        isFinished = scoreModel.getEnemyScore() == GOALS_TO_WIN || scoreModel.getPlayerScore() == GOALS_TO_WIN;
+    }
+
+    private void pauseAfterScore() {
         isOnPause = true;
         PauseTransition pause = new PauseTransition(Duration.seconds(1.3));
         pause.setOnFinished(event -> {
