@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import ru.nsu.dmustakaev.GameEngine;
 import ru.nsu.dmustakaev.model.PlayerModel;
@@ -16,6 +17,9 @@ import ru.nsu.dmustakaev.view.GameObjectView;
 import java.io.IOException;
 
 public class GamePlayController {
+    @FXML
+    private AnchorPane rootPane;  // изменено с StackPane на AnchorPane
+
     @FXML
     private AnchorPane gamePlayRoot;
 
@@ -94,7 +98,7 @@ public class GamePlayController {
             resumeGame();
         } else {
             gameEngine.setPause(true);
-            gameScene.getRoot().setEffect(new GaussianBlur(10));
+            gamePlayRoot.setEffect(new GaussianBlur(10));
             pauseMenuRoot.toFront();
             pauseMenuRoot.setFocusTraversable(true);
             pauseMenuRoot.requestFocus();
@@ -105,7 +109,7 @@ public class GamePlayController {
     private void resumeGame() {
         pauseMenuRoot.setVisible(false);
         gameEngine.setPause(false);
-        gameScene.getRoot().setEffect(null);
+        gamePlayRoot.setEffect(null);
         gamePlayRoot.requestFocus();
     }
 
