@@ -12,7 +12,6 @@ import ru.nsu.dmustakaev.utils.SoundEngine;
 import ru.nsu.dmustakaev.view.*;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 import static ru.nsu.dmustakaev.Main.SCREEN_HEIGHT;
 import static ru.nsu.dmustakaev.Main.SCREEN_WIDTH;
@@ -31,8 +30,7 @@ public class GameEngine {
     private List<GameMode> gameModes;
     private GameMode currentGameMode;
 
-    private List<GameObjectView> staticGameObjectViews;
-    private List<DynamicGameObjectView> dynamicGameObjectViews;
+    private List<GameObjectView> objectViews;
 
     private final SoundEngine soundEngine;
 
@@ -44,23 +42,15 @@ public class GameEngine {
     private void createGameObjectsModels() {
         leftGoalModel = new GoalModel(Direction.LEFT,0,  240, 160, 20);
         rightGoalModel = new GoalModel(Direction.RIGHT,SCREEN_WIDTH - 20, SCREEN_HEIGHT - 360, 160, 20);
-
         ballModel = new BallModel();
-
         playerModel = new PlayerModel();
         enemyModel = new EnemyModel(ballModel, leftGoalModel, rightGoalModel);
         scoreModel = new ScoreModel();
     }
 
     private void createGameObjectViews() {
-        staticGameObjectViews = new ArrayList<>();
-        staticGameObjectViews.addAll(Arrays.asList(
-//                new BackgroundView(),
-//                new FieldView()
-        ));
-
-        dynamicGameObjectViews = new ArrayList<>();
-        dynamicGameObjectViews.addAll(Arrays.asList(
+        objectViews = new ArrayList<>();
+        objectViews.addAll(Arrays.asList(
                 new BallView(ballModel),
                 new PlayerView(playerModel),
                 new EnemyView(enemyModel),
@@ -108,7 +98,7 @@ public class GameEngine {
             if (isOnPause) {
                 return;
             }
-            dynamicGameObjectViews.forEach(DynamicGameObjectView::update);
+            objectViews.forEach(GameObjectView::update);
             checkCollision();
         });
 
@@ -123,10 +113,7 @@ public class GameEngine {
     }
 
     public List<GameObjectView> getGameObjectViews() {
-        return Stream.concat(
-                staticGameObjectViews.stream(),
-                dynamicGameObjectViews.stream()
-        ).toList();
+        return objectViews;
     }
 
     public PlayerModel getPlayerModel() {

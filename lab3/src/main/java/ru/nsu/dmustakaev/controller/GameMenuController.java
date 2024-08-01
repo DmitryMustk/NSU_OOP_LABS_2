@@ -47,9 +47,4 @@ public class GameMenuController {
     public void exitGame() {
         System.exit(0);
     }
-
-    @FXML
-    public void showMainMenu() {
-        System.out.println("GOLOVA");
-    }
 }

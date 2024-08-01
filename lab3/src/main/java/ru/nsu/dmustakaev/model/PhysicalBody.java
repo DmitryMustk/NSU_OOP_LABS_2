@@ -5,8 +5,7 @@ import ru.nsu.dmustakaev.utils.Bounds;
 import ru.nsu.dmustakaev.utils.Vector2D;
 
 public class PhysicalBody {
-
-    private Vector2D cords;
+    private final Vector2D cords;
     private Vector2D speed;
     private final Vector2D maxSpeed;
 

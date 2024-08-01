@@ -47,21 +47,6 @@ public class EnemyModel extends PhysicalBody implements UpdatableModel {
         return maxSpeed;
     }
 
-    public void setMaxSpeed(Vector2D maxSpeed) {
-        this.maxSpeed = maxSpeed;
-    }
-
-    public double getJumpSpeed() {
-        return jumpSpeed;
-    }
-
-    public void setJumpSpeed(double jumpSpeed) {
-        if (jumpSpeed < 0) {
-            throw new IllegalArgumentException("JumpSpeed is negative");
-        }
-        this.jumpSpeed = jumpSpeed;
-    }
-
     public void jump() {
         if (!isOnGround()) {
             return;

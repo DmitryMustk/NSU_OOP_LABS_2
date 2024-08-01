@@ -14,5 +14,6 @@ module ru.nsu.dmustakaev {
 
     opens ru.nsu.dmustakaev to javafx.fxml;
     opens ru.nsu.dmustakaev.controller to javafx.fxml;
+    exports ru.nsu.dmustakaev.modes;
     exports ru.nsu.dmustakaev;
 }

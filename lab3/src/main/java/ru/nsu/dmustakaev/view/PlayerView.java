@@ -6,7 +6,7 @@ import javafx.scene.layout.Pane;
 import ru.nsu.dmustakaev.model.PlayerModel;
 import ru.nsu.dmustakaev.utils.Bounds;
 
-public class PlayerView implements GameObjectView, DynamicGameObjectView {
+public class PlayerView implements GameObjectView {
     private final PlayerModel model;
     private final Pane pane;
     private final ImageView playerView;

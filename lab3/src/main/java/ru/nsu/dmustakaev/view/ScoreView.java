@@ -10,7 +10,7 @@ import javafx.scene.text.TextAlignment;
 import ru.nsu.dmustakaev.Main;
 import ru.nsu.dmustakaev.model.ScoreModel;
 
-public class ScoreView implements  GameObjectView, DynamicGameObjectView{
+public class ScoreView implements  GameObjectView {
     private final Pane pane;
     private final Label scoreLabel;
     private final ScoreModel scoreModel;
@@ -23,6 +23,13 @@ public class ScoreView implements  GameObjectView, DynamicGameObjectView{
         this.scoreModel = scoreModel;
 
         scoreLabel = new Label(INIT_LABEL_TEXT);
+        changeScoreLabel();
+
+        pane = new Pane();
+        pane.getChildren().add(scoreLabel);
+    }
+
+    private void changeScoreLabel() {
         scoreLabel.setFont(Font.font(LABEL_FONT, FontWeight.BOLD, LABEL_FONT_SIZE));
         scoreLabel.setTextAlignment(TextAlignment.CENTER);
         scoreLabel.setTextFill(Color.WHITE);
@@ -37,13 +44,6 @@ public class ScoreView implements  GameObjectView, DynamicGameObjectView{
 
         scoreLabel.setLayoutX((Main.SCREEN_WIDTH - textWidth) / 2);;
         scoreLabel.setLayoutY(40);
-
-        pane = new Pane();
-        pane.getChildren().add(scoreLabel);
-    }
-
-    public void reset() {
-        scoreLabel.setText(INIT_LABEL_TEXT);
     }
 
     @Override

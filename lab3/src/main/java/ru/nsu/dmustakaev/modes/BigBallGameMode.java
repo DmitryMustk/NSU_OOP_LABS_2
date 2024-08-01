@@ -3,7 +3,7 @@ package ru.nsu.dmustakaev.modes;
 import ru.nsu.dmustakaev.model.BallModel;
 
 public class BigBallGameMode implements GameMode {
-    private BallModel ballModel;
+    private final BallModel ballModel;
 
     private static final String SOUND_SOURCE = "/game/sounds/modes/big_ball.mp3";
 

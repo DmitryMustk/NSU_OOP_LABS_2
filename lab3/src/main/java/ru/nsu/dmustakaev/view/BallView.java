@@ -6,7 +6,7 @@ import javafx.scene.layout.Pane;
 import ru.nsu.dmustakaev.model.BallModel;
 import ru.nsu.dmustakaev.utils.Bounds;
 
-public class BallView implements GameObjectView, DynamicGameObjectView {
+public class BallView implements GameObjectView {
     private final BallModel model;
     private final Pane pane;
     private final ImageView ballImageView;
@@ -55,9 +55,5 @@ public class BallView implements GameObjectView, DynamicGameObjectView {
         if (model.isMove()) {
             animate();
         }
-    }
-
-    public Bounds getBounds() {
-        return model.getBounds();
     }
 }

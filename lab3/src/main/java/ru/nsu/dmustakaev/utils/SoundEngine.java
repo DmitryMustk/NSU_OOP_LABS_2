@@ -8,7 +8,6 @@ import java.util.Objects;
 
 public class SoundEngine {
     private MediaPlayer mediaPlayer;
-    private MediaPlayer soundPlayer;
 
     public void setMusic(String soundName) {
        if(mediaPlayer != null) {
@@ -20,7 +19,7 @@ public class SoundEngine {
 
     public void playSound(String soundName) {
         Media sound = new Media(Objects.requireNonNull(getClass().getResource(soundName)).toString());
-        soundPlayer = new MediaPlayer(sound);
+        MediaPlayer soundPlayer = new MediaPlayer(sound);
         soundPlayer.play();
     }
 

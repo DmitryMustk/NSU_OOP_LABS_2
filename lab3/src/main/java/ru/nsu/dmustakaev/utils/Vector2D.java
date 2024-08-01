@@ -68,7 +68,4 @@ public class Vector2D {
         return Math.sqrt(x * x + y + y);
     }
 
-    public void normalize() {
-        this.mulVecOnScalar(1 / this.getLength());
-    }
 }

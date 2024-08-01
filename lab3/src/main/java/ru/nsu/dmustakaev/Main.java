@@ -37,14 +37,11 @@ public class Main extends Application {
     }
 }
 
-//TODO: add pvp mode
-    //TODO: add cvc mode
-    //TODO: add pause
-    //TODO: add settings
-    //TODO: win screen
-    //TODO: loose screen`
-    //TODO: back to gameObject factory idea
+//TODO: win screen
+//TODO: loose screen`
+// TODO: back to gameObject factory idea
 
 //TODO: add game mode messages1
+//TODO: add noJump mode
 //TODO: balance sound
 

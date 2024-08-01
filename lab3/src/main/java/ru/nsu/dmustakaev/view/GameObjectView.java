@@ -4,4 +4,5 @@ import javafx.scene.layout.Pane;
 
 public interface GameObjectView {
     Pane getPane();
+    void update();
 }

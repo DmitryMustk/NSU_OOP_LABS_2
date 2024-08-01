@@ -5,7 +5,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import ru.nsu.dmustakaev.model.EnemyModel;
 
-public class EnemyView implements GameObjectView, DynamicGameObjectView {
+public class EnemyView implements GameObjectView {
     private final EnemyModel model;
     private final Pane pane;
     private final ImageView enemyView;

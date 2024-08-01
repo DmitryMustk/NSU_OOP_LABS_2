@@ -23,21 +23,11 @@ public class GoalModel {
         return cords.getX();
     }
 
-    public void setX(double x) {
-        if (x < 0 || x > Main.SCREEN_WIDTH) {
-            throw new IllegalArgumentException("X out of bounds");
-        }
-        this.cords.setX(x);
-    }
-
     public double getY() {
         return cords.getY();
     }
 
     public void setY(double y) {
-//        if (y < 0 || y > Main.SCREEN_HEIGHT) {
-//            throw new IllegalArgumentException("Y out of bounds");
-//        }
         this.cords.setY(y);
     }
 
@@ -59,13 +49,6 @@ public class GoalModel {
 
     public int getWidth() {
         return width;
-    }
-
-    public void setWidth(int width) {
-        if (width < 0) {
-            throw new IllegalArgumentException("Width cannot be negative");
-        }
-        this.width = width;
     }
 
     public Direction getDirection() {

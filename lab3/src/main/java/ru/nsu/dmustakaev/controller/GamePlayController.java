@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import ru.nsu.dmustakaev.GameEngine;
 import ru.nsu.dmustakaev.model.PlayerModel;
@@ -18,17 +17,12 @@ import java.io.IOException;
 
 public class GamePlayController {
     @FXML
-    private AnchorPane rootPane;  // изменено с StackPane на AnchorPane
-
-    @FXML
     private AnchorPane gamePlayRoot;
-
     @FXML
     private AnchorPane pauseMenuRoot;
 
     private SoundEngine soundEngine;
     private GameEngine gameEngine;
-    private Scene gameScene;
     private Stage primaryStage;
 
     @FXML
@@ -57,8 +51,6 @@ public class GamePlayController {
     }
 
     public void setScene(Scene scene) {
-        this.gameScene = scene;
-
         scene.setOnKeyPressed(event -> {
             PlayerModel playerModel = gameEngine.getPlayerModel();
             Direction direction = Direction.getDirectionFromKeyCode(event.getCode());

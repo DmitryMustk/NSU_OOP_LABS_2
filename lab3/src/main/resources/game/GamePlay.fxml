@@ -3,22 +3,30 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
 
-<AnchorPane fx:id="rootPane" prefHeight="600.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.nsu.dmustakaev.controller.GamePlayController">
+<AnchorPane prefHeight="600.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.nsu.dmustakaev.controller.GamePlayController">
     <AnchorPane fx:id="gamePlayRoot" prefHeight="600.0" prefWidth="1024.0">
-        <ImageView fx:id="background_game" fitHeight="600.0" fitWidth="1024.0" layoutX="0.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <ImageView fitHeight="600.0" fitWidth="1024.0" layoutX="0.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <Image url="@pictures/background_game.png"/>
         </ImageView>
 
-        <ImageView fx:id="field" fitHeight="200.0" fitWidth="1024.0" layoutY="400.0">
+        <ImageView fitHeight="200.0" fitWidth="1024.0" layoutY="400.0">
             <Image url="@pictures/field_texture.png"/>
         </ImageView>
     </AnchorPane>
 
     <AnchorPane fx:id="pauseMenuRoot" prefHeight="600.0" prefWidth="1024.0" style="-fx-background-color: rgba(1, 1, 2, 0.5);" visible="false" focusTraversable="true">
-        <Button layoutX="462.0" layoutY="200.0" text="Resume" onMouseClicked="#resumeGame"/>
-        <Button layoutX="462.0" layoutY="300.0" mnemonicParsing="false" text="Exit" onMouseClicked="#exitToMainMenu"/>
+        <ImageView fitHeight="400" fitWidth="400" layoutX="312" layoutY="100">
+            <Image url="@pictures/pause/pauseWithoutBGFone.png"/>
+        </ImageView>
+
+        <ImageView onMouseClicked="#resumeGame" fitWidth="200" fitHeight="100" layoutX="402" layoutY="170">
+            <Image url="@pictures/pause/resume.png"/>
+        </ImageView>
+
+        <ImageView onMouseClicked="#exitToMainMenu" fitWidth="200" fitHeight="100" layoutX = "402" layoutY="310">
+            <Image url="@pictures/pause/exit.png"/>
+        </ImageView>
     </AnchorPane>
 </AnchorPane>
