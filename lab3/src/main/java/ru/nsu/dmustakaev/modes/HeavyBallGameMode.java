@@ -20,6 +20,11 @@ public class HeavyBallGameMode implements GameMode {
     }
 
     @Override
+    public String getTitle() {
+        return "Heavy Ball";
+    }
+
+    @Override
     public void apply() {
         defaultBounceFactor = ballModel.getBounceFactor();
         ballModel.setBounceFactor(HEAVY_BOUNCE_FACTOR);

@@ -9,12 +9,13 @@ public class DefaultGameMode implements GameMode {
     }
 
     @Override
-    public void apply() {
-
+    public String getTitle() {
+        return "Default Mode";
     }
 
     @Override
-    public void unapply() {
+    public void apply() {}
 
-    }
+    @Override
+    public void unapply() {}
 }

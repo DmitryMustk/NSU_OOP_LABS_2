@@ -31,6 +31,11 @@ public class SmallGoalsGameMode implements GameMode {
     }
 
     @Override
+    public String getTitle() {
+        return "Small Goals";
+    }
+
+    @Override
     public void apply() {
         changeGoalModel(leftGoalModel);
         changeGoalModel(rightGoalModel);

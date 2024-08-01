@@ -3,6 +3,10 @@ package ru.nsu.dmustakaev;
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.Duration;
 import ru.nsu.dmustakaev.model.*;
 import ru.nsu.dmustakaev.modes.*;
@@ -28,7 +32,7 @@ public class GameEngine {
     private ScoreModel scoreModel;
 
     private List<GameMode> gameModes;
-    private GameMode currentGameMode;
+    private final ObjectProperty<GameMode> currentGameMode;
 
     private List<GameObjectView> objectViews;
 
@@ -36,8 +40,9 @@ public class GameEngine {
 
     private final Random random;
 
-    private boolean isFinished;
-    private static final int GOALS_TO_WIN = 10;
+    private final BooleanProperty isFinished;
+    private static final int GOALS_TO_WIN = 1;
+    private Direction winner;
 
     private void createGameObjectsModels() {
         leftGoalModel = new GoalModel(Direction.LEFT,0,  240, 160, 20);
@@ -92,10 +97,11 @@ public class GameEngine {
 
         this.soundEngine = soundEngine;
         this.random = new Random();
-        this.isFinished = false;
+        this.isFinished = new SimpleBooleanProperty(false);
+        this.currentGameMode = new SimpleObjectProperty<>(null);
 
         KeyFrame frame = new KeyFrame(Duration.seconds(1.0 / FPS), actionEvent -> {
-            if (isOnPause) {
+            if (isOnPause || isFinished.get()) {
                 return;
             }
             objectViews.forEach(GameObjectView::update);
@@ -156,12 +162,25 @@ public class GameEngine {
             soundEngine.playSound("/game/sounds/score/fail.mp3");
             scoreModel.incrementEnemyScore();
         }
-
+        handleGameOver();
         pauseAfterScore();
-        isFinished = scoreModel.getEnemyScore() == GOALS_TO_WIN || scoreModel.getPlayerScore() == GOALS_TO_WIN;
+    }
+
+    private void handleGameOver() {
+        int playerScore = scoreModel.getPlayerScore();
+        int enemyScore = scoreModel.getEnemyScore();
+
+        if(playerScore == GOALS_TO_WIN || enemyScore == GOALS_TO_WIN) {
+            winner = playerScore > enemyScore ? Direction.LEFT : Direction.RIGHT;
+            isFinished.set(true);
+        }
     }
 
     private void pauseAfterScore() {
+        if(isFinished.get()) {
+            return;
+        }
+
         isOnPause = true;
         PauseTransition pause = new PauseTransition(Duration.seconds(1.3));
         pause.setOnFinished(event -> {
@@ -179,23 +198,36 @@ public class GameEngine {
     }
 
     private void applyNewMode() {
-        if (currentGameMode != null) {
-            currentGameMode.unapply();
+        if (currentGameMode.get() != null) {
+            currentGameMode.get().unapply();
         }
 //        currentGameMode = gameModes.getFirst();
-        currentGameMode = gameModes.stream()
+        currentGameMode.set(
+                gameModes.stream()
                 .filter(g -> !g.equals(currentGameMode))
                 .toList()
                 .get((random.nextInt(gameModes.size() - 1)))
-        ;
+        );
 
-        currentGameMode.apply();
+        currentGameMode.get().apply();
         System.out.println("Current game mode: " + currentGameMode);
-        soundEngine.playSound(currentGameMode.getSoundSource());
+        soundEngine.playSound(currentGameMode.get().getSoundSource());
     }
 
     public GameMode getCurrentGameMode() {
+        return currentGameMode.get();
+    }
+
+    public ObjectProperty<GameMode> currentGameModeProperty() {
         return currentGameMode;
+    }
+
+    public BooleanProperty getIsFinished() {
+        return isFinished;
+    }
+
+    public Direction getWinner() {
+        return winner;
     }
 
 }

@@ -22,6 +22,11 @@ public class SmallPlayersGameMode implements GameMode {
     }
 
     @Override
+    public String getTitle() {
+        return "Small Players";
+    }
+
+    @Override
     public void apply() {
         playerModel.setRadius(playerModel.getRadius() * PLAYERS_RADIUS_MULTIPLIER);
         enemyModel.setRadius(enemyModel.getRadius() * PLAYERS_RADIUS_MULTIPLIER);

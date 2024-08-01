@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import ru.nsu.dmustakaev.utils.SoundEngine;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class GameMenuController {
     @FXML
@@ -37,6 +38,7 @@ public class GameMenuController {
         gamePlayController.setSoundEngine(soundEngine);
 
         Scene gameScene = new Scene(gamePlayRoot);
+        gameScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/game/styles.css")).toExternalForm());
         gamePlayController.setScene(gameScene);
 
         soundEngine.stopMusic();

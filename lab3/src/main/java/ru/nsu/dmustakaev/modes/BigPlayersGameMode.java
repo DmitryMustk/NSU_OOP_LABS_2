@@ -4,8 +4,8 @@ import ru.nsu.dmustakaev.model.EnemyModel;
 import ru.nsu.dmustakaev.model.PlayerModel;
 
 public class BigPlayersGameMode implements GameMode {
-    private PlayerModel playerModel;
-    private EnemyModel enemyModel;
+    private final PlayerModel playerModel;
+    private final EnemyModel enemyModel;
 
     private static final int PLAYERS_RADIUS_MULTIPLIER = 2;
 
@@ -19,6 +19,11 @@ public class BigPlayersGameMode implements GameMode {
     @Override
     public String getSoundSource() {
         return SOUND_SOURCE;
+    }
+
+    @Override
+    public String getTitle() {
+        return "Big Players";
     }
 
     @Override

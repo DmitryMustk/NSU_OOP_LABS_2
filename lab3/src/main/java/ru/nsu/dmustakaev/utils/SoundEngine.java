@@ -8,10 +8,12 @@ import java.util.Objects;
 
 public class SoundEngine {
     private MediaPlayer mediaPlayer;
+    private MediaPlayer soundPlayer;
 
     public void setMusic(String soundName) {
        if(mediaPlayer != null) {
            mediaPlayer.stop();
+           mediaPlayer.dispose();
        }
         Media sound = new Media(Objects.requireNonNull(getClass().getResource(soundName)).toString());
         mediaPlayer = new MediaPlayer(sound);
@@ -19,15 +21,16 @@ public class SoundEngine {
 
     public void playSound(String soundName) {
         Media sound = new Media(Objects.requireNonNull(getClass().getResource(soundName)).toString());
-        MediaPlayer soundPlayer = new MediaPlayer(sound);
+        soundPlayer = new MediaPlayer(sound);
+        soundPlayer.setAutoPlay(true);
         soundPlayer.play();
     }
 
     public void playMusic() {
-        mediaPlayer.setAutoPlay(true);
+//        mediaPlayer.setAutoPlay(true);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-        mediaPlayer.setStartTime(Duration.seconds(0));
-        mediaPlayer.setVolume(0.05);
+//        mediaPlayer.setStartTime(Duration.seconds(0));
+        mediaPlayer.setVolume(0.1);
         mediaPlayer.play();
     }
 

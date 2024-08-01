@@ -10,9 +10,9 @@
         <Image url="@/menu/pictures/background_menu.png"/>
     </ImageView>
 
-    <ImageViewd fitHeight="109.0" fitWidth="241.0" layoutX="44.0" layoutY="300.0" onMouseClicked="#startGame" pickOnBounds="true" preserveRatio="true">
+    <ImageView fitHeight="109.0" fitWidth="241.0" layoutX="44.0" layoutY="300.0" onMouseClicked="#startGame" pickOnBounds="true" preserveRatio="true">
         <Image url="@pictures/startgame_button.png"/>
-    </ImageViewd>
+    </ImageView>
 
     <ImageView fx:id="exitGame" fitHeight="109.0" fitWidth="241.0" layoutX="44.0" layoutY="400.0" onMouseClicked="#exitGame" pickOnBounds="true" preserveRatio="true">
         <Image url="@pictures/exit_button.png"/>

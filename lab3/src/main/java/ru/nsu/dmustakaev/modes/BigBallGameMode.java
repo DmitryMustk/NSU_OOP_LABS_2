@@ -19,6 +19,11 @@ public class BigBallGameMode implements GameMode {
     }
 
     @Override
+    public String getTitle() {
+        return "Big Ball";
+    }
+
+    @Override
     public void apply() {
         ballModel.setRadius(ballModel.getRadius() * BALL_RADIUS_MULTIPLIER);
     }

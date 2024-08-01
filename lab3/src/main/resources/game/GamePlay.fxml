@@ -3,7 +3,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 
 <AnchorPane prefHeight="600.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.nsu.dmustakaev.controller.GamePlayController">
     <AnchorPane fx:id="gamePlayRoot" prefHeight="600.0" prefWidth="1024.0">
@@ -13,6 +13,24 @@
 
         <ImageView fitHeight="200.0" fitWidth="1024.0" layoutY="400.0">
             <Image url="@pictures/field_texture.png"/>
+        </ImageView>
+
+        <Label fx:id="gameModeLabel"
+               text="Game Mode"
+               layoutX="320"
+               layoutY="120"
+               visible="false"
+               styleClass="game-mode-label, flame-animation">
+        </Label>
+    </AnchorPane>
+
+    <AnchorPane fx:id="endGameRoot" prefHeight="600.0" prefWidth="1024.0" >
+        <ImageView fx:id="winScreenPicture" fitHeight="600.0" fitWidth="1024.0" visible="false">
+            <Image url="@pictures/final_screens/win_screen.png"/>
+        </ImageView>
+
+        <ImageView fx:id="loseScreenPicture" fitHeight="600.0" fitWidth="1024.0" visible="false">
+            <Image url="@pictures/final_screens/lose_screen.jpg"/>
         </ImageView>
     </AnchorPane>
 

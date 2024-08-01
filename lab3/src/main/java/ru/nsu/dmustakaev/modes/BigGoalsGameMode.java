@@ -31,6 +31,11 @@ public class BigGoalsGameMode implements GameMode {
     }
 
     @Override
+    public String getTitle() {
+        return "Big Goals";
+    }
+
+    @Override
     public void apply() {
         changeGoalModel(leftGoalModel);
         changeGoalModel(rightGoalModel);

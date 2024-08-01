@@ -35,6 +35,11 @@ public class SlipperyFloorGameMode implements GameMode{
     }
 
     @Override
+    public String getTitle() {
+        return "Slippery Floor";
+    }
+
+    @Override
     public void apply() {
         ballModelSettings = ballModel.getSimulationSettings();
         playerModelSettings = playerModel.getSimulationSettings();

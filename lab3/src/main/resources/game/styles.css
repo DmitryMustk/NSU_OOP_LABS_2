@@ -1,0 +1,11 @@
+.game-mode-label {
+    -fx-text-fill: yellow;
+    -fx-font-size: 75px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial";
+    -fx-effect: dropshadow(gaussian, red, 3, 0.5, 1, 1);
+}
+
+.flame-animation {
+    -fx-text-fill: yellow;
+}

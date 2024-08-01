@@ -22,6 +22,11 @@ public class PlayersHighSpeedGameMode implements GameMode{
     }
 
     @Override
+    public String getTitle() {
+        return "High Speed";
+    }
+
+    @Override
     public void apply() {
         playerModel.setMovementSpeed(playerModel.getMovementSpeed() * MOVEMENT_SPEED_MULTIPLIER);
         playerModel.getMaxSpeed().mulVecOnScalar(MOVEMENT_SPEED_MULTIPLIER);

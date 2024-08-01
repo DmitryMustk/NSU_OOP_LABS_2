@@ -30,6 +30,11 @@ public class MoonGravityGameMode implements GameMode {
     }
 
     @Override
+    public String getTitle() {
+        return "Moon Gravity";
+    }
+
+    @Override
     public void apply() {
         ballModelSettings = ballModel.getSimulationSettings();
         playerModelSettings = playerModel.getSimulationSettings();

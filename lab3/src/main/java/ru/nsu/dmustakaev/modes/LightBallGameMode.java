@@ -20,6 +20,11 @@ public class LightBallGameMode implements GameMode {
     }
 
     @Override
+    public String getTitle() {
+        return "Light Ball";
+    }
+
+    @Override
     public void apply() {
         defaultBounceFactor = ballModel.getBounceFactor();
         ballModel.setBounceFactor(LIGHT_BOUNCE_FACTOR);
