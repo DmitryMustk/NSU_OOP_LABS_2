@@ -32,6 +32,10 @@
         <ImageView fx:id="loseScreenPicture" fitHeight="600.0" fitWidth="1024.0" visible="false">
             <Image url="@pictures/final_screens/lose_screen.jpg"/>
         </ImageView>
+
+        <ImageView fx:id="exitToMainMenuButton" onMouseClicked="#exitToMainMenu" fitWidth="200" fitHeight="100" layoutX = "402" layoutY="450" visible="false" >
+            <Image url="@pictures/pause/exit.png"/>
+        </ImageView>
     </AnchorPane>
 
     <AnchorPane fx:id="pauseMenuRoot" prefHeight="600.0" prefWidth="1024.0" style="-fx-background-color: rgba(1, 1, 2, 0.5);" visible="false" focusTraversable="true">

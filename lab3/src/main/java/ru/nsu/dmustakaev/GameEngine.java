@@ -41,7 +41,7 @@ public class GameEngine {
     private final Random random;
 
     private final BooleanProperty isFinished;
-    private static final int GOALS_TO_WIN = 1;
+    private static final int GOALS_TO_WIN = 5;
     private Direction winner;
 
     private void createGameObjectsModels() {
@@ -201,7 +201,6 @@ public class GameEngine {
         if (currentGameMode.get() != null) {
             currentGameMode.get().unapply();
         }
-//        currentGameMode = gameModes.getFirst();
         currentGameMode.set(
                 gameModes.stream()
                 .filter(g -> !g.equals(currentGameMode))

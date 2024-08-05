@@ -25,6 +25,7 @@ import java.io.IOException;
 public class GamePlayController {
     @FXML
     public AnchorPane endGameRoot;
+    @FXML
     public Label gameModeLabel;
     @FXML
     private AnchorPane gamePlayRoot;
@@ -35,6 +36,8 @@ public class GamePlayController {
     public ImageView winScreenPicture;
     @FXML
     public ImageView loseScreenPicture;
+    @FXML
+    public ImageView exitToMainMenuButton;
 
     private SoundEngine soundEngine;
     private GameEngine gameEngine;
@@ -43,7 +46,7 @@ public class GamePlayController {
     @FXML
     public void initialize() {
         soundEngine = new SoundEngine();
-        soundEngine.setMusic("/game/sounds/in_game_stadium_noises.wav");
+        soundEngine.setMusic("/game/sounds/in_game_stadium_noises.mp3");
         soundEngine.playMusic();
 
         gameEngine = new GameEngine(soundEngine);
@@ -73,10 +76,10 @@ public class GamePlayController {
         gameModeLabel.setText(modeName);
         gameModeLabel.setVisible(true);
 
-        animateGameModeLable();
+        animateGameModeLabel();
     }
 
-    private void animateGameModeLable() {
+    private void animateGameModeLabel() {
         FadeTransition fadeIn = new FadeTransition(Duration.seconds(0.5), gameModeLabel);
         fadeIn.setFromValue(0);
         fadeIn.setToValue(1);
@@ -115,8 +118,6 @@ public class GamePlayController {
 
     private void processGameOver() {
         soundEngine.stopMusic();
-
-        System.out.println(322);
         if(gameEngine.getWinner() == Direction.LEFT) {
             processWin();
             return;
@@ -129,10 +130,15 @@ public class GamePlayController {
         soundEngine.playMusic();
         endGameRoot.toFront();
         winScreenPicture.setVisible(true);
+        exitToMainMenuButton.setVisible(true);
     }
 
     private void processLose() {
-
+        soundEngine.setMusic("/game/sounds/game_over_music/lose_music.mp3");
+        soundEngine.playMusic();
+        endGameRoot.toFront();
+        loseScreenPicture.setVisible(true);
+        exitToMainMenuButton.setVisible(true);
     }
 
     public void setPrimaryStage(Stage primaryStage) {
