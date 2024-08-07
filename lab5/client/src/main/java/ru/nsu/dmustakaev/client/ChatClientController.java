@@ -3,29 +3,12 @@ package ru.nsu.dmustakaev.client;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.util.Pair;
 import org.controlsfx.dialog.LoginDialog;
 
-import java.io.*;
-import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Objects;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import org.w3c.dom.*;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import static ru.nsu.dmustakaev.client.RequestTags.*;
 
 public class ChatClientController {
     @FXML
@@ -39,36 +22,35 @@ public class ChatClientController {
     @FXML
     private TextArea inputArea;
 
-    private Socket socket;
-    private DataOutputStream writer;
-    private DataInputStream reader;
-
-    private boolean isLogged = false;
-    private RequestCommands lastCommand;
-
     private final ObservableList<String> messages = FXCollections.observableArrayList();
     private final ObservableList<String> users = FXCollections.observableArrayList();
-
     private final Logger logger = Logger.getLogger(ChatClientController.class.getName());
 
+    private final NetworkManager networkManager;
+    private final XmlProcessor xmlProcessor;
+    private final CommandBuilder commandBuilder;
+    private boolean isLogged = false;
+
+    public ChatClientController() {
+        this.networkManager = new NetworkManager();
+        this.xmlProcessor = new XmlProcessor();
+        this.commandBuilder = new CommandBuilder();
+    }
+
     @FXML
-    public void initialize() throws IOException {
+    public void initialize() {
         userListView.setItems(users);
         messageListView.setItems(messages);
-
-        socket = new Socket("localhost", 5556);
-        writer = new DataOutputStream(socket.getOutputStream());
-        reader = new DataInputStream(socket.getInputStream());
-
+        networkManager.connect("localhost", 5556, this::processServerMessage);
         logoutButton.setVisible(false);
     }
 
     @FXML
     public void onClickSendMessage() {
-        checkLoging();
+        checkLogging();
         String message = inputArea.getText().trim();
         if (!message.isEmpty()) {
-            sendCommand(COMMAND_REQUEST.formatted("message", MESSAGE_REQUEST.formatted(message)));
+            networkManager.sendMessage(commandBuilder.createMessageCommand(message));
             inputArea.clear();
         }
     }
@@ -78,132 +60,39 @@ public class ChatClientController {
         LoginDialog loginDialog = new LoginDialog(new Pair<>("", ""), authenticator -> {
             String username = authenticator.getKey();
             String password = authenticator.getValue();
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
             if (username.isEmpty() || password.isEmpty()) {
-                errorAlert.setContentText("Please enter your username and password");
-                errorAlert.show();
+                showAlert("Please enter your username and password");
                 return null;
             }
-            sendCommand(COMMAND_REQUEST.formatted(
-                    "login", USERNAME_REQUEST.formatted(username) + PASSWORD_REQUEST.formatted(password)));
-
-            new Thread(this::listenForMessages).start();
+            networkManager.sendMessage(commandBuilder.createLoginCommand(username, password));
+            new Thread(() -> networkManager.listenForMessages(this::processServerMessage)).start(); // исправлено здесь
             loginButton.setVisible(false);
             logoutButton.setVisible(true);
-            lastCommand = RequestCommands.LOGIN;
             return null;
         });
+        loginDialog.setHeight(ChatClient.SCREEN_HEIGHT);
+        loginDialog.setWidth(ChatClient.SCREEN_WIDTH);
         loginDialog.showAndWait();
     }
 
     @FXML
     public void onClickFindUsers() {
-        checkLoging();
-        sendCommand(COMMAND_REQUEST.formatted("list", ""));
-        lastCommand = RequestCommands.LIST;
+        checkLogging();
+        networkManager.sendMessage(commandBuilder.createListCommand());
     }
 
     @FXML
     public void onClickLogout() {
-        checkLoging();//somehow
-
-        sendCommand(COMMAND_REQUEST.formatted("logout", ""));
-        lastCommand = RequestCommands.LOGOUT;
-
+        checkLogging();
+        networkManager.sendMessage(commandBuilder.createLogoutCommand());
         logoutButton.setVisible(false);
         loginButton.setVisible(true);
     }
 
-    private void sendCommand(String command) {
-        try {
-            byte[] messageBytes = command.getBytes(StandardCharsets.UTF_8);
-            writer.writeInt(messageBytes.length);
-            writer.write(messageBytes);
-            writer.flush();
-        } catch (IOException e) {
-            showAlert("Failed to send message: " + e.getMessage());
+    private void checkLogging() {
+        if (!isLogged) {
+            showAlert("You are not logged in!");
         }
-    }
-
-    private void listenForMessages() {
-        try {
-            while (!socket.isClosed()) {
-                if (reader.available() > 0) {
-                    int messageLength = reader.readInt();
-                    byte[] messageBytes = new byte[messageLength];
-                    reader.readFully(messageBytes);
-                    String message = new String(messageBytes, StandardCharsets.UTF_8);
-                    logger.info("Received message length: %d. Message: %s".formatted(messageLength, message));
-                    processServerMessage(message);
-                }
-            }
-        } catch (IOException e) {
-            if (!socket.isClosed()) {
-                showAlert("Connection lost: " + e.getMessage());
-            }
-        } finally {
-            closeSocket();
-        }
-    }
-
-    private void checkLoging() {
-        if(!isLogged) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("You are not logged in!");
-            alert.show();
-        }
-    }
-
-    private List<String> getUsernamesFromXML(String xmlString) {
-        List<String> usernames;
-        try {
-            Document document = DocumentBuilderFactory.newInstance()
-                    .newDocumentBuilder()
-                    .parse(new InputSource(new StringReader(xmlString)));
-            document.getDocumentElement().normalize();
-            NodeList nodeList = document.getElementsByTagName("user");
-            usernames = IntStream.range(0, nodeList.getLength())
-                    .mapToObj(nodeList::item)
-                    .filter(node -> node.getNodeType() == Node.ELEMENT_NODE)
-                    .map(node -> (Element) node)
-                    .map(element -> {
-                        Node nameNode = element.getElementsByTagName("name").item(0);
-                        return nameNode != null ? nameNode.getTextContent() : null;
-                    })
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
-            return usernames;
-        } catch (SAXException | ParserConfigurationException | IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void processServerMessage(String message) {
-        if (message.contains("<event name=\"message\">")) {
-            String from = extractXmlValue(message, "from");
-            String chatMessage = extractXmlValue(message, "message");
-            Platform.runLater(() -> messages.add(from + ": " + chatMessage));
-        } else if (message.contains("<event name=\"userlogin\">")) {
-            String name = extractXmlValue(message, "name");
-            Platform.runLater(() -> messages.add(name + " is logged in."));
-        } else if (message.contains("<event name=\"userlogout\">")) {
-            String name = extractXmlValue(message, "name");
-            Platform.runLater(() -> users.remove(name));
-        } else if (message.contains("<success>") && lastCommand == RequestCommands.LIST) {
-            Platform.runLater(() -> users.addAll(getUsernamesFromXML(message)));
-        } else if (message.contains("<success>") && lastCommand == RequestCommands.LOGIN) {
-            isLogged = true;
-        } else if (message.contains("<success>") && lastCommand == RequestCommands.LOGOUT) {
-            isLogged = false;
-        }
-    }
-
-
-    private String extractXmlValue(String xml, String tagName) {
-        int start = xml.indexOf("<" + tagName + ">") + tagName.length() + 2;
-        int end = xml.indexOf("</" + tagName + ">");
-        if (start < 0 || end < 0) return null;
-        return xml.substring(start, end);
     }
 
     private void showAlert(String message) {
@@ -214,14 +103,25 @@ public class ChatClientController {
         });
     }
 
-    public void closeSocket() {
-        try {
-            if (socket != null && !socket.isClosed()) {
-                socket.close();
-                logger.info("Socket closed.");
+    private void processServerMessage(String message) {
+        if (message.contains("<event name=\"message\">")) {
+            String from = xmlProcessor.extractXmlValue(message, "from");
+            String chatMessage = xmlProcessor.extractXmlValue(message, "message");
+            Platform.runLater(() -> messages.add(from + ": " + chatMessage));
+        } else if (message.contains("<event name=\"userlogin\">")) {
+            String name = xmlProcessor.extractXmlValue(message, "name");
+            Platform.runLater(() -> messages.add(name + " is logged in."));
+        } else if (message.contains("<event name=\"userlogout\">")) {
+            String name = xmlProcessor.extractXmlValue(message, "name");
+            Platform.runLater(() -> users.remove(name));
+        } else if (message.contains("<success>")) {
+            if (networkManager.getLastCommand() == RequestCommands.LIST) {
+                Platform.runLater(() -> users.addAll(xmlProcessor.getUsernamesFromXML(message)));
+            } else if (networkManager.getLastCommand() == RequestCommands.LOGIN) {
+                isLogged = true;
+            } else if (networkManager.getLastCommand() == RequestCommands.LOGOUT) {
+                isLogged = false;
             }
-        } catch (IOException e) {
-            logger.warning("Failed to close socket: " + e.getMessage());
         }
     }
 }
