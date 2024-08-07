@@ -33,6 +33,7 @@ public class NetworkManager {
             writer.writeInt(messageBytes.length);
             writer.write(messageBytes);
             writer.flush();
+            logger.info("Send message: %s".formatted(command));
         } catch (IOException e) {
             showAlert("Failed to send message: " + e.getMessage());
         }

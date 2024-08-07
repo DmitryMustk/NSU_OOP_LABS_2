@@ -50,6 +50,7 @@ public class ChatClientController {
         checkLogging();
         String message = inputArea.getText().trim();
         if (!message.isEmpty()) {
+            networkManager.setLastCommand(RequestCommands.MESSAGE);
             networkManager.sendMessage(commandBuilder.createMessageCommand(message));
             inputArea.clear();
         }
@@ -64,14 +65,14 @@ public class ChatClientController {
                 showAlert("Please enter your username and password");
                 return null;
             }
+            networkManager.setLastCommand(RequestCommands.LOGIN);
             networkManager.sendMessage(commandBuilder.createLoginCommand(username, password));
-            new Thread(() -> networkManager.listenForMessages(this::processServerMessage)).start(); // исправлено здесь
+            new Thread(() -> networkManager.listenForMessages(this::processServerMessage)).start();
             loginButton.setVisible(false);
             logoutButton.setVisible(true);
             return null;
         });
-//        loginDialog.setHeight(ChatClient.SCREEN_HEIGHT);
-//        loginDialog.setWidth(ChatClient.SCREEN_WIDTH);
+
         loginDialog.setResizable(false);
         loginDialog.getDialogPane().setMinHeight(ChatClient.SCREEN_HEIGHT);
         loginDialog.getDialogPane().setMaxHeight(ChatClient.SCREEN_HEIGHT);
@@ -84,12 +85,14 @@ public class ChatClientController {
     @FXML
     public void onClickFindUsers() {
         checkLogging();
+        networkManager.setLastCommand(RequestCommands.LIST);
         networkManager.sendMessage(commandBuilder.createListCommand());
     }
 
     @FXML
     public void onClickLogout() {
         checkLogging();
+        networkManager.setLastCommand(RequestCommands.LOGOUT);
         networkManager.sendMessage(commandBuilder.createLogoutCommand());
         logoutButton.setVisible(false);
         loginButton.setVisible(true);
@@ -114,20 +117,39 @@ public class ChatClientController {
             String from = xmlProcessor.extractXmlValue(message, "from");
             String chatMessage = xmlProcessor.extractXmlValue(message, "message");
             Platform.runLater(() -> messages.add(from + ": " + chatMessage));
+
         } else if (message.contains("<event name=\"userlogin\">")) {
             String name = xmlProcessor.extractXmlValue(message, "name");
             Platform.runLater(() -> messages.add(name + " is logged in."));
+
         } else if (message.contains("<event name=\"userlogout\">")) {
             String name = xmlProcessor.extractXmlValue(message, "name");
-            Platform.runLater(() -> users.remove(name));
+            Platform.runLater(() -> messages.add(name + " is logout."));
+//            Platform.runLater(() -> users.remove(name));
+
         } else if (message.contains("<success>")) {
+            logger.info("Received success answer on %s request".formatted(networkManager.getLastCommand()));
             if (networkManager.getLastCommand() == RequestCommands.LIST) {
-                Platform.runLater(() -> users.addAll(xmlProcessor.getUsernamesFromXML(message)));
+                Platform.runLater(() -> {
+                    users.clear();
+                    users.addAll(xmlProcessor.getUsernamesFromXML(message));
+                });
+
             } else if (networkManager.getLastCommand() == RequestCommands.LOGIN) {
                 isLogged = true;
+                logger.info("Received success login message from server. User is logged");
+
             } else if (networkManager.getLastCommand() == RequestCommands.LOGOUT) {
                 isLogged = false;
+                logger.info("Received success logout message from server. User is logout");
             }
         }
     }
+
+    @FXML
+    public void onClickExit() {
+        Platform.exit();
+        System.exit(0);
+    }
+
 }

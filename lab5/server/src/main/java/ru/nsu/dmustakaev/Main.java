@@ -5,4 +5,5 @@ public class Main {
         Server server = new Server("localhost", 5556, 15);
         server.start();
     }
+    //TODO: fix server death from client terminating
 }

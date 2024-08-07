@@ -30,4 +30,6 @@ public class ChatClient extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+    //TODO: resolve invalid username or password case
+    //TODO: empty users list while someone is logout
 }
