@@ -70,8 +70,14 @@ public class ChatClientController {
             logoutButton.setVisible(true);
             return null;
         });
-        loginDialog.setHeight(ChatClient.SCREEN_HEIGHT);
-        loginDialog.setWidth(ChatClient.SCREEN_WIDTH);
+//        loginDialog.setHeight(ChatClient.SCREEN_HEIGHT);
+//        loginDialog.setWidth(ChatClient.SCREEN_WIDTH);
+        loginDialog.setResizable(false);
+        loginDialog.getDialogPane().setMinHeight(ChatClient.SCREEN_HEIGHT);
+        loginDialog.getDialogPane().setMaxHeight(ChatClient.SCREEN_HEIGHT);
+        loginDialog.getDialogPane().setMinWidth(ChatClient.SCREEN_WIDTH);
+        loginDialog.getDialogPane().setMaxWidth(ChatClient.SCREEN_WIDTH);
+
         loginDialog.showAndWait();
     }
 
