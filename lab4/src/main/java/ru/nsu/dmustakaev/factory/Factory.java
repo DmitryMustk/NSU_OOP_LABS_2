@@ -1,5 +1,7 @@
 package ru.nsu.dmustakaev.factory;
 
+import lombok.Data;
+import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.dmustakaev.factory.parts.Accessory;
@@ -82,5 +84,61 @@ public class Factory {
         bodyProductionThread.shutdown();
         engineProductionThread.shutdown();
         accessoryProductionThread.shutdown();
+    }
+
+    public BodySupplier getBodySupplier() {
+        return bodySupplier;
+    }
+
+    public EngineSupplier getEngineSupplier() {
+        return engineSupplier;
+    }
+
+    public AccessorySupplier getAccessorySupplier() {
+        return accessorySupplier;
+    }
+
+    public Store<Body> getBodyStore() {
+        return bodyStore;
+    }
+
+    public Store<Engine> getEngineStore() {
+        return engineStore;
+    }
+
+    public Store<Accessory> getAccessoryStore() {
+        return accessoryStore;
+    }
+
+    public Store<Car> getCarStore() {
+        return carStore;
+    }
+
+    public ProductionThread<Body> getBodyProductionThread() {
+        return bodyProductionThread;
+    }
+
+    public ProductionThread<Engine> getEngineProductionThread() {
+        return engineProductionThread;
+    }
+
+    public ProductionThread<Accessory> getAccessoryProductionThread() {
+        return accessoryProductionThread;
+    }
+
+    public Dealer getDealer() {
+        return dealer;
+    }
+
+    public void setBodySupplierDelay(int delay) {
+        bodySupplier.setDelay(delay);
+    }
+
+    public void setEngineSupplierDelay(int delay) {
+        engineSupplier.setDelay(delay);
+    }
+
+    public void setAccessorySupplierDelay(int delay) {
+        accessorySupplier.setDelay(delay);
     }
 }

@@ -55,4 +55,7 @@ public class Dealer {
        return carPrice;
    }
 
+   public BigDecimal getCarPrice() {
+       return carPrice;
+   }
 }

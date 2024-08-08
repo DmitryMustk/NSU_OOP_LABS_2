@@ -1,4 +1,6 @@
-package ru.nsu.dmustakaev.factory;
+package ru.nsu.dmustakaev;
+
+import ru.nsu.dmustakaev.factory.Factory;
 
 import java.io.IOException;
 
