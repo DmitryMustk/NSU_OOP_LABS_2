@@ -1,7 +1,5 @@
 package ru.nsu.dmustakaev.factory;
 
-import lombok.Data;
-import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.nsu.dmustakaev.factory.parts.Accessory;
@@ -13,8 +11,12 @@ import ru.nsu.dmustakaev.factory.store.Store;
 import ru.nsu.dmustakaev.factory.suppliers.AccessorySupplier;
 import ru.nsu.dmustakaev.factory.suppliers.BodySupplier;
 import ru.nsu.dmustakaev.factory.suppliers.EngineSupplier;
+import ru.nsu.dmustakaev.gui.controllers.BuildController;
+import ru.nsu.dmustakaev.gui.controllers.DealController;
+import ru.nsu.dmustakaev.gui.controllers.PriceController;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Properties;
 
 public class Factory {
@@ -34,6 +36,10 @@ public class Factory {
     private final ProductionThread<Body> bodyProductionThread;
     private final ProductionThread<Engine> engineProductionThread;
     private final ProductionThread<Accessory> accessoryProductionThread;
+
+    private final BuildController buildController;
+    private final DealController dealController;
+    private final PriceController priceController;
 
     private final Dealer dealer;
 
@@ -67,6 +73,28 @@ public class Factory {
         int workersCount = Integer.parseInt((String) properties.get("WORKER.NUM"));
 
         logger.info("Stores, suppliers and threads created");
+
+        buildController = new BuildController(bodyStore, engineStore, accessoryStore, carStore, workersCount);
+        priceController = new PriceController(dealer, new PriceController.FactoryProductionControlAdapter() {
+            @Override
+            public boolean isPaused() {
+                return buildController.isPause();
+            }
+
+            @Override
+            public void pauseProduction() {
+                buildController.pauseProduction();
+            }
+
+            @Override
+            public void continueProduction() {
+                buildController.continueProduction();
+            }
+        });
+
+        dealController = new DealController(carStore, dealer, dealersCount);
+
+        logger.info("Controllers created");
     }
 
     public void start() {
@@ -76,6 +104,12 @@ public class Factory {
 
         logger.info("Production threads started");
 
+        buildController.start();
+        dealController.start();
+        priceController.start();
+
+        logger.info("Controllers started");
+
     }
 
     public void shutdown() {
@@ -84,6 +118,9 @@ public class Factory {
         bodyProductionThread.shutdown();
         engineProductionThread.shutdown();
         accessoryProductionThread.shutdown();
+
+        buildController.shutdown();
+        dealController.shutdown();
     }
 
     public BodySupplier getBodySupplier() {
@@ -140,5 +177,17 @@ public class Factory {
 
     public void setAccessorySupplierDelay(int delay) {
         accessorySupplier.setDelay(delay);
+    }
+
+    public int getTotalSold() {
+        return dealController.getTotalSold();
+    }
+
+    public BigDecimal getTotalGain() {
+        return dealController.getTotalGain();
+    }
+
+    public boolean isBuildingPaused() {
+        return buildController.isPause();
     }
 }

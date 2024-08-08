@@ -147,4 +147,10 @@ public class FactoryWindow extends JFrame {
         totalGainLabel.setText("Total gain: " + new DecimalFormat("#0.#").format(factory.getTotalGain()));
         buildStateLabel.setText("Build state: " + (factory.isBuildingPaused() ? "paused" : "running"));
     }
+
+    @Override
+    public void dispose() {
+        factory.shutdown();
+        System.exit(0);
+    }
 }

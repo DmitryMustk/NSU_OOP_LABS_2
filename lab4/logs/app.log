@@ -1,2 +1,45 @@
 2024-08-06 16:27:49,089 INFO r.n.d.f.Factory [main] Stores, suppliers and threads created
 2024-08-06 16:27:49,092 INFO r.n.d.f.Factory [main] Production threads started
+2024-08-08 13:47:02,725 INFO r.n.d.f.Factory [main] Stores, suppliers and threads created
+2024-08-08 13:47:02,735 INFO r.n.d.f.Factory [main] Controllers created
+2024-08-08 13:47:02,735 INFO r.n.d.f.Factory [main] Production threads started
+2024-08-08 13:47:02,735 INFO r.n.d.f.Factory [main] Controllers started
+2024-08-08 13:47:02,737 INFO r.n.d.g.c.PriceController [Thread-15] 584.2176876138865800
+2024-08-08 13:47:03,736 INFO r.n.d.t.ThreadPool [0] Executing task 'Build a car'
+2024-08-08 13:47:03,738 INFO r.n.d.t.ThreadPool [0] Executing task 'Sell a car'
+2024-08-08 13:47:03,738 INFO r.n.d.g.c.PriceController [Thread-15] 584.2176876138865800
+2024-08-08 13:47:03,750 INFO r.n.d.g.c.DealController [0] Sold car to dealer 0: Car 1246523668 (Body: 504976231, Engine: 1242526510, Accessory: 1002707885)
+2024-08-08 13:47:04,736 INFO r.n.d.t.ThreadPool [2] Executing task 'Build a car'
+2024-08-08 13:47:04,737 INFO r.n.d.t.ThreadPool [1] Executing task 'Sell a car'
+2024-08-08 13:47:04,738 INFO r.n.d.g.c.DealController [1] Sold car to dealer 1: Car 12688288 (Body: 265590508, Engine: 199955406, Accessory: 18053310)
+2024-08-08 13:47:04,738 INFO r.n.d.g.c.PriceController [Thread-15] 584.2176876138865800
+2024-08-08 13:47:05,736 INFO r.n.d.t.ThreadPool [1] Executing task 'Build a car'
+2024-08-08 13:47:05,737 INFO r.n.d.t.ThreadPool [2] Executing task 'Sell a car'
+2024-08-08 13:47:05,737 INFO r.n.d.g.c.DealController [2] Sold car to dealer 2: Car 146318374 (Body: 1304147352, Engine: 1233398007, Accessory: 1132217223)
+2024-08-08 13:47:05,739 INFO r.n.d.g.c.PriceController [Thread-15] 584.2176876138865800
+2024-08-08 13:47:06,736 INFO r.n.d.t.ThreadPool [4] Executing task 'Build a car'
+2024-08-08 13:47:06,737 INFO r.n.d.t.ThreadPool [3] Executing task 'Sell a car'
+2024-08-08 13:47:06,737 INFO r.n.d.g.c.DealController [3] Sold car to dealer 3: Car 1940946160 (Body: 540650122, Engine: 604387925, Accessory: 788418853)
+2024-08-08 13:47:06,739 INFO r.n.d.g.c.PriceController [Thread-15] 584.2176876138865800
+2024-08-08 13:47:07,736 INFO r.n.d.t.ThreadPool [3] Executing task 'Build a car'
+2024-08-08 13:47:07,738 INFO r.n.d.t.ThreadPool [4] Executing task 'Sell a car'
+2024-08-08 13:47:07,738 INFO r.n.d.g.c.DealController [4] Sold car to dealer 4: Car 2027771501 (Body: 1462353271, Engine: 1393963850, Accessory: 1508792378)
+2024-08-08 13:47:07,740 INFO r.n.d.g.c.PriceController [Thread-15] 543.00787741957062600
+2024-08-08 13:47:08,736 INFO r.n.d.t.ThreadPool [5] Executing task 'Build a car'
+2024-08-08 13:47:08,737 INFO r.n.d.t.ThreadPool [6] Executing task 'Sell a car'
+2024-08-08 13:47:08,738 INFO r.n.d.g.c.DealController [6] Sold car to dealer 6: Car 879848272 (Body: 854582566, Engine: 919631779, Accessory: 1009261779)
+2024-08-08 13:47:08,740 INFO r.n.d.g.c.PriceController [Thread-15] 543.00787741957062600
+2024-08-08 13:47:09,737 INFO r.n.d.t.ThreadPool [6] Executing task 'Build a car'
+2024-08-08 13:47:09,738 INFO r.n.d.t.ThreadPool [7] Executing task 'Sell a car'
+2024-08-08 13:47:09,739 INFO r.n.d.g.c.DealController [7] Sold car to dealer 7: Car 775808288 (Body: 289397082, Engine: 352341925, Accessory: 536356053)
+2024-08-08 13:47:09,740 INFO r.n.d.g.c.PriceController [Thread-15] 543.00787741957062600
+2024-08-08 13:47:10,741 INFO r.n.d.g.c.PriceController [Thread-15] 543.00787741957062600
+2024-08-08 13:47:11,434 INFO r.n.d.t.ThreadPool [7] Executing task 'Build a car'
+2024-08-08 13:47:11,435 INFO r.n.d.t.ThreadPool [5] Executing task 'Sell a car'
+2024-08-08 13:47:11,435 INFO r.n.d.g.c.DealController [5] Sold car to dealer 5: Car -1269681160 (Body: 1048470402, Engine: 977399957, Accessory: 817470437)
+2024-08-08 13:47:11,741 INFO r.n.d.g.c.PriceController [Thread-15] 543.00787741957062600
+2024-08-08 13:47:12,742 INFO r.n.d.g.c.PriceController [Thread-15] Car price is not ok: 494.25447284175936600; stopping production...
+2024-08-08 13:47:13,223 INFO r.n.d.t.ThreadPool [8] Executing task 'Build a car'
+2024-08-08 13:47:13,224 INFO r.n.d.t.ThreadPool [8] Executing task 'Sell a car'
+2024-08-08 13:47:13,224 INFO r.n.d.g.c.DealController [8] Sold car to dealer 8: Car -249397244 (Body: 1260937466, Engine: 1326968135, Accessory: 1173325367)
+2024-08-08 13:47:25,302 INFO r.n.d.f.Factory [AWT-EventQueue-0] Shutdown...
