@@ -39,11 +39,64 @@ public class ChatClientController {
 
     @FXML
     public void initialize() {
+        String ip = promptForIPAddress();
+        int port = promptForPort();
+
+        if (ip == null || ip.isEmpty()) {
+            showAlert("IP address is required.");
+            Platform.exit();
+            return;
+        }
+
+        if (port == -1) {
+            showAlert("Valid port is required.");
+            Platform.exit();
+            return;
+        }
+
+        networkManager.connect(ip, port, this::processServerMessage);
         userListView.setItems(users);
         messageListView.setItems(messages);
-        networkManager.connect("localhost", 5556, this::processServerMessage);
         logoutButton.setVisible(false);
     }
+
+    private String promptForIPAddress() {
+        TextInputDialog dialog = new TextInputDialog("localhost");
+        dialog.setTitle("Server IP Address");
+        dialog.setHeaderText("Enter the IP address of the server:");
+        dialog.setContentText("IP Address:");
+
+        return dialog.showAndWait().orElse(null);
+    }
+
+    private int promptForPort() {
+        while (true) {
+            TextInputDialog dialog = new TextInputDialog("5585");
+            dialog.setTitle("Server Port");
+            dialog.setHeaderText("Enter the port number of the server:");
+            dialog.setContentText("Port:");
+
+            String portStr = dialog.showAndWait().orElse(null);
+            if (portStr == null) {
+                showAlert("Port is required.");
+                Platform.exit();
+                return -1;
+            }
+
+            try {
+                int port = Integer.parseInt(portStr);
+                if (port > 0 && port <= 65535) {
+                    return port;
+                } else {
+                    showAlert("Port number must be between 1 and 65535.");
+                }
+            } catch (NumberFormatException e) {
+                showAlert("Invalid port number. Please enter a valid integer.");
+            }
+        }
+    }
+
+
 
     @FXML
     public void onClickSendMessage() {
@@ -124,8 +177,10 @@ public class ChatClientController {
 
         } else if (message.contains("<event name=\"userlogout\">")) {
             String name = xmlProcessor.extractXmlValue(message, "name");
-            Platform.runLater(() -> messages.add(name + " is logout."));
-//            Platform.runLater(() -> users.remove(name));
+            Platform.runLater(() -> {
+                messages.add(name + " is logout.");
+                users.remove(name);
+            });
 
         } else if (message.contains("<success>")) {
             logger.info("Received success answer on %s request".formatted(networkManager.getLastCommand()));
