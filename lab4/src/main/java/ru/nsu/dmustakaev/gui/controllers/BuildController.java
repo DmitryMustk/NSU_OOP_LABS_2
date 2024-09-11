@@ -3,6 +3,7 @@ package ru.nsu.dmustakaev.gui.controllers;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.nsu.dmustakaev.factory.FactoryObserver;
 import ru.nsu.dmustakaev.factory.parts.Accessory;
 import ru.nsu.dmustakaev.factory.parts.Body;
 import ru.nsu.dmustakaev.factory.parts.Car;
@@ -13,7 +14,7 @@ import ru.nsu.dmustakaev.threadpool.ThreadPool;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class BuildController extends Thread {
+public class BuildController extends Thread implements FactoryObserver {
     private static final Logger logger = LogManager.getLogger(BuildController.class);
 
     private static final int QUEUE_SIZE = 1000;
@@ -114,5 +115,15 @@ public class BuildController extends Thread {
                 }
             }
         }
+    }
+
+    @Override
+    public void onFactoryStarted() {
+        this.start();
+    }
+
+    @Override
+    public void onFactoryShutdown() {
+        this.shutdown();
     }
 }

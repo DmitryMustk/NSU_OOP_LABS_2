@@ -2,6 +2,7 @@ package ru.nsu.dmustakaev.gui.controllers;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.nsu.dmustakaev.factory.FactoryObserver;
 import ru.nsu.dmustakaev.factory.parts.Car;
 import ru.nsu.dmustakaev.factory.store.Dealer;
 import ru.nsu.dmustakaev.threadpool.Task;
@@ -11,7 +12,7 @@ import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-public class DealController extends Thread {
+public class DealController extends Thread implements FactoryObserver {
     private static final Logger logger = LogManager.getLogger(DealController.class);
 
     private static final int QUEUE_SIZE = 1000;
@@ -85,5 +86,15 @@ public class DealController extends Thread {
                 logger.error(e);
             }
         }
+    }
+
+    @Override
+    public void onFactoryStarted() {
+        this.start();
+    }
+
+    @Override
+    public void onFactoryShutdown() {
+        this.shutdown();
     }
 }

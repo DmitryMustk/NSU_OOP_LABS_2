@@ -1,6 +1,9 @@
 package ru.nsu.dmustakaev.gui;
 
 import ru.nsu.dmustakaev.factory.Factory;
+import ru.nsu.dmustakaev.gui.controllers.BuildController;
+import ru.nsu.dmustakaev.gui.controllers.DealController;
+import ru.nsu.dmustakaev.gui.controllers.PriceController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,15 +27,65 @@ public class FactoryWindow extends JFrame {
     private JLabel totalGainLabel;
     private JLabel buildStateLabel;
 
+    private BuildController buildController;
+    private DealController dealController;
+    private PriceController priceController;
+
     public FactoryWindow() {
         super("Factory");
     }
 
     public void start() throws IOException {
         factory = new Factory();
+
+        createControllers();
+        addFactoryObservers();
+
         factory.start();
 
         SwingUtilities.invokeLater(this::init);
+    }
+
+    void addFactoryObservers() {
+        factory.addObserver(buildController);
+        factory.addObserver(dealController);
+        factory.addObserver(priceController);
+    }
+
+    void createControllers() {
+        buildController = new BuildController(
+                factory.getBodyStore(),
+                factory.getEngineStore(),
+                factory.getAccessoryStore(),
+                factory.getCarStore(),
+                factory.getWorkersCount()
+        );
+
+        dealController = new DealController(
+                factory.getCarStore(),
+                factory.getDealer(),
+                factory.getDealersCount()
+        );
+
+        priceController = new PriceController(
+                factory.getDealer(),
+                new PriceController.FactoryProductionControlAdapter() {
+                    @Override
+                    public boolean isPaused() {
+                        return buildController.isPause();
+                    }
+
+                    @Override
+                    public void pauseProduction() {
+                        buildController.pauseProduction();
+                    }
+
+                    @Override
+                    public void continueProduction() {
+                        buildController.continueProduction();
+                    }
+                }
+        );
     }
 
     public interface SliderListener {
@@ -143,9 +196,9 @@ public class FactoryWindow extends JFrame {
         bodyStoreSizeLabel.setText("Car body storage size: " + factory.getBodyStore().getSize() + " / " + factory.getBodyStore().getCapacity());
         engineStoreSizeLabel.setText("Car engine storage size: " + factory.getEngineStore().getSize() + " / " + factory.getEngineStore().getCapacity());
         accessoryStoreSizeLabel.setText("Car accessory storage size: " + factory.getAccessoryStore().getSize() + " / " + factory.getAccessoryStore().getCapacity());
-        totalSoldLabel.setText("Total sold: " + factory.getTotalSold());
-        totalGainLabel.setText("Total gain: " + new DecimalFormat("#0.#").format(factory.getTotalGain()));
-        buildStateLabel.setText("Build state: " + (factory.isBuildingPaused() ? "paused" : "running"));
+        totalSoldLabel.setText("Total sold: " + dealController.getTotalSold());
+        totalGainLabel.setText("Total gain: " + new DecimalFormat("#0.#").format(dealController.getTotalGain()));
+        buildStateLabel.setText("Build state: " + (buildController.isPause() ? "paused" : "running"));
     }
 
     @Override

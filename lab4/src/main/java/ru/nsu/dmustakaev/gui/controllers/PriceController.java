@@ -2,11 +2,12 @@ package ru.nsu.dmustakaev.gui.controllers;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.nsu.dmustakaev.factory.FactoryObserver;
 import ru.nsu.dmustakaev.factory.store.Dealer;
 
 import java.math.BigDecimal;
 
-public class PriceController extends Thread {
+public class PriceController extends Thread implements FactoryObserver {
     private static final Logger logger = LogManager.getLogger(PriceController.class);
 
     private static final int ONE_SECOND = 1000;
@@ -21,6 +22,14 @@ public class PriceController extends Thread {
         this.adapter = adapter;
         this.setDaemon(true);
     }
+
+    @Override
+    public void onFactoryStarted() {
+        this.start();
+    }
+
+    @Override
+    public void onFactoryShutdown() {}
 
     public interface FactoryProductionControlAdapter {
         boolean isPaused();

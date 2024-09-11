@@ -11,12 +11,10 @@ import ru.nsu.dmustakaev.factory.store.Store;
 import ru.nsu.dmustakaev.factory.suppliers.AccessorySupplier;
 import ru.nsu.dmustakaev.factory.suppliers.BodySupplier;
 import ru.nsu.dmustakaev.factory.suppliers.EngineSupplier;
-import ru.nsu.dmustakaev.gui.controllers.BuildController;
-import ru.nsu.dmustakaev.gui.controllers.DealController;
-import ru.nsu.dmustakaev.gui.controllers.PriceController;
 
 import java.io.IOException;
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class Factory {
@@ -37,11 +35,12 @@ public class Factory {
     private final ProductionThread<Engine> engineProductionThread;
     private final ProductionThread<Accessory> accessoryProductionThread;
 
-    private final BuildController buildController;
-    private final DealController dealController;
-    private final PriceController priceController;
+    private final int dealersCount;
+    private final int workersCount;
 
     private final Dealer dealer;
+
+    private final List<FactoryObserver> observers = new ArrayList<>();
 
     public Factory() throws IOException {
         Properties properties = new Properties();
@@ -69,32 +68,10 @@ public class Factory {
 
         dealer = new Dealer();
 
-        int dealersCount = Integer.parseInt((String) properties.get("DEALER.NUM"));
-        int workersCount = Integer.parseInt((String) properties.get("WORKER.NUM"));
+        dealersCount = Integer.parseInt((String) properties.get("DEALER.NUM"));
+        workersCount = Integer.parseInt((String) properties.get("WORKER.NUM"));
 
         logger.info("Stores, suppliers and threads created");
-
-        buildController = new BuildController(bodyStore, engineStore, accessoryStore, carStore, workersCount);
-        priceController = new PriceController(dealer, new PriceController.FactoryProductionControlAdapter() {
-            @Override
-            public boolean isPaused() {
-                return buildController.isPause();
-            }
-
-            @Override
-            public void pauseProduction() {
-                buildController.pauseProduction();
-            }
-
-            @Override
-            public void continueProduction() {
-                buildController.continueProduction();
-            }
-        });
-
-        dealController = new DealController(carStore, dealer, dealersCount);
-
-        logger.info("Controllers created");
     }
 
     public void start() {
@@ -103,13 +80,7 @@ public class Factory {
         accessoryProductionThread.start();
 
         logger.info("Production threads started");
-
-        buildController.start();
-        dealController.start();
-        priceController.start();
-
-        logger.info("Controllers started");
-
+        notifyObserversOnStart();
     }
 
     public void shutdown() {
@@ -119,8 +90,23 @@ public class Factory {
         engineProductionThread.shutdown();
         accessoryProductionThread.shutdown();
 
-        buildController.shutdown();
-        dealController.shutdown();
+        notifyObserversOnShutdown();
+    }
+
+    public void addObserver(FactoryObserver observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(FactoryObserver observer) {
+        observers.remove(observer);
+    }
+
+    private void notifyObserversOnStart() {
+        observers.forEach(observer -> {observer.onFactoryStarted();});
+    }
+
+    private void notifyObserversOnShutdown() {
+        observers.forEach(observer -> {observer.onFactoryShutdown();});
     }
 
     public BodySupplier getBodySupplier() {
@@ -151,16 +137,12 @@ public class Factory {
         return carStore;
     }
 
-    public ProductionThread<Body> getBodyProductionThread() {
-        return bodyProductionThread;
+    public int getWorkersCount() {
+        return workersCount;
     }
 
-    public ProductionThread<Engine> getEngineProductionThread() {
-        return engineProductionThread;
-    }
-
-    public ProductionThread<Accessory> getAccessoryProductionThread() {
-        return accessoryProductionThread;
+    public int getDealersCount() {
+        return dealersCount;
     }
 
     public Dealer getDealer() {
@@ -177,17 +159,5 @@ public class Factory {
 
     public void setAccessorySupplierDelay(int delay) {
         accessorySupplier.setDelay(delay);
-    }
-
-    public int getTotalSold() {
-        return dealController.getTotalSold();
-    }
-
-    public BigDecimal getTotalGain() {
-        return dealController.getTotalGain();
-    }
-
-    public boolean isBuildingPaused() {
-        return buildController.isPause();
     }
 }
