@@ -2,13 +2,12 @@ package ru.nsu.dmustakaev.utils;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
 
 import java.util.Objects;
 
 public class SoundEngine {
     private MediaPlayer mediaPlayer;
-    private MediaPlayer soundPlayer;
+    private MediaPlayer soundPlayer; // Cannot be used as a local variable
 
     public void setMusic(String soundName) {
        if(mediaPlayer != null) {

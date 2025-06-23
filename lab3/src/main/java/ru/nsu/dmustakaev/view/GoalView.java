@@ -7,6 +7,8 @@ import ru.nsu.dmustakaev.model.GoalModel;
 import ru.nsu.dmustakaev.utils.Bounds;
 import ru.nsu.dmustakaev.utils.Direction;
 
+import java.util.Objects;
+
 public class GoalView implements GameObjectView {
     private final GoalModel model;
     private final Pane pane;
@@ -20,7 +22,9 @@ public class GoalView implements GameObjectView {
         this.model = model;
 
         Direction direction = model.getDirection();
-        Image texture = direction == Direction.LEFT ? new Image(LEFT_TEXTURE_PATH) : new Image(RIGHT_TEXTURE_PATH);
+        Image texture = direction == Direction.LEFT
+                ? new Image(Objects.requireNonNull(getClass().getResource(LEFT_TEXTURE_PATH)).toExternalForm())
+                : new Image(Objects.requireNonNull(getClass().getResource(RIGHT_TEXTURE_PATH)).toExternalForm());
         goalView = new ImageView(texture);
         goalView.setFitWidth(model.getWidth());
         goalView.setFitHeight(model.getHeight());

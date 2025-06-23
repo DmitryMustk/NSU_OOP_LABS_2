@@ -5,19 +5,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import ru.nsu.dmustakaev.model.EnemyModel;
 
+import java.util.Objects;
+
 public class EnemyView implements GameObjectView {
     private final EnemyModel model;
-    private final Pane pane;
-    private final ImageView enemyView;
+    private final Pane pane = new Pane();
+    private final ImageView enemyView = new ImageView(Objects.requireNonNull(getClass().getResource(TEXTURE_PATH)).toExternalForm());
 
     private static final String TEXTURE_PATH = "/game/pictures/model_textures/enemy_texture.png";
 
     public EnemyView(EnemyModel model) {
         this.model = model;
-
-        enemyView = new ImageView(new Image(TEXTURE_PATH));
-
-        pane = new Pane();
         pane.getChildren().add(enemyView);
     }
 

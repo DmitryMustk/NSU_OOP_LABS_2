@@ -23,7 +23,7 @@ targetCompatibility = '21'
 
 application {
     mainModule = 'ru.nsu.dmustakaev'
-    mainClass = 'ru.nsu.dmustakaev.HelloApplication'
+    mainClass = 'ru.nsu.dmustakaev.Main'
 }
 
 javafx {

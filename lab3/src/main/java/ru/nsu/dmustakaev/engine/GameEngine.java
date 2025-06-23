@@ -1,4 +1,4 @@
-package ru.nsu.dmustakaev;
+package ru.nsu.dmustakaev.engine;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
@@ -17,19 +17,11 @@ import ru.nsu.dmustakaev.view.*;
 
 import java.util.*;
 
-import static ru.nsu.dmustakaev.Main.SCREEN_HEIGHT;
-import static ru.nsu.dmustakaev.Main.SCREEN_WIDTH;
-
 public class GameEngine {
     private static final int FPS = 240;
     private boolean isOnPause = false;
 
-    private BallModel ballModel;
-    private PlayerModel playerModel;
-    private EnemyModel enemyModel;
-    private GoalModel leftGoalModel;
-    private GoalModel rightGoalModel;
-    private ScoreModel scoreModel;
+    private GameState gameState;
 
     private List<GameMode> gameModes;
     private final ObjectProperty<GameMode> currentGameMode;
@@ -44,61 +36,16 @@ public class GameEngine {
     private static final int GOALS_TO_WIN = 5;
     private Direction winner;
 
-    private void createGameObjectsModels() {
-        leftGoalModel = new GoalModel(Direction.LEFT,0,  240, 160, 20);
-        rightGoalModel = new GoalModel(Direction.RIGHT,SCREEN_WIDTH - 20, SCREEN_HEIGHT - 360, 160, 20);
-        ballModel = new BallModel();
-        playerModel = new PlayerModel();
-        enemyModel = new EnemyModel(ballModel, leftGoalModel, rightGoalModel);
-        scoreModel = new ScoreModel();
-    }
-
-    private void createGameObjectViews() {
-        objectViews = new ArrayList<>();
-        objectViews.addAll(Arrays.asList(
-                new BallView(ballModel),
-                new PlayerView(playerModel),
-                new EnemyView(enemyModel),
-                new ScoreView(scoreModel),
-                new GoalView(leftGoalModel),
-                new GoalView(rightGoalModel)
-        ));
-    }
-
-    private void createGameModes() {
-        gameModes = new ArrayList<>();
-        gameModes.addAll(Arrays.asList(
-                new DefaultGameMode(),
-
-                new BigGoalsGameMode(leftGoalModel, rightGoalModel),
-                new SmallGoalsGameMode(leftGoalModel, rightGoalModel),
-
-                new BigBallGameMode(ballModel),
-                new SmallBallGameMode(ballModel),
-
-                new BigPlayersGameMode(playerModel, enemyModel),
-                new SmallPlayersGameMode(playerModel, enemyModel),
-
-                new LightBallGameMode(ballModel),
-                new HeavyBallGameMode(ballModel),
-
-                new MoonGravityGameMode(ballModel, playerModel, enemyModel),
-
-                new PlayersHighSpeedGameMode(playerModel, enemyModel),
-
-                new SlipperyFloorGameMode(ballModel, playerModel, enemyModel)
-        ));
-    }
-
     public GameEngine(SoundEngine soundEngine) {
-        createGameObjectsModels();
-        createGameObjectViews();
-        createGameModes();
-
         this.soundEngine = soundEngine;
         this.random = new Random();
         this.isFinished = new SimpleBooleanProperty(false);
         this.currentGameMode = new SimpleObjectProperty<>(null);
+
+
+        this.gameState = GameObjectFactory.createGameState();
+        this.objectViews = GameObjectFactory.createViews(this.gameState);
+        this.gameModes = GameObjectFactory.createGameModes(this.gameState);
 
         KeyFrame frame = new KeyFrame(Duration.seconds(1.0 / FPS), actionEvent -> {
             if (isOnPause || isFinished.get()) {
@@ -123,30 +70,30 @@ public class GameEngine {
     }
 
     public PlayerModel getPlayerModel() {
-        return playerModel;
+        return gameState.playerModel();
     }
 
     private void checkCollision() {
-        Bounds ballBounds = ballModel.getBounds();
-        Bounds playerBounds = playerModel.getBounds();
-        Bounds enemyBounds = enemyModel.getBounds();
-        Bounds leftGoalBounds = leftGoalModel.getBounds();
-        Bounds rightGoalBounds = rightGoalModel.getBounds();
+        Bounds ballBounds = gameState.ballModel().getBounds();
+        Bounds playerBounds = gameState.playerModel().getBounds();
+        Bounds enemyBounds = gameState.enemyModel().getBounds();
+        Bounds leftGoalBounds = gameState.leftGoalModel().getBounds();
+        Bounds rightGoalBounds = gameState.rightGoalModel().getBounds();
 
         if (ballBounds.intersects(playerBounds))
-            ballModel.kick(playerBounds);
+            gameState.ballModel().kick(playerBounds);
         if (ballBounds.intersects(enemyBounds))
-            ballModel.kick(enemyBounds);
+            gameState.ballModel().kick(enemyBounds);
         if (rightGoalBounds.intersects(ballBounds))
             handleScore(Direction.LEFT);
         if (leftGoalBounds.intersects(ballBounds))
             handleScore(Direction.RIGHT);
 
         if (playerBounds.intersects(enemyBounds)) {
-            Direction playerPushDirection = playerModel.getX() < enemyModel.getX() ? Direction.LEFT : Direction.RIGHT;
+            Direction playerPushDirection = gameState.playerModel().getX() < gameState.enemyModel().getX() ? Direction.LEFT : Direction.RIGHT;
             Direction enemyPushDirection = playerPushDirection == Direction.LEFT ? Direction.RIGHT : Direction.LEFT;
-            playerModel.pushBack(playerPushDirection);
-            enemyModel.pushBack(enemyPushDirection);
+            gameState.playerModel().pushBack(playerPushDirection);
+            gameState.enemyModel().pushBack(enemyPushDirection);
         }
     }
 
@@ -157,18 +104,18 @@ public class GameEngine {
 
         if (whoScored == Direction.LEFT) {
             soundEngine.playSound("/game/sounds/score/sii.mp3");
-            scoreModel.incrementPlayerScore();
+            gameState.scoreModel().incrementPlayerScore();
         } else {
             soundEngine.playSound("/game/sounds/score/fail.mp3");
-            scoreModel.incrementEnemyScore();
+            gameState.scoreModel().incrementEnemyScore();
         }
         handleGameOver();
         pauseAfterScore();
     }
 
     private void handleGameOver() {
-        int playerScore = scoreModel.getPlayerScore();
-        int enemyScore = scoreModel.getEnemyScore();
+        int playerScore = gameState.scoreModel().getPlayerScore();
+        int enemyScore = gameState.scoreModel().getEnemyScore();
 
         if(playerScore == GOALS_TO_WIN || enemyScore == GOALS_TO_WIN) {
             winner = playerScore > enemyScore ? Direction.LEFT : Direction.RIGHT;
@@ -192,9 +139,7 @@ public class GameEngine {
     }
 
     private void resetModels() {
-        ballModel.reset();
-        playerModel.reset();
-        enemyModel.reset();
+        gameState.reset();
     }
 
     private void applyNewMode() {
@@ -209,12 +154,7 @@ public class GameEngine {
         );
 
         currentGameMode.get().apply();
-        System.out.println("Current game mode: " + currentGameMode);
         soundEngine.playSound(currentGameMode.get().getSoundSource());
-    }
-
-    public GameMode getCurrentGameMode() {
-        return currentGameMode.get();
     }
 
     public ObjectProperty<GameMode> currentGameModeProperty() {
@@ -228,5 +168,4 @@ public class GameEngine {
     public Direction getWinner() {
         return winner;
     }
-
 }

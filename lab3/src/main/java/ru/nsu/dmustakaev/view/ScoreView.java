@@ -10,9 +10,9 @@ import javafx.scene.text.TextAlignment;
 import ru.nsu.dmustakaev.Main;
 import ru.nsu.dmustakaev.model.ScoreModel;
 
-public class ScoreView implements  GameObjectView {
-    private final Pane pane;
-    private final Label scoreLabel;
+public class ScoreView implements GameObjectView {
+    private final Pane pane = new Pane();
+    private final Label scoreLabel = new Label(INIT_LABEL_TEXT);
     private final ScoreModel scoreModel;
 
     private static final String INIT_LABEL_TEXT = "0:0";
@@ -21,15 +21,11 @@ public class ScoreView implements  GameObjectView {
 
     public ScoreView(ScoreModel scoreModel) {
         this.scoreModel = scoreModel;
-
-        scoreLabel = new Label(INIT_LABEL_TEXT);
-        changeScoreLabel();
-
-        pane = new Pane();
+        styleScoreLabel();
         pane.getChildren().add(scoreLabel);
     }
 
-    private void changeScoreLabel() {
+    private void styleScoreLabel() {
         scoreLabel.setFont(Font.font(LABEL_FONT, FontWeight.BOLD, LABEL_FONT_SIZE));
         scoreLabel.setTextAlignment(TextAlignment.CENTER);
         scoreLabel.setTextFill(Color.WHITE);

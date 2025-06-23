@@ -1,9 +1,5 @@
 package ru.nsu.dmustakaev.controller;
 
-import javafx.animation.FadeTransition;
-import javafx.animation.ScaleTransition;
-import javafx.animation.SequentialTransition;
-import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -13,10 +9,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-import ru.nsu.dmustakaev.GameEngine;
-import ru.nsu.dmustakaev.model.PlayerModel;
-import ru.nsu.dmustakaev.utils.Direction;
+import ru.nsu.dmustakaev.engine.GameEngine;
+import ru.nsu.dmustakaev.animations.GameModeAnimation;
+import ru.nsu.dmustakaev.controller.handlers.GameOverHandler;
+import ru.nsu.dmustakaev.controller.handlers.InputHandler;
 import ru.nsu.dmustakaev.utils.SoundEngine;
 import ru.nsu.dmustakaev.view.GameObjectView;
 
@@ -40,6 +36,8 @@ public class GamePlayController {
     public ImageView exitToMainMenuButton;
 
     private SoundEngine soundEngine;
+    private GameOverHandler gameOverHandler;
+    private InputHandler inputHandler;
     private GameEngine gameEngine;
     private Stage primaryStage;
 
@@ -50,6 +48,15 @@ public class GamePlayController {
         soundEngine.playMusic();
 
         gameEngine = new GameEngine(soundEngine);
+        inputHandler = new InputHandler(gameEngine.getPlayerModel());
+
+        gameOverHandler = new GameOverHandler(
+                soundEngine,
+                endGameRoot,
+                winScreenPicture,
+                loseScreenPicture,
+                exitToMainMenuButton
+        );
 
         gamePlayRoot.getChildren().addAll(gameEngine
                 .getGameObjectViews()
@@ -61,7 +68,7 @@ public class GamePlayController {
 
         gameEngine.getIsFinished().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-                processGameOver();
+                gameOverHandler.handleGameOver(gameEngine.getWinner());
             }
         });
 
@@ -73,72 +80,7 @@ public class GamePlayController {
     }
 
     private void showGameModeName(String modeName) {
-        gameModeLabel.setText(modeName);
-        gameModeLabel.setVisible(true);
-
-        animateGameModeLabel();
-    }
-
-    private void animateGameModeLabel() {
-        FadeTransition fadeIn = new FadeTransition(Duration.seconds(0.5), gameModeLabel);
-        fadeIn.setFromValue(0);
-        fadeIn.setToValue(1);
-
-        ScaleTransition scaleUp = new ScaleTransition(Duration.seconds(0.5), gameModeLabel);
-        scaleUp.setFromX(0.5);
-        scaleUp.setFromY(0.5);
-        scaleUp.setToX(1.5);
-        scaleUp.setToY(1.5);
-
-        ScaleTransition scaleDown = new ScaleTransition(Duration.seconds(0.5), gameModeLabel);
-        scaleDown.setFromX(1.5);
-        scaleDown.setFromY(1.5);
-        scaleDown.setToX(1.0);
-        scaleDown.setToY(1.0);
-
-        FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.5), gameModeLabel);
-        fadeOut.setFromValue(1);
-        fadeOut.setToValue(0);
-        fadeOut.setDelay(Duration.seconds(1.5));
-
-        fadeOut.setOnFinished(event -> gameModeLabel.setVisible(false));
-
-        SequentialTransition seqTransition = new SequentialTransition(fadeIn, scaleUp, scaleDown, fadeOut);
-        seqTransition.play();
-
-        TranslateTransition flameTransition = new TranslateTransition(Duration.seconds(0.5), gameModeLabel);
-        flameTransition.setFromY(-10);
-        flameTransition.setToY(10);
-        flameTransition.setCycleCount(TranslateTransition.INDEFINITE);
-        flameTransition.setAutoReverse(true);
-
-        flameTransition.play();
-    }
-
-
-    private void processGameOver() {
-        soundEngine.stopMusic();
-        if(gameEngine.getWinner() == Direction.LEFT) {
-            processWin();
-            return;
-        }
-        processLose();
-    }
-
-    private void processWin() {
-        soundEngine.setMusic("/game/sounds/game_over_music/win_music.mp3");
-        soundEngine.playMusic();
-        endGameRoot.toFront();
-        winScreenPicture.setVisible(true);
-        exitToMainMenuButton.setVisible(true);
-    }
-
-    private void processLose() {
-        soundEngine.setMusic("/game/sounds/game_over_music/lose_music.mp3");
-        soundEngine.playMusic();
-        endGameRoot.toFront();
-        loseScreenPicture.setVisible(true);
-        exitToMainMenuButton.setVisible(true);
+        GameModeAnimation.run(gameModeLabel, modeName);
     }
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -151,35 +93,14 @@ public class GamePlayController {
 
     public void setScene(Scene scene) {
         scene.setOnKeyPressed(event -> {
-            PlayerModel playerModel = gameEngine.getPlayerModel();
-            Direction direction = Direction.getDirectionFromKeyCode(event.getCode());
-            if (direction == Direction.LEFT || direction == Direction.RIGHT) {
-                playerModel.move(direction);
-            }
-            if (direction == Direction.UP) {
-                playerModel.jump();
-            }
-
             if (event.getCode() == KeyCode.ESCAPE) {
                 togglePauseMenu();
+                return;
             }
-
-            if (event.getCode() == KeyCode.F) {
-                gameEngine.getCurrentGameMode().apply();
-            }
-
-            if (event.getCode() == KeyCode.G) {
-                gameEngine.getCurrentGameMode().unapply();
-            }
+            inputHandler.handleKeyPressed(event.getCode());
         });
 
-        scene.setOnKeyReleased(event -> {
-            PlayerModel playerModel = gameEngine.getPlayerModel();
-            Direction direction = Direction.getDirectionFromKeyCode(event.getCode());
-            if (direction == Direction.LEFT || direction == Direction.RIGHT) {
-                playerModel.stop(direction);
-            }
-        });
+        scene.setOnKeyReleased(event -> {inputHandler.handleKeyReleased(event.getCode());});
     }
 
     private void togglePauseMenu() {

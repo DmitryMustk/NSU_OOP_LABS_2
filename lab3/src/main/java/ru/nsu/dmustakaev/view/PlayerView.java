@@ -6,19 +6,17 @@ import javafx.scene.layout.Pane;
 import ru.nsu.dmustakaev.model.PlayerModel;
 import ru.nsu.dmustakaev.utils.Bounds;
 
+import java.util.Objects;
+
 public class PlayerView implements GameObjectView {
     private final PlayerModel model;
-    private final Pane pane;
-    private final ImageView playerView;
+    private final Pane pane = new Pane();
+    private final ImageView playerView = new ImageView(Objects.requireNonNull(getClass().getResource(TEXTURE_PATH)).toExternalForm());
 
     private static final String TEXTURE_PATH = "/game/pictures/model_textures/player_texture.png";
 
     public PlayerView(PlayerModel model) {
         this.model = model;
-
-        playerView = new ImageView(new Image(TEXTURE_PATH));
-
-        pane = new Pane();
         pane.getChildren().add(playerView);
     }
 

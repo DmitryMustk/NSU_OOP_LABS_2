@@ -37,11 +37,8 @@ public class Main extends Application {
     }
 }
 
-//TODO: win screen
-//TODO: loose screen`
-// TODO: back to gameObject factory idea
+//TODO: rewrite sound logic
+//TODO: add queue of actions
 
-//TODO: add game mode messages1
-//TODO: add noJump mode
-//TODO: balance sound
+
 

@@ -10,7 +10,7 @@ public enum Direction {
     NONE,
     ;
 
-    public static Direction getDirectionFromKeyCode(KeyCode keyCode) {
+    public static Direction fromKeyCode(KeyCode keyCode) {
         return switch (keyCode) {
             case KeyCode.A -> LEFT;
             case KeyCode.D -> RIGHT;
